@@ -4,10 +4,7 @@ package main;
 
 func main() {
     println("Hola me llamo zSnails");
-    saludado, err := saludo("Aaron");
-    if err != nil {
-        panic(err);
-    };
+    saludado := saludo("Aaron");
 };
 
 func saludo(nombre string) string {
