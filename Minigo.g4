@@ -4,9 +4,9 @@ root: PACKAGE IDENTIFIER SEMICOLON topDeclarationList;
 
 topDeclarationList: (variableDecl | typeDecl | funcDecl)*;
 
-variableDecl: VAR singleVarDecl SEMICOLON
-            | VAR LEFTPARENTHESIS innerVarDecls RIGHTPARENTHESIS SEMICOLON
-            | VAR LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON
+variableDecl: VAR singleVarDecl SEMICOLON                                   #variableDeclaration
+            | VAR LEFTPARENTHESIS innerVarDecls RIGHTPARENTHESIS SEMICOLON  #multiVariableDeclaration
+            | VAR LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON                #emptyVariableDeclaration
             ;
 innerVarDecls: singleVarDecl SEMICOLON (singleVarDecl SEMICOLON)*;
 
@@ -32,7 +32,7 @@ singleTypeDecl: IDENTIFIER declType
 funcDecl: funcFrontDecl block SEMICOLON
         ;
 
-funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls* RIGHTPARENTHESIS declType*
+funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls? RIGHTPARENTHESIS declType*
              ;
 
 funcArgsDecls: singleVarDeclNoExps (COMMA singleVarDeclNoExps)*
@@ -115,21 +115,21 @@ statementList: statement*
 block: LEFTCURLYBRACE statementList RIGHTCURLYBRACE
      ;
 
-statement: PRINT LEFTPARENTHESIS expressionList* RIGHTPARENTHESIS SEMICOLON
-         | PRINTLN LEFTPARENTHESIS expressionList* RIGHTPARENTHESIS SEMICOLON
-         | RETURN expression* SEMICOLON
-         | BREAK SEMICOLON
-         | CONTINUE SEMICOLON
-         | simpleStatement SEMICOLON
-         | block SEMICOLON
-         | switch SEMICOLON
-         | ifStatement SEMICOLON
-         | loop SEMICOLON
-         | typeDecl
-         | variableDecl
+statement: PRINT LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #printStatement
+         | PRINTLN LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #printlnStatement
+         | RETURN expression? SEMICOLON #returnStatement
+         | BREAK SEMICOLON #breakStatement
+         | CONTINUE SEMICOLON #continueStatement
+         | simpleStatement SEMICOLON #simpleStatementStatement
+         | block SEMICOLON #blockStatement
+         | switch SEMICOLON #switchStatement
+         | ifStatement SEMICOLON #ifStatementStatement
+         | loop SEMICOLON #loopStatement
+         | typeDecl #typeDeclStatement
+         | variableDecl #variableDeclStatement
          ;
 
-simpleStatement: expression (POSTINC | POSTDEC |)
+simpleStatement: expression (POSTINC | POSTDEC)?
                | assignmentStatement
                | expressionList WALRUS expressionList
                ;
