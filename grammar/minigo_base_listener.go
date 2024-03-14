@@ -32,11 +32,23 @@ func (s *BaseMinigoListener) EnterTopDeclarationList(ctx *TopDeclarationListCont
 // ExitTopDeclarationList is called when production topDeclarationList is exited.
 func (s *BaseMinigoListener) ExitTopDeclarationList(ctx *TopDeclarationListContext) {}
 
-// EnterVariableDecl is called when production variableDecl is entered.
-func (s *BaseMinigoListener) EnterVariableDecl(ctx *VariableDeclContext) {}
+// EnterVariableDeclaration is called when production variableDeclaration is entered.
+func (s *BaseMinigoListener) EnterVariableDeclaration(ctx *VariableDeclarationContext) {}
 
-// ExitVariableDecl is called when production variableDecl is exited.
-func (s *BaseMinigoListener) ExitVariableDecl(ctx *VariableDeclContext) {}
+// ExitVariableDeclaration is called when production variableDeclaration is exited.
+func (s *BaseMinigoListener) ExitVariableDeclaration(ctx *VariableDeclarationContext) {}
+
+// EnterMultiVariableDeclaration is called when production multiVariableDeclaration is entered.
+func (s *BaseMinigoListener) EnterMultiVariableDeclaration(ctx *MultiVariableDeclarationContext) {}
+
+// ExitMultiVariableDeclaration is called when production multiVariableDeclaration is exited.
+func (s *BaseMinigoListener) ExitMultiVariableDeclaration(ctx *MultiVariableDeclarationContext) {}
+
+// EnterEmptyVariableDeclaration is called when production emptyVariableDeclaration is entered.
+func (s *BaseMinigoListener) EnterEmptyVariableDeclaration(ctx *EmptyVariableDeclarationContext) {}
+
+// ExitEmptyVariableDeclaration is called when production emptyVariableDeclaration is exited.
+func (s *BaseMinigoListener) ExitEmptyVariableDeclaration(ctx *EmptyVariableDeclarationContext) {}
 
 // EnterInnerVarDecls is called when production innerVarDecls is entered.
 func (s *BaseMinigoListener) EnterInnerVarDecls(ctx *InnerVarDeclsContext) {}
@@ -206,11 +218,77 @@ func (s *BaseMinigoListener) EnterBlock(ctx *BlockContext) {}
 // ExitBlock is called when production block is exited.
 func (s *BaseMinigoListener) ExitBlock(ctx *BlockContext) {}
 
-// EnterStatement is called when production statement is entered.
-func (s *BaseMinigoListener) EnterStatement(ctx *StatementContext) {}
+// EnterPrintStatement is called when production printStatement is entered.
+func (s *BaseMinigoListener) EnterPrintStatement(ctx *PrintStatementContext) {}
 
-// ExitStatement is called when production statement is exited.
-func (s *BaseMinigoListener) ExitStatement(ctx *StatementContext) {}
+// ExitPrintStatement is called when production printStatement is exited.
+func (s *BaseMinigoListener) ExitPrintStatement(ctx *PrintStatementContext) {}
+
+// EnterPrintlnStatement is called when production printlnStatement is entered.
+func (s *BaseMinigoListener) EnterPrintlnStatement(ctx *PrintlnStatementContext) {}
+
+// ExitPrintlnStatement is called when production printlnStatement is exited.
+func (s *BaseMinigoListener) ExitPrintlnStatement(ctx *PrintlnStatementContext) {}
+
+// EnterReturnStatement is called when production returnStatement is entered.
+func (s *BaseMinigoListener) EnterReturnStatement(ctx *ReturnStatementContext) {}
+
+// ExitReturnStatement is called when production returnStatement is exited.
+func (s *BaseMinigoListener) ExitReturnStatement(ctx *ReturnStatementContext) {}
+
+// EnterBreakStatement is called when production breakStatement is entered.
+func (s *BaseMinigoListener) EnterBreakStatement(ctx *BreakStatementContext) {}
+
+// ExitBreakStatement is called when production breakStatement is exited.
+func (s *BaseMinigoListener) ExitBreakStatement(ctx *BreakStatementContext) {}
+
+// EnterContinueStatement is called when production continueStatement is entered.
+func (s *BaseMinigoListener) EnterContinueStatement(ctx *ContinueStatementContext) {}
+
+// ExitContinueStatement is called when production continueStatement is exited.
+func (s *BaseMinigoListener) ExitContinueStatement(ctx *ContinueStatementContext) {}
+
+// EnterSimpleStatementStatement is called when production simpleStatementStatement is entered.
+func (s *BaseMinigoListener) EnterSimpleStatementStatement(ctx *SimpleStatementStatementContext) {}
+
+// ExitSimpleStatementStatement is called when production simpleStatementStatement is exited.
+func (s *BaseMinigoListener) ExitSimpleStatementStatement(ctx *SimpleStatementStatementContext) {}
+
+// EnterBlockStatement is called when production blockStatement is entered.
+func (s *BaseMinigoListener) EnterBlockStatement(ctx *BlockStatementContext) {}
+
+// ExitBlockStatement is called when production blockStatement is exited.
+func (s *BaseMinigoListener) ExitBlockStatement(ctx *BlockStatementContext) {}
+
+// EnterSwitchStatement is called when production switchStatement is entered.
+func (s *BaseMinigoListener) EnterSwitchStatement(ctx *SwitchStatementContext) {}
+
+// ExitSwitchStatement is called when production switchStatement is exited.
+func (s *BaseMinigoListener) ExitSwitchStatement(ctx *SwitchStatementContext) {}
+
+// EnterIfStatementStatement is called when production ifStatementStatement is entered.
+func (s *BaseMinigoListener) EnterIfStatementStatement(ctx *IfStatementStatementContext) {}
+
+// ExitIfStatementStatement is called when production ifStatementStatement is exited.
+func (s *BaseMinigoListener) ExitIfStatementStatement(ctx *IfStatementStatementContext) {}
+
+// EnterLoopStatement is called when production loopStatement is entered.
+func (s *BaseMinigoListener) EnterLoopStatement(ctx *LoopStatementContext) {}
+
+// ExitLoopStatement is called when production loopStatement is exited.
+func (s *BaseMinigoListener) ExitLoopStatement(ctx *LoopStatementContext) {}
+
+// EnterTypeDeclStatement is called when production typeDeclStatement is entered.
+func (s *BaseMinigoListener) EnterTypeDeclStatement(ctx *TypeDeclStatementContext) {}
+
+// ExitTypeDeclStatement is called when production typeDeclStatement is exited.
+func (s *BaseMinigoListener) ExitTypeDeclStatement(ctx *TypeDeclStatementContext) {}
+
+// EnterVariableDeclStatement is called when production variableDeclStatement is entered.
+func (s *BaseMinigoListener) EnterVariableDeclStatement(ctx *VariableDeclStatementContext) {}
+
+// ExitVariableDeclStatement is called when production variableDeclStatement is exited.
+func (s *BaseMinigoListener) ExitVariableDeclStatement(ctx *VariableDeclStatementContext) {}
 
 // EnterSimpleStatement is called when production simpleStatement is entered.
 func (s *BaseMinigoListener) EnterSimpleStatement(ctx *SimpleStatementContext) {}

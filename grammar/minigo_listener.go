@@ -13,8 +13,14 @@ type MinigoListener interface {
 	// EnterTopDeclarationList is called when entering the topDeclarationList production.
 	EnterTopDeclarationList(c *TopDeclarationListContext)
 
-	// EnterVariableDecl is called when entering the variableDecl production.
-	EnterVariableDecl(c *VariableDeclContext)
+	// EnterVariableDeclaration is called when entering the variableDeclaration production.
+	EnterVariableDeclaration(c *VariableDeclarationContext)
+
+	// EnterMultiVariableDeclaration is called when entering the multiVariableDeclaration production.
+	EnterMultiVariableDeclaration(c *MultiVariableDeclarationContext)
+
+	// EnterEmptyVariableDeclaration is called when entering the emptyVariableDeclaration production.
+	EnterEmptyVariableDeclaration(c *EmptyVariableDeclarationContext)
 
 	// EnterInnerVarDecls is called when entering the innerVarDecls production.
 	EnterInnerVarDecls(c *InnerVarDeclsContext)
@@ -100,8 +106,41 @@ type MinigoListener interface {
 	// EnterBlock is called when entering the block production.
 	EnterBlock(c *BlockContext)
 
-	// EnterStatement is called when entering the statement production.
-	EnterStatement(c *StatementContext)
+	// EnterPrintStatement is called when entering the printStatement production.
+	EnterPrintStatement(c *PrintStatementContext)
+
+	// EnterPrintlnStatement is called when entering the printlnStatement production.
+	EnterPrintlnStatement(c *PrintlnStatementContext)
+
+	// EnterReturnStatement is called when entering the returnStatement production.
+	EnterReturnStatement(c *ReturnStatementContext)
+
+	// EnterBreakStatement is called when entering the breakStatement production.
+	EnterBreakStatement(c *BreakStatementContext)
+
+	// EnterContinueStatement is called when entering the continueStatement production.
+	EnterContinueStatement(c *ContinueStatementContext)
+
+	// EnterSimpleStatementStatement is called when entering the simpleStatementStatement production.
+	EnterSimpleStatementStatement(c *SimpleStatementStatementContext)
+
+	// EnterBlockStatement is called when entering the blockStatement production.
+	EnterBlockStatement(c *BlockStatementContext)
+
+	// EnterSwitchStatement is called when entering the switchStatement production.
+	EnterSwitchStatement(c *SwitchStatementContext)
+
+	// EnterIfStatementStatement is called when entering the ifStatementStatement production.
+	EnterIfStatementStatement(c *IfStatementStatementContext)
+
+	// EnterLoopStatement is called when entering the loopStatement production.
+	EnterLoopStatement(c *LoopStatementContext)
+
+	// EnterTypeDeclStatement is called when entering the typeDeclStatement production.
+	EnterTypeDeclStatement(c *TypeDeclStatementContext)
+
+	// EnterVariableDeclStatement is called when entering the variableDeclStatement production.
+	EnterVariableDeclStatement(c *VariableDeclStatementContext)
 
 	// EnterSimpleStatement is called when entering the simpleStatement production.
 	EnterSimpleStatement(c *SimpleStatementContext)
@@ -133,8 +172,14 @@ type MinigoListener interface {
 	// ExitTopDeclarationList is called when exiting the topDeclarationList production.
 	ExitTopDeclarationList(c *TopDeclarationListContext)
 
-	// ExitVariableDecl is called when exiting the variableDecl production.
-	ExitVariableDecl(c *VariableDeclContext)
+	// ExitVariableDeclaration is called when exiting the variableDeclaration production.
+	ExitVariableDeclaration(c *VariableDeclarationContext)
+
+	// ExitMultiVariableDeclaration is called when exiting the multiVariableDeclaration production.
+	ExitMultiVariableDeclaration(c *MultiVariableDeclarationContext)
+
+	// ExitEmptyVariableDeclaration is called when exiting the emptyVariableDeclaration production.
+	ExitEmptyVariableDeclaration(c *EmptyVariableDeclarationContext)
 
 	// ExitInnerVarDecls is called when exiting the innerVarDecls production.
 	ExitInnerVarDecls(c *InnerVarDeclsContext)
@@ -220,8 +265,41 @@ type MinigoListener interface {
 	// ExitBlock is called when exiting the block production.
 	ExitBlock(c *BlockContext)
 
-	// ExitStatement is called when exiting the statement production.
-	ExitStatement(c *StatementContext)
+	// ExitPrintStatement is called when exiting the printStatement production.
+	ExitPrintStatement(c *PrintStatementContext)
+
+	// ExitPrintlnStatement is called when exiting the printlnStatement production.
+	ExitPrintlnStatement(c *PrintlnStatementContext)
+
+	// ExitReturnStatement is called when exiting the returnStatement production.
+	ExitReturnStatement(c *ReturnStatementContext)
+
+	// ExitBreakStatement is called when exiting the breakStatement production.
+	ExitBreakStatement(c *BreakStatementContext)
+
+	// ExitContinueStatement is called when exiting the continueStatement production.
+	ExitContinueStatement(c *ContinueStatementContext)
+
+	// ExitSimpleStatementStatement is called when exiting the simpleStatementStatement production.
+	ExitSimpleStatementStatement(c *SimpleStatementStatementContext)
+
+	// ExitBlockStatement is called when exiting the blockStatement production.
+	ExitBlockStatement(c *BlockStatementContext)
+
+	// ExitSwitchStatement is called when exiting the switchStatement production.
+	ExitSwitchStatement(c *SwitchStatementContext)
+
+	// ExitIfStatementStatement is called when exiting the ifStatementStatement production.
+	ExitIfStatementStatement(c *IfStatementStatementContext)
+
+	// ExitLoopStatement is called when exiting the loopStatement production.
+	ExitLoopStatement(c *LoopStatementContext)
+
+	// ExitTypeDeclStatement is called when exiting the typeDeclStatement production.
+	ExitTypeDeclStatement(c *TypeDeclStatementContext)
+
+	// ExitVariableDeclStatement is called when exiting the variableDeclStatement production.
+	ExitVariableDeclStatement(c *VariableDeclStatementContext)
 
 	// ExitSimpleStatement is called when exiting the simpleStatement production.
 	ExitSimpleStatement(c *SimpleStatementContext)

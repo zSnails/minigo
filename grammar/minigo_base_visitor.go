@@ -15,7 +15,15 @@ func (v *BaseMinigoVisitor) VisitTopDeclarationList(ctx *TopDeclarationListConte
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitVariableDecl(ctx *VariableDeclContext) interface{} {
+func (v *BaseMinigoVisitor) VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitMultiVariableDeclaration(ctx *MultiVariableDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitEmptyVariableDeclaration(ctx *EmptyVariableDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -131,7 +139,51 @@ func (v *BaseMinigoVisitor) VisitBlock(ctx *BlockContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitStatement(ctx *StatementContext) interface{} {
+func (v *BaseMinigoVisitor) VisitPrintStatement(ctx *PrintStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitPrintlnStatement(ctx *PrintlnStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitReturnStatement(ctx *ReturnStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitBreakStatement(ctx *BreakStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitContinueStatement(ctx *ContinueStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitSimpleStatementStatement(ctx *SimpleStatementStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitBlockStatement(ctx *BlockStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitSwitchStatement(ctx *SwitchStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIfStatementStatement(ctx *IfStatementStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitLoopStatement(ctx *LoopStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitTypeDeclStatement(ctx *TypeDeclStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitVariableDeclStatement(ctx *VariableDeclStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

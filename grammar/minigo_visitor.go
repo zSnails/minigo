@@ -13,8 +13,14 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#topDeclarationList.
 	VisitTopDeclarationList(ctx *TopDeclarationListContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#variableDecl.
-	VisitVariableDecl(ctx *VariableDeclContext) interface{}
+	// Visit a parse tree produced by MinigoParser#variableDeclaration.
+	VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#multiVariableDeclaration.
+	VisitMultiVariableDeclaration(ctx *MultiVariableDeclarationContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#emptyVariableDeclaration.
+	VisitEmptyVariableDeclaration(ctx *EmptyVariableDeclarationContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#innerVarDecls.
 	VisitInnerVarDecls(ctx *InnerVarDeclsContext) interface{}
@@ -100,8 +106,41 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#block.
 	VisitBlock(ctx *BlockContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#statement.
-	VisitStatement(ctx *StatementContext) interface{}
+	// Visit a parse tree produced by MinigoParser#printStatement.
+	VisitPrintStatement(ctx *PrintStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#printlnStatement.
+	VisitPrintlnStatement(ctx *PrintlnStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#returnStatement.
+	VisitReturnStatement(ctx *ReturnStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#breakStatement.
+	VisitBreakStatement(ctx *BreakStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#continueStatement.
+	VisitContinueStatement(ctx *ContinueStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#simpleStatementStatement.
+	VisitSimpleStatementStatement(ctx *SimpleStatementStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#blockStatement.
+	VisitBlockStatement(ctx *BlockStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#switchStatement.
+	VisitSwitchStatement(ctx *SwitchStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#ifStatementStatement.
+	VisitIfStatementStatement(ctx *IfStatementStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#loopStatement.
+	VisitLoopStatement(ctx *LoopStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#typeDeclStatement.
+	VisitTypeDeclStatement(ctx *TypeDeclStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#variableDeclStatement.
+	VisitVariableDeclStatement(ctx *VariableDeclStatementContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#simpleStatement.
 	VisitSimpleStatement(ctx *SimpleStatementContext) interface{}
