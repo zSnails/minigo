@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -9,29 +10,55 @@ import (
 	"github.com/zSnails/minigo/reporter"
 )
 
+const (
+	ParsingError = iota + 1
+	InternalError
+)
+
+var (
+	filename string
+	isJson   bool
+)
+
+func init() {
+	flag.StringVar(&filename, "file", "", "The file to parse")
+	flag.BoolVar(&isJson, "json-output", false, "Whether or not to show json output")
+	flag.Parse()
+}
+
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "usage: %s <file>\n", os.Args[0])
-		os.Exit(1)
+	if filename == "" {
+		fmt.Fprintln(os.Stderr, "`file` can't be empty")
+		os.Exit(InternalError)
 	}
 
-	fileStream, err := antlr.NewFileStream(os.Args[1])
+	fileStream, err := antlr.NewFileStream(filename)
 	if err != nil {
-		panic(err)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(InternalError)
 	}
 	lexer := grammar.NewMinigoLexer(fileStream)
 	cts := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	parser := grammar.NewMinigoParser(cts)
-	r := reporter.NewReporter(fileStream.GetSourceName())
+
+	var r reporter.Reporter
 	parser.RemoveErrorListeners()
-	parser.AddErrorListener(r)
+
+	if isJson {
+		r = reporter.NewJsonReporter(fileStream.GetSourceName())
+	} else {
+		r = reporter.NewReporter(fileStream.GetSourceName())
+	}
+
+	parser.AddErrorListener(r.(antlr.ErrorListener))
 	ctx := parser.Root()
 	if r.HasErrors() {
-		errs := r.GetErrors()
-		for _, err := range errs {
-			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
-		}
-        os.Exit(1)
+		// errs := r.GetErrors()
+		// for _, err := range errs {
+		// 	fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		// }
+		fmt.Fprintf(os.Stderr, "%s", r.String())
+		os.Exit(ParsingError)
 	}
 	s := ctx.ToStringTree(nil, parser)
 	fmt.Printf("s: %v\n", s)

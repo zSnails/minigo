@@ -2,14 +2,29 @@ package reporter
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
 )
+
+type Reporter interface {
+	fmt.Stringer
+	GetErrors() []error
+	HasErrors() bool
+}
 
 type MinigoReporter struct {
 	antlr.DefaultErrorListener
 	errors   []error
 	fileName string
+}
+
+func (m *MinigoReporter) String() string {
+	sb := strings.Builder{}
+	for _, err := range m.errors {
+		fmt.Fprintf(&sb, "%s\n", err.Error())
+	}
+	return sb.String()
 }
 
 func (m *MinigoReporter) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line int, column int, msg string, e antlr.RecognitionException) {
