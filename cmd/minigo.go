@@ -10,7 +10,12 @@ import (
 )
 
 func main() {
-	fileStream, err := antlr.NewFileStream("tests/fuap.minigo")
+	if len(os.Args) < 2 {
+		fmt.Fprintf(os.Stderr, "usage: %s <file>\n", os.Args[0])
+		os.Exit(1)
+	}
+
+	fileStream, err := antlr.NewFileStream(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
