@@ -31,7 +31,7 @@ func main() {
 		for _, err := range errs {
 			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		}
-		return
+        os.Exit(1)
 	}
 	s := ctx.ToStringTree(nil, parser)
 	fmt.Printf("s: %v\n", s)
