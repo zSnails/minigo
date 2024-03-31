@@ -2,6 +2,8 @@ package main;
 
 // hola
 
+func opa()
+
 func main() {
     println("Hola me llamo zSnails");
     saludado := saludo("Aaron");
