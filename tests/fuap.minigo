@@ -1,12 +1,5 @@
 package main;
 
-// hola
-
-func main() {
-    println("Hola me llamo zSnails");
-    saludado := saludo("Aaron");
-};
-
-func saludo(nombre string) string {
-    return fmt.Sprintf("Hola %s\n", nombre);
+func saludo(edad, anos int, nombre string) {
+    print("hola");
 };
