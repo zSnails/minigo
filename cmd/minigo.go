@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/antlr4-go/antlr/v4"
+	"github.com/zSnails/minigo/backend/qbe"
 	"github.com/zSnails/minigo/grammar"
 )
 
@@ -15,7 +16,8 @@ func main() {
 	lexer := grammar.NewMinigoLexer(fileStream)
 	cts := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	parser := grammar.NewMinigoParser(cts)
-	ctx := parser.Root()
-	s := ctx.ToStringTree(nil, parser)
-	fmt.Printf("s: %v\n", s)
+	root := parser.Root()
+	var visitor qbe.QBEBackendVisitor
+	visitor.VisitRoot(root.(*grammar.RootContext))
+    fmt.Printf("%s\n", visitor.Builder.String())
 }
