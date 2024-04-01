@@ -171,6 +171,7 @@ expressionSwitchCase: CASE expressionList
 // interpreted_string_lit = `"` { unicode_value | byte_value } `"` .
 
 COMMENT: '//' ~('\n'|'\r')* '\r'? '\n' -> skip;
+MULTILINE_COMMENT: '/*'.*?'*/' -> skip;
 LEFTPARENTHESIS: '(';
 RIGHTPARENTHESIS: ')';
 DEFAULT: 'default';
