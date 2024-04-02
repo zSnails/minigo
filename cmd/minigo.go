@@ -53,10 +53,6 @@ func main() {
 	parser.AddErrorListener(r.(antlr.ErrorListener))
 	ctx := parser.Root()
 	if r.HasErrors() {
-		// errs := r.GetErrors()
-		// for _, err := range errs {
-		// 	fmt.Fprintf(os.Stderr, "%s\n", err.Error())
-		// }
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		os.Exit(ParsingError)
 	}
