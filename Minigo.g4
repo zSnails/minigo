@@ -32,7 +32,7 @@ singleTypeDecl: IDENTIFIER declType
 funcDecl: funcFrontDecl block SEMICOLON
         ;
 
-funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls? RIGHTPARENTHESIS declType*
+funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls? RIGHTPARENTHESIS declType?
              ;
 
 funcArgsDecls: singleVarDeclNoExps (COMMA singleVarDeclNoExps)*
