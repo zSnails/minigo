@@ -1,0 +1,14 @@
+// The following code MUST result in an error being shown
+package main;
+
+type Person struct {
+    Name string;
+    Age string;
+};
+
+func NewPerson(name string, age int) *Person {
+    return &Person{
+        Name: name,
+        Age: age,
+    };
+};

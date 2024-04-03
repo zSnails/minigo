@@ -1,0 +1,5 @@
+// The following error should produce an error when ran through the parser.
+package main;
+
+// In MiniGo there is no slice initialization shorthand;
+var ages = []int{20, 19, 18};

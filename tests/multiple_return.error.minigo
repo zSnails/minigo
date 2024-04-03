@@ -1,0 +1,18 @@
+// The following code must result in an error when run.
+package main;
+
+func divide(numerator, denominator int) (int, string) {
+    if denominator == 0 {
+        return 0, "can't divide by zero";
+    };
+
+    return numerator / denominator, "";
+};
+
+func main() {
+    result, err := divide(3, 0);
+    if err != "" {
+        panic(err);
+    };
+    println(result);
+};

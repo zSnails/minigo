@@ -1,0 +1,8 @@
+// The following code MUST result in an error being shown
+package main;
+
+func saludarATodos(nombres ...string) {
+    for idx := 0; idx < len(nombres); idx++ {
+        println("Hola ", nombres[idx]);
+    };
+};

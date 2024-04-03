@@ -1,0 +1,10 @@
+// This code should produce an error when ran through the parser.
+package main;
+
+type Person struct {
+    Name string;
+};
+
+func (p *Person) Greet() string {
+    return "Hello my name is " + p.Name;
+};

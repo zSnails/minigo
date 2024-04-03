@@ -1,0 +1,8 @@
+// The following code should not yield an error.
+package /* test */ main;
+
+func /* test */ main /* test*/ () /* /**/ {
+    println(/* /* some test with a 'nested' "helo" println("another test") comment */"test");
+} /* some test */;
+
+// func saludo

@@ -1,0 +1,12 @@
+// The following code must not produce an error when ran.
+package main;
+
+var name string;
+var age, exs int = 0;
+var yearBorn, currentYear = 2024;
+
+var (
+    mine = true;
+    hers bool = false;
+    ours, theirs bool;
+);

@@ -1,0 +1,18 @@
+// This code should not produce an error when ran.
+package main;
+
+type Person struct {
+    Name string;
+    Age uint8;
+    YearBorn uint16;
+};
+
+type Animal struct {
+    Hungry bool;
+    Health uint8;
+};
+
+// In MiniGo there is no struct embedding.
+type Dog struct {
+    Animal Animal;
+};

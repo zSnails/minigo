@@ -1,0 +1,15 @@
+// The following code should not produce an error when ran through the parser.
+package main;
+
+func main() {
+    var ages []int;
+    ages = append(ages, 1);
+    ages = append(ages, 2);
+    ages = append(ages, 3);
+    ages = append(ages, 4);
+    ages = append(ages, 5);
+
+    for idx := 0; idx < len(ages); idx++ {
+        println(ages[idx]);
+    };
+};
