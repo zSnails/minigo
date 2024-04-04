@@ -139,7 +139,7 @@ assignmentStatement: expressionList EQUALS expressionList
                    ;
 
 ifStatement: IF expression block
-           | IF expression block ELSE ifStatement
+           | IF expression block ELSE (block|ifStatement)
            | IF simpleStatement SEMICOLON expression block
            | IF simpleStatement SEMICOLON expression block ELSE ifStatement
            | IF simpleStatement SEMICOLON expression block ELSE block

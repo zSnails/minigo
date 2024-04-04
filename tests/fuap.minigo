@@ -1,0 +1,15 @@
+package main;
+
+// hola
+
+func main() {
+    println("Hola me llamo zSnails");
+    saludado, err := saludo("Aaron");
+    if err != nil {
+        panic(err);
+    };
+};
+
+func saludo(nombre string) string {
+    return fmt.Sprintf("Hola %s\n", nombre);
+};
