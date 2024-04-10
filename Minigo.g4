@@ -10,17 +10,17 @@ variableDecl: VAR singleVarDecl SEMICOLON                                   #var
             ;
 innerVarDecls: singleVarDecl SEMICOLON (singleVarDecl SEMICOLON)*;
 
-singleVarDecl: identifierList declType EQUALS expressionList
-             | identifierList EQUALS expressionList
-             | singleVarDeclNoExps
+singleVarDecl: identifierList declType EQUALS expressionList #typedVarDecl
+             | identifierList EQUALS expressionList #untypedVarDecl
+             | singleVarDeclNoExps #singleVarDeclsNoExpsDecl
              ;
 
 singleVarDeclNoExps: identifierList declType
                    ;
 
-typeDecl: TYPE singleTypeDecl SEMICOLON
-        | TYPE LEFTPARENTHESIS innerTypeDecls RIGHTPARENTHESIS SEMICOLON
-        | TYPE LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON
+typeDecl: TYPE singleTypeDecl SEMICOLON #typeDeclaration
+        | TYPE LEFTPARENTHESIS innerTypeDecls RIGHTPARENTHESIS SEMICOLON #multiTypeDeclaration
+        | TYPE LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON #emptyTypeDeclaration
         ;
 
 innerTypeDecls: singleTypeDecl SEMICOLON (singleTypeDecl SEMICOLON)*
