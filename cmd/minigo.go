@@ -8,6 +8,7 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/zSnails/minigo/grammar"
 	"github.com/zSnails/minigo/reporter"
+	checker "github.com/zSnails/minigo/type-checker"
 )
 
 const (
@@ -56,6 +57,16 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		os.Exit(ParsingError)
 	}
+
+	// Type checking stage
 	s := ctx.ToStringTree(nil, parser)
 	fmt.Printf("s: %v\n", s)
+
+	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName())
+	typeChecker.Visit(ctx)
+	if typeChecker.HasErrors() {
+		fmt.Fprintf(os.Stderr, "%s", typeChecker)
+	}
+    fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
+
 }
