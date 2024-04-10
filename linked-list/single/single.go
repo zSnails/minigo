@@ -56,5 +56,8 @@ func NewNode[T any](value T) *Node[T] {
 }
 
 func NewLinkedList[T any]() *LinkedList[T] {
-	return &LinkedList[T]{}
+	return &LinkedList[T]{
+		Len:  0,
+		Head: nil,
+	}
 }
