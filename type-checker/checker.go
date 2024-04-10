@@ -41,7 +41,7 @@ type TypeChecker struct {
 
 type Primitive struct {
 	Name    string
-	Members []*symboltable.Type
+	Members []*symboltable.Symbol
 }
 
 // GetMembers implements symboltable.Type.
