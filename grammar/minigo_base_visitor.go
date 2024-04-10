@@ -1,10 +1,13 @@
 // Code generated from Minigo.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package grammar // Minigo
-import "github.com/antlr4-go/antlr/v4"
+import (
+	"github.com/antlr4-go/antlr/v4"
+)
 
 type BaseMinigoVisitor struct {
 	*antlr.BaseParseTreeVisitor
+    // *parsetree.BaseParseTreeVisitor
 }
 
 func (v *BaseMinigoVisitor) VisitRoot(ctx *RootContext) interface{} {
@@ -31,7 +34,15 @@ func (v *BaseMinigoVisitor) VisitInnerVarDecls(ctx *InnerVarDeclsContext) interf
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitSingleVarDecl(ctx *SingleVarDeclContext) interface{} {
+func (v *BaseMinigoVisitor) VisitTypedVarDecl(ctx *TypedVarDeclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitUntypedVarDecl(ctx *UntypedVarDeclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitSingleVarDeclsNoExpsDecl(ctx *SingleVarDeclsNoExpsDeclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -39,7 +50,15 @@ func (v *BaseMinigoVisitor) VisitSingleVarDeclNoExps(ctx *SingleVarDeclNoExpsCon
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitTypeDecl(ctx *TypeDeclContext) interface{} {
+func (v *BaseMinigoVisitor) VisitTypeDeclaration(ctx *TypeDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitMultiTypeDeclaration(ctx *MultiTypeDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitEmptyTypeDeclaration(ctx *EmptyTypeDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -25,14 +25,26 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#innerVarDecls.
 	VisitInnerVarDecls(ctx *InnerVarDeclsContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#singleVarDecl.
-	VisitSingleVarDecl(ctx *SingleVarDeclContext) interface{}
+	// Visit a parse tree produced by MinigoParser#typedVarDecl.
+	VisitTypedVarDecl(ctx *TypedVarDeclContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#untypedVarDecl.
+	VisitUntypedVarDecl(ctx *UntypedVarDeclContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#singleVarDeclsNoExpsDecl.
+	VisitSingleVarDeclsNoExpsDecl(ctx *SingleVarDeclsNoExpsDeclContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#singleVarDeclNoExps.
 	VisitSingleVarDeclNoExps(ctx *SingleVarDeclNoExpsContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#typeDecl.
-	VisitTypeDecl(ctx *TypeDeclContext) interface{}
+	// Visit a parse tree produced by MinigoParser#typeDeclaration.
+	VisitTypeDeclaration(ctx *TypeDeclarationContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#multiTypeDeclaration.
+	VisitMultiTypeDeclaration(ctx *MultiTypeDeclarationContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#emptyTypeDeclaration.
+	VisitEmptyTypeDeclaration(ctx *EmptyTypeDeclarationContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#innerTypeDecls.
 	VisitInnerTypeDecls(ctx *InnerTypeDeclsContext) interface{}

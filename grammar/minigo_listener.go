@@ -25,14 +25,26 @@ type MinigoListener interface {
 	// EnterInnerVarDecls is called when entering the innerVarDecls production.
 	EnterInnerVarDecls(c *InnerVarDeclsContext)
 
-	// EnterSingleVarDecl is called when entering the singleVarDecl production.
-	EnterSingleVarDecl(c *SingleVarDeclContext)
+	// EnterTypedVarDecl is called when entering the typedVarDecl production.
+	EnterTypedVarDecl(c *TypedVarDeclContext)
+
+	// EnterUntypedVarDecl is called when entering the untypedVarDecl production.
+	EnterUntypedVarDecl(c *UntypedVarDeclContext)
+
+	// EnterSingleVarDeclsNoExpsDecl is called when entering the singleVarDeclsNoExpsDecl production.
+	EnterSingleVarDeclsNoExpsDecl(c *SingleVarDeclsNoExpsDeclContext)
 
 	// EnterSingleVarDeclNoExps is called when entering the singleVarDeclNoExps production.
 	EnterSingleVarDeclNoExps(c *SingleVarDeclNoExpsContext)
 
-	// EnterTypeDecl is called when entering the typeDecl production.
-	EnterTypeDecl(c *TypeDeclContext)
+	// EnterTypeDeclaration is called when entering the typeDeclaration production.
+	EnterTypeDeclaration(c *TypeDeclarationContext)
+
+	// EnterMultiTypeDeclaration is called when entering the multiTypeDeclaration production.
+	EnterMultiTypeDeclaration(c *MultiTypeDeclarationContext)
+
+	// EnterEmptyTypeDeclaration is called when entering the emptyTypeDeclaration production.
+	EnterEmptyTypeDeclaration(c *EmptyTypeDeclarationContext)
 
 	// EnterInnerTypeDecls is called when entering the innerTypeDecls production.
 	EnterInnerTypeDecls(c *InnerTypeDeclsContext)
@@ -184,14 +196,26 @@ type MinigoListener interface {
 	// ExitInnerVarDecls is called when exiting the innerVarDecls production.
 	ExitInnerVarDecls(c *InnerVarDeclsContext)
 
-	// ExitSingleVarDecl is called when exiting the singleVarDecl production.
-	ExitSingleVarDecl(c *SingleVarDeclContext)
+	// ExitTypedVarDecl is called when exiting the typedVarDecl production.
+	ExitTypedVarDecl(c *TypedVarDeclContext)
+
+	// ExitUntypedVarDecl is called when exiting the untypedVarDecl production.
+	ExitUntypedVarDecl(c *UntypedVarDeclContext)
+
+	// ExitSingleVarDeclsNoExpsDecl is called when exiting the singleVarDeclsNoExpsDecl production.
+	ExitSingleVarDeclsNoExpsDecl(c *SingleVarDeclsNoExpsDeclContext)
 
 	// ExitSingleVarDeclNoExps is called when exiting the singleVarDeclNoExps production.
 	ExitSingleVarDeclNoExps(c *SingleVarDeclNoExpsContext)
 
-	// ExitTypeDecl is called when exiting the typeDecl production.
-	ExitTypeDecl(c *TypeDeclContext)
+	// ExitTypeDeclaration is called when exiting the typeDeclaration production.
+	ExitTypeDeclaration(c *TypeDeclarationContext)
+
+	// ExitMultiTypeDeclaration is called when exiting the multiTypeDeclaration production.
+	ExitMultiTypeDeclaration(c *MultiTypeDeclarationContext)
+
+	// ExitEmptyTypeDeclaration is called when exiting the emptyTypeDeclaration production.
+	ExitEmptyTypeDeclaration(c *EmptyTypeDeclarationContext)
 
 	// ExitInnerTypeDecls is called when exiting the innerTypeDecls production.
 	ExitInnerTypeDecls(c *InnerTypeDeclsContext)

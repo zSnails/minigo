@@ -1436,14 +1436,6 @@ type ISingleVarDeclContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
-
-	// Getter signatures
-	IdentifierList() IIdentifierListContext
-	DeclType() IDeclTypeContext
-	EQUALS() antlr.TerminalNode
-	ExpressionList() IExpressionListContext
-	SingleVarDeclNoExps() ISingleVarDeclNoExpsContext
-
 	// IsSingleVarDeclContext differentiates from other interfaces.
 	IsSingleVarDeclContext()
 }
@@ -1480,7 +1472,37 @@ func NewSingleVarDeclContext(parser antlr.Parser, parent antlr.ParserRuleContext
 
 func (s *SingleVarDeclContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *SingleVarDeclContext) IdentifierList() IIdentifierListContext {
+func (s *SingleVarDeclContext) CopyAll(ctx *SingleVarDeclContext) {
+	s.CopyFrom(&ctx.BaseParserRuleContext)
+}
+
+func (s *SingleVarDeclContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *SingleVarDeclContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+type TypedVarDeclContext struct {
+	SingleVarDeclContext
+}
+
+func NewTypedVarDeclContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *TypedVarDeclContext {
+	var p = new(TypedVarDeclContext)
+
+	InitEmptySingleVarDeclContext(&p.SingleVarDeclContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*SingleVarDeclContext))
+
+	return p
+}
+
+func (s *TypedVarDeclContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *TypedVarDeclContext) IdentifierList() IIdentifierListContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IIdentifierListContext); ok {
@@ -1496,7 +1518,7 @@ func (s *SingleVarDeclContext) IdentifierList() IIdentifierListContext {
 	return t.(IIdentifierListContext)
 }
 
-func (s *SingleVarDeclContext) DeclType() IDeclTypeContext {
+func (s *TypedVarDeclContext) DeclType() IDeclTypeContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IDeclTypeContext); ok {
@@ -1512,11 +1534,11 @@ func (s *SingleVarDeclContext) DeclType() IDeclTypeContext {
 	return t.(IDeclTypeContext)
 }
 
-func (s *SingleVarDeclContext) EQUALS() antlr.TerminalNode {
+func (s *TypedVarDeclContext) EQUALS() antlr.TerminalNode {
 	return s.GetToken(MinigoParserEQUALS, 0)
 }
 
-func (s *SingleVarDeclContext) ExpressionList() IExpressionListContext {
+func (s *TypedVarDeclContext) ExpressionList() IExpressionListContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IExpressionListContext); ok {
@@ -1532,7 +1554,47 @@ func (s *SingleVarDeclContext) ExpressionList() IExpressionListContext {
 	return t.(IExpressionListContext)
 }
 
-func (s *SingleVarDeclContext) SingleVarDeclNoExps() ISingleVarDeclNoExpsContext {
+func (s *TypedVarDeclContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterTypedVarDecl(s)
+	}
+}
+
+func (s *TypedVarDeclContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitTypedVarDecl(s)
+	}
+}
+
+func (s *TypedVarDeclContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitTypedVarDecl(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type SingleVarDeclsNoExpsDeclContext struct {
+	SingleVarDeclContext
+}
+
+func NewSingleVarDeclsNoExpsDeclContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *SingleVarDeclsNoExpsDeclContext {
+	var p = new(SingleVarDeclsNoExpsDeclContext)
+
+	InitEmptySingleVarDeclContext(&p.SingleVarDeclContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*SingleVarDeclContext))
+
+	return p
+}
+
+func (s *SingleVarDeclsNoExpsDeclContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *SingleVarDeclsNoExpsDeclContext) SingleVarDeclNoExps() ISingleVarDeclNoExpsContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(ISingleVarDeclNoExpsContext); ok {
@@ -1548,30 +1610,98 @@ func (s *SingleVarDeclContext) SingleVarDeclNoExps() ISingleVarDeclNoExpsContext
 	return t.(ISingleVarDeclNoExpsContext)
 }
 
-func (s *SingleVarDeclContext) GetRuleContext() antlr.RuleContext {
+func (s *SingleVarDeclsNoExpsDeclContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterSingleVarDeclsNoExpsDecl(s)
+	}
+}
+
+func (s *SingleVarDeclsNoExpsDeclContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitSingleVarDeclsNoExpsDecl(s)
+	}
+}
+
+func (s *SingleVarDeclsNoExpsDeclContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitSingleVarDeclsNoExpsDecl(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type UntypedVarDeclContext struct {
+	SingleVarDeclContext
+}
+
+func NewUntypedVarDeclContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *UntypedVarDeclContext {
+	var p = new(UntypedVarDeclContext)
+
+	InitEmptySingleVarDeclContext(&p.SingleVarDeclContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*SingleVarDeclContext))
+
+	return p
+}
+
+func (s *UntypedVarDeclContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *SingleVarDeclContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
+func (s *UntypedVarDeclContext) IdentifierList() IIdentifierListContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IIdentifierListContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IIdentifierListContext)
 }
 
-func (s *SingleVarDeclContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *UntypedVarDeclContext) EQUALS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserEQUALS, 0)
+}
+
+func (s *UntypedVarDeclContext) ExpressionList() IExpressionListContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExpressionListContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionListContext)
+}
+
+func (s *UntypedVarDeclContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.EnterSingleVarDecl(s)
+		listenerT.EnterUntypedVarDecl(s)
 	}
 }
 
-func (s *SingleVarDeclContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *UntypedVarDeclContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.ExitSingleVarDecl(s)
+		listenerT.ExitUntypedVarDecl(s)
 	}
 }
 
-func (s *SingleVarDeclContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *UntypedVarDeclContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case MinigoVisitor:
-		return t.VisitSingleVarDecl(s)
+		return t.VisitUntypedVarDecl(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -1589,6 +1719,7 @@ func (p *MinigoParser) SingleVarDecl() (localctx ISingleVarDeclContext) {
 
 	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 4, p.GetParserRuleContext()) {
 	case 1:
+		localctx = NewTypedVarDeclContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(119)
@@ -1612,6 +1743,7 @@ func (p *MinigoParser) SingleVarDecl() (localctx ISingleVarDeclContext) {
 		}
 
 	case 2:
+		localctx = NewUntypedVarDeclContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(124)
@@ -1631,6 +1763,7 @@ func (p *MinigoParser) SingleVarDecl() (localctx ISingleVarDeclContext) {
 		}
 
 	case 3:
+		localctx = NewSingleVarDeclsNoExpsDeclContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(128)
@@ -1795,15 +1928,6 @@ type ITypeDeclContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
-
-	// Getter signatures
-	TYPE() antlr.TerminalNode
-	SingleTypeDecl() ISingleTypeDeclContext
-	SEMICOLON() antlr.TerminalNode
-	LEFTPARENTHESIS() antlr.TerminalNode
-	InnerTypeDecls() IInnerTypeDeclsContext
-	RIGHTPARENTHESIS() antlr.TerminalNode
-
 	// IsTypeDeclContext differentiates from other interfaces.
 	IsTypeDeclContext()
 }
@@ -1840,11 +1964,41 @@ func NewTypeDeclContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 
 func (s *TypeDeclContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *TypeDeclContext) TYPE() antlr.TerminalNode {
+func (s *TypeDeclContext) CopyAll(ctx *TypeDeclContext) {
+	s.CopyFrom(&ctx.BaseParserRuleContext)
+}
+
+func (s *TypeDeclContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *TypeDeclContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+type TypeDeclarationContext struct {
+	TypeDeclContext
+}
+
+func NewTypeDeclarationContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *TypeDeclarationContext {
+	var p = new(TypeDeclarationContext)
+
+	InitEmptyTypeDeclContext(&p.TypeDeclContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*TypeDeclContext))
+
+	return p
+}
+
+func (s *TypeDeclarationContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *TypeDeclarationContext) TYPE() antlr.TerminalNode {
 	return s.GetToken(MinigoParserTYPE, 0)
 }
 
-func (s *TypeDeclContext) SingleTypeDecl() ISingleTypeDeclContext {
+func (s *TypeDeclarationContext) SingleTypeDecl() ISingleTypeDeclContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(ISingleTypeDeclContext); ok {
@@ -1860,15 +2014,59 @@ func (s *TypeDeclContext) SingleTypeDecl() ISingleTypeDeclContext {
 	return t.(ISingleTypeDeclContext)
 }
 
-func (s *TypeDeclContext) SEMICOLON() antlr.TerminalNode {
+func (s *TypeDeclarationContext) SEMICOLON() antlr.TerminalNode {
 	return s.GetToken(MinigoParserSEMICOLON, 0)
 }
 
-func (s *TypeDeclContext) LEFTPARENTHESIS() antlr.TerminalNode {
+func (s *TypeDeclarationContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterTypeDeclaration(s)
+	}
+}
+
+func (s *TypeDeclarationContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitTypeDeclaration(s)
+	}
+}
+
+func (s *TypeDeclarationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitTypeDeclaration(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type MultiTypeDeclarationContext struct {
+	TypeDeclContext
+}
+
+func NewMultiTypeDeclarationContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *MultiTypeDeclarationContext {
+	var p = new(MultiTypeDeclarationContext)
+
+	InitEmptyTypeDeclContext(&p.TypeDeclContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*TypeDeclContext))
+
+	return p
+}
+
+func (s *MultiTypeDeclarationContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *MultiTypeDeclarationContext) TYPE() antlr.TerminalNode {
+	return s.GetToken(MinigoParserTYPE, 0)
+}
+
+func (s *MultiTypeDeclarationContext) LEFTPARENTHESIS() antlr.TerminalNode {
 	return s.GetToken(MinigoParserLEFTPARENTHESIS, 0)
 }
 
-func (s *TypeDeclContext) InnerTypeDecls() IInnerTypeDeclsContext {
+func (s *MultiTypeDeclarationContext) InnerTypeDecls() IInnerTypeDeclsContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IInnerTypeDeclsContext); ok {
@@ -1884,34 +2082,86 @@ func (s *TypeDeclContext) InnerTypeDecls() IInnerTypeDeclsContext {
 	return t.(IInnerTypeDeclsContext)
 }
 
-func (s *TypeDeclContext) RIGHTPARENTHESIS() antlr.TerminalNode {
+func (s *MultiTypeDeclarationContext) RIGHTPARENTHESIS() antlr.TerminalNode {
 	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
 }
 
-func (s *TypeDeclContext) GetRuleContext() antlr.RuleContext {
+func (s *MultiTypeDeclarationContext) SEMICOLON() antlr.TerminalNode {
+	return s.GetToken(MinigoParserSEMICOLON, 0)
+}
+
+func (s *MultiTypeDeclarationContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterMultiTypeDeclaration(s)
+	}
+}
+
+func (s *MultiTypeDeclarationContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitMultiTypeDeclaration(s)
+	}
+}
+
+func (s *MultiTypeDeclarationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitMultiTypeDeclaration(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type EmptyTypeDeclarationContext struct {
+	TypeDeclContext
+}
+
+func NewEmptyTypeDeclarationContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *EmptyTypeDeclarationContext {
+	var p = new(EmptyTypeDeclarationContext)
+
+	InitEmptyTypeDeclContext(&p.TypeDeclContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*TypeDeclContext))
+
+	return p
+}
+
+func (s *EmptyTypeDeclarationContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *TypeDeclContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
+func (s *EmptyTypeDeclarationContext) TYPE() antlr.TerminalNode {
+	return s.GetToken(MinigoParserTYPE, 0)
 }
 
-func (s *TypeDeclContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *EmptyTypeDeclarationContext) LEFTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserLEFTPARENTHESIS, 0)
+}
+
+func (s *EmptyTypeDeclarationContext) RIGHTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
+}
+
+func (s *EmptyTypeDeclarationContext) SEMICOLON() antlr.TerminalNode {
+	return s.GetToken(MinigoParserSEMICOLON, 0)
+}
+
+func (s *EmptyTypeDeclarationContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.EnterTypeDecl(s)
+		listenerT.EnterEmptyTypeDeclaration(s)
 	}
 }
 
-func (s *TypeDeclContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *EmptyTypeDeclarationContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.ExitTypeDecl(s)
+		listenerT.ExitEmptyTypeDeclaration(s)
 	}
 }
 
-func (s *TypeDeclContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *EmptyTypeDeclarationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case MinigoVisitor:
-		return t.VisitTypeDecl(s)
+		return t.VisitEmptyTypeDeclaration(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -1929,6 +2179,7 @@ func (p *MinigoParser) TypeDecl() (localctx ITypeDeclContext) {
 
 	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 5, p.GetParserRuleContext()) {
 	case 1:
+		localctx = NewTypeDeclarationContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(134)
@@ -1952,6 +2203,7 @@ func (p *MinigoParser) TypeDecl() (localctx ITypeDeclContext) {
 		}
 
 	case 2:
+		localctx = NewMultiTypeDeclarationContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(138)
@@ -1991,6 +2243,7 @@ func (p *MinigoParser) TypeDecl() (localctx ITypeDeclContext) {
 		}
 
 	case 3:
+		localctx = NewEmptyTypeDeclarationContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(144)

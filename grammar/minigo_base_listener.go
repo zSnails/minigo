@@ -56,11 +56,23 @@ func (s *BaseMinigoListener) EnterInnerVarDecls(ctx *InnerVarDeclsContext) {}
 // ExitInnerVarDecls is called when production innerVarDecls is exited.
 func (s *BaseMinigoListener) ExitInnerVarDecls(ctx *InnerVarDeclsContext) {}
 
-// EnterSingleVarDecl is called when production singleVarDecl is entered.
-func (s *BaseMinigoListener) EnterSingleVarDecl(ctx *SingleVarDeclContext) {}
+// EnterTypedVarDecl is called when production typedVarDecl is entered.
+func (s *BaseMinigoListener) EnterTypedVarDecl(ctx *TypedVarDeclContext) {}
 
-// ExitSingleVarDecl is called when production singleVarDecl is exited.
-func (s *BaseMinigoListener) ExitSingleVarDecl(ctx *SingleVarDeclContext) {}
+// ExitTypedVarDecl is called when production typedVarDecl is exited.
+func (s *BaseMinigoListener) ExitTypedVarDecl(ctx *TypedVarDeclContext) {}
+
+// EnterUntypedVarDecl is called when production untypedVarDecl is entered.
+func (s *BaseMinigoListener) EnterUntypedVarDecl(ctx *UntypedVarDeclContext) {}
+
+// ExitUntypedVarDecl is called when production untypedVarDecl is exited.
+func (s *BaseMinigoListener) ExitUntypedVarDecl(ctx *UntypedVarDeclContext) {}
+
+// EnterSingleVarDeclsNoExpsDecl is called when production singleVarDeclsNoExpsDecl is entered.
+func (s *BaseMinigoListener) EnterSingleVarDeclsNoExpsDecl(ctx *SingleVarDeclsNoExpsDeclContext) {}
+
+// ExitSingleVarDeclsNoExpsDecl is called when production singleVarDeclsNoExpsDecl is exited.
+func (s *BaseMinigoListener) ExitSingleVarDeclsNoExpsDecl(ctx *SingleVarDeclsNoExpsDeclContext) {}
 
 // EnterSingleVarDeclNoExps is called when production singleVarDeclNoExps is entered.
 func (s *BaseMinigoListener) EnterSingleVarDeclNoExps(ctx *SingleVarDeclNoExpsContext) {}
@@ -68,11 +80,23 @@ func (s *BaseMinigoListener) EnterSingleVarDeclNoExps(ctx *SingleVarDeclNoExpsCo
 // ExitSingleVarDeclNoExps is called when production singleVarDeclNoExps is exited.
 func (s *BaseMinigoListener) ExitSingleVarDeclNoExps(ctx *SingleVarDeclNoExpsContext) {}
 
-// EnterTypeDecl is called when production typeDecl is entered.
-func (s *BaseMinigoListener) EnterTypeDecl(ctx *TypeDeclContext) {}
+// EnterTypeDeclaration is called when production typeDeclaration is entered.
+func (s *BaseMinigoListener) EnterTypeDeclaration(ctx *TypeDeclarationContext) {}
 
-// ExitTypeDecl is called when production typeDecl is exited.
-func (s *BaseMinigoListener) ExitTypeDecl(ctx *TypeDeclContext) {}
+// ExitTypeDeclaration is called when production typeDeclaration is exited.
+func (s *BaseMinigoListener) ExitTypeDeclaration(ctx *TypeDeclarationContext) {}
+
+// EnterMultiTypeDeclaration is called when production multiTypeDeclaration is entered.
+func (s *BaseMinigoListener) EnterMultiTypeDeclaration(ctx *MultiTypeDeclarationContext) {}
+
+// ExitMultiTypeDeclaration is called when production multiTypeDeclaration is exited.
+func (s *BaseMinigoListener) ExitMultiTypeDeclaration(ctx *MultiTypeDeclarationContext) {}
+
+// EnterEmptyTypeDeclaration is called when production emptyTypeDeclaration is entered.
+func (s *BaseMinigoListener) EnterEmptyTypeDeclaration(ctx *EmptyTypeDeclarationContext) {}
+
+// ExitEmptyTypeDeclaration is called when production emptyTypeDeclaration is exited.
+func (s *BaseMinigoListener) ExitEmptyTypeDeclaration(ctx *EmptyTypeDeclarationContext) {}
 
 // EnterInnerTypeDecls is called when production innerTypeDecls is entered.
 func (s *BaseMinigoListener) EnterInnerTypeDecls(ctx *InnerTypeDeclsContext) {}
