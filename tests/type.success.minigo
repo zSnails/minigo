@@ -1,0 +1,9 @@
+package main;
+
+
+func funcion() {
+    type Hola string;
+};
+
+type Nombre string;
+type Hola Nombre;
