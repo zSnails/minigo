@@ -59,12 +59,12 @@ structMemDecls: singleVarDeclNoExps SEMICOLON (singleVarDeclNoExps SEMICOLON)*
 identifierList: IDENTIFIER (COMMA IDENTIFIER)*
               ;
 
-expression: primaryExpression
-          | expression (TIMES | DIV | MOD | LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET | COMPARISON | NEGATION | LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | AND | OR) expression
-          | PLUS expression
-          | MINUS expression
-          | NOT expression
-          | CARET expression
+expression: primaryExpression #expressionPrimaryExpression
+          | left=expression (TIMES | DIV | MOD | LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET | COMPARISON | NEGATION | LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | AND | OR) right=expression #operationExpression
+          | PLUS expression #plusExpression
+          | MINUS expression #minusExpression
+          | NOT expression #notExpression
+          | CARET expression #caretExpression
           ;
 
 expressionList: expression (COMMA expression)*
@@ -84,11 +84,11 @@ operand: literal
        | LEFTPARENTHESIS expression RIGHTPARENTHESIS
        ;
 
-literal: INTLITERAL
-       | FLOATLITERAL
-       | RUNELITERAL
-       | RAWSTRINGLITERAL
-       | INTERPRETEDSTRINGLITERAL
+literal: INTLITERAL #intLiteral
+       | FLOATLITERAL #floatLiteral
+       | RUNELITERAL #runeLiteral
+       | RAWSTRINGLITERAL #rawStringLiteral
+       | INTERPRETEDSTRINGLITERAL #interpretedStringLiteral
        ;
 
 index: LEFTBRACKET expression RIGHTBRACKET
@@ -134,8 +134,8 @@ simpleStatement: expression (POSTINC | POSTDEC)?
                | expressionList WALRUS expressionList
                ;
 
-assignmentStatement: expressionList EQUALS expressionList
-                   | expression (IADD|IAND|ISUB|IOR|IMUL|IXOR|ILEFTSHIFT|IRIGHTSHIFT|IANDXOR|IMOD|IDIV) expression
+assignmentStatement: left=expressionList EQUALS right=expressionList #normalAssignment
+                   | left=expression (IADD|IAND|ISUB|IOR|IMUL|IXOR|ILEFTSHIFT|IRIGHTSHIFT|IANDXOR|IMOD|IDIV) right=expression #inPlaceAssignment
                    ;
 
 ifStatement: IF expression block
