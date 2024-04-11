@@ -79,8 +79,23 @@ type MinigoListener interface {
 	// EnterIdentifierList is called when entering the identifierList production.
 	EnterIdentifierList(c *IdentifierListContext)
 
-	// EnterExpression is called when entering the expression production.
-	EnterExpression(c *ExpressionContext)
+	// EnterMinusExpression is called when entering the minusExpression production.
+	EnterMinusExpression(c *MinusExpressionContext)
+
+	// EnterExpressionPrimaryExpression is called when entering the expressionPrimaryExpression production.
+	EnterExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
+
+	// EnterNotExpression is called when entering the notExpression production.
+	EnterNotExpression(c *NotExpressionContext)
+
+	// EnterCaretExpression is called when entering the caretExpression production.
+	EnterCaretExpression(c *CaretExpressionContext)
+
+	// EnterOperationExpression is called when entering the operationExpression production.
+	EnterOperationExpression(c *OperationExpressionContext)
+
+	// EnterPlusExpression is called when entering the plusExpression production.
+	EnterPlusExpression(c *PlusExpressionContext)
 
 	// EnterExpressionList is called when entering the expressionList production.
 	EnterExpressionList(c *ExpressionListContext)
@@ -91,8 +106,20 @@ type MinigoListener interface {
 	// EnterOperand is called when entering the operand production.
 	EnterOperand(c *OperandContext)
 
-	// EnterLiteral is called when entering the literal production.
-	EnterLiteral(c *LiteralContext)
+	// EnterIntLiteral is called when entering the intLiteral production.
+	EnterIntLiteral(c *IntLiteralContext)
+
+	// EnterFloatLiteral is called when entering the floatLiteral production.
+	EnterFloatLiteral(c *FloatLiteralContext)
+
+	// EnterRuneLiteral is called when entering the runeLiteral production.
+	EnterRuneLiteral(c *RuneLiteralContext)
+
+	// EnterRawStringLiteral is called when entering the rawStringLiteral production.
+	EnterRawStringLiteral(c *RawStringLiteralContext)
+
+	// EnterInterpretedStringLiteral is called when entering the interpretedStringLiteral production.
+	EnterInterpretedStringLiteral(c *InterpretedStringLiteralContext)
 
 	// EnterIndex is called when entering the index production.
 	EnterIndex(c *IndexContext)
@@ -157,8 +184,11 @@ type MinigoListener interface {
 	// EnterSimpleStatement is called when entering the simpleStatement production.
 	EnterSimpleStatement(c *SimpleStatementContext)
 
-	// EnterAssignmentStatement is called when entering the assignmentStatement production.
-	EnterAssignmentStatement(c *AssignmentStatementContext)
+	// EnterNormalAssignment is called when entering the normalAssignment production.
+	EnterNormalAssignment(c *NormalAssignmentContext)
+
+	// EnterInPlaceAssignment is called when entering the inPlaceAssignment production.
+	EnterInPlaceAssignment(c *InPlaceAssignmentContext)
 
 	// EnterIfStatement is called when entering the ifStatement production.
 	EnterIfStatement(c *IfStatementContext)
@@ -250,8 +280,23 @@ type MinigoListener interface {
 	// ExitIdentifierList is called when exiting the identifierList production.
 	ExitIdentifierList(c *IdentifierListContext)
 
-	// ExitExpression is called when exiting the expression production.
-	ExitExpression(c *ExpressionContext)
+	// ExitMinusExpression is called when exiting the minusExpression production.
+	ExitMinusExpression(c *MinusExpressionContext)
+
+	// ExitExpressionPrimaryExpression is called when exiting the expressionPrimaryExpression production.
+	ExitExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
+
+	// ExitNotExpression is called when exiting the notExpression production.
+	ExitNotExpression(c *NotExpressionContext)
+
+	// ExitCaretExpression is called when exiting the caretExpression production.
+	ExitCaretExpression(c *CaretExpressionContext)
+
+	// ExitOperationExpression is called when exiting the operationExpression production.
+	ExitOperationExpression(c *OperationExpressionContext)
+
+	// ExitPlusExpression is called when exiting the plusExpression production.
+	ExitPlusExpression(c *PlusExpressionContext)
 
 	// ExitExpressionList is called when exiting the expressionList production.
 	ExitExpressionList(c *ExpressionListContext)
@@ -262,8 +307,20 @@ type MinigoListener interface {
 	// ExitOperand is called when exiting the operand production.
 	ExitOperand(c *OperandContext)
 
-	// ExitLiteral is called when exiting the literal production.
-	ExitLiteral(c *LiteralContext)
+	// ExitIntLiteral is called when exiting the intLiteral production.
+	ExitIntLiteral(c *IntLiteralContext)
+
+	// ExitFloatLiteral is called when exiting the floatLiteral production.
+	ExitFloatLiteral(c *FloatLiteralContext)
+
+	// ExitRuneLiteral is called when exiting the runeLiteral production.
+	ExitRuneLiteral(c *RuneLiteralContext)
+
+	// ExitRawStringLiteral is called when exiting the rawStringLiteral production.
+	ExitRawStringLiteral(c *RawStringLiteralContext)
+
+	// ExitInterpretedStringLiteral is called when exiting the interpretedStringLiteral production.
+	ExitInterpretedStringLiteral(c *InterpretedStringLiteralContext)
 
 	// ExitIndex is called when exiting the index production.
 	ExitIndex(c *IndexContext)
@@ -328,8 +385,11 @@ type MinigoListener interface {
 	// ExitSimpleStatement is called when exiting the simpleStatement production.
 	ExitSimpleStatement(c *SimpleStatementContext)
 
-	// ExitAssignmentStatement is called when exiting the assignmentStatement production.
-	ExitAssignmentStatement(c *AssignmentStatementContext)
+	// ExitNormalAssignment is called when exiting the normalAssignment production.
+	ExitNormalAssignment(c *NormalAssignmentContext)
+
+	// ExitInPlaceAssignment is called when exiting the inPlaceAssignment production.
+	ExitInPlaceAssignment(c *InPlaceAssignmentContext)
 
 	// ExitIfStatement is called when exiting the ifStatement production.
 	ExitIfStatement(c *IfStatementContext)

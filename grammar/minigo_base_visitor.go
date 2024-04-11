@@ -1,13 +1,10 @@
 // Code generated from Minigo.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package grammar // Minigo
-import (
-	"github.com/antlr4-go/antlr/v4"
-)
+import "github.com/antlr4-go/antlr/v4"
 
 type BaseMinigoVisitor struct {
 	*antlr.BaseParseTreeVisitor
-    // *parsetree.BaseParseTreeVisitor
 }
 
 func (v *BaseMinigoVisitor) VisitRoot(ctx *RootContext) interface{} {
@@ -106,7 +103,27 @@ func (v *BaseMinigoVisitor) VisitIdentifierList(ctx *IdentifierListContext) inte
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitExpression(ctx *ExpressionContext) interface{} {
+func (v *BaseMinigoVisitor) VisitMinusExpression(ctx *MinusExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitNotExpression(ctx *NotExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitCaretExpression(ctx *CaretExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitOperationExpression(ctx *OperationExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitPlusExpression(ctx *PlusExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -122,7 +139,23 @@ func (v *BaseMinigoVisitor) VisitOperand(ctx *OperandContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitLiteral(ctx *LiteralContext) interface{} {
+func (v *BaseMinigoVisitor) VisitIntLiteral(ctx *IntLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitFloatLiteral(ctx *FloatLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitRuneLiteral(ctx *RuneLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitRawStringLiteral(ctx *RawStringLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitInterpretedStringLiteral(ctx *InterpretedStringLiteralContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -210,7 +243,11 @@ func (v *BaseMinigoVisitor) VisitSimpleStatement(ctx *SimpleStatementContext) in
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitAssignmentStatement(ctx *AssignmentStatementContext) interface{} {
+func (v *BaseMinigoVisitor) VisitNormalAssignment(ctx *NormalAssignmentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitInPlaceAssignment(ctx *InPlaceAssignmentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

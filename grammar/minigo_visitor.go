@@ -79,8 +79,23 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#identifierList.
 	VisitIdentifierList(ctx *IdentifierListContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#expression.
-	VisitExpression(ctx *ExpressionContext) interface{}
+	// Visit a parse tree produced by MinigoParser#minusExpression.
+	VisitMinusExpression(ctx *MinusExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#expressionPrimaryExpression.
+	VisitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#notExpression.
+	VisitNotExpression(ctx *NotExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#caretExpression.
+	VisitCaretExpression(ctx *CaretExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#operationExpression.
+	VisitOperationExpression(ctx *OperationExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#plusExpression.
+	VisitPlusExpression(ctx *PlusExpressionContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#expressionList.
 	VisitExpressionList(ctx *ExpressionListContext) interface{}
@@ -91,8 +106,20 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#operand.
 	VisitOperand(ctx *OperandContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#literal.
-	VisitLiteral(ctx *LiteralContext) interface{}
+	// Visit a parse tree produced by MinigoParser#intLiteral.
+	VisitIntLiteral(ctx *IntLiteralContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#floatLiteral.
+	VisitFloatLiteral(ctx *FloatLiteralContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#runeLiteral.
+	VisitRuneLiteral(ctx *RuneLiteralContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#rawStringLiteral.
+	VisitRawStringLiteral(ctx *RawStringLiteralContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#interpretedStringLiteral.
+	VisitInterpretedStringLiteral(ctx *InterpretedStringLiteralContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#index.
 	VisitIndex(ctx *IndexContext) interface{}
@@ -157,8 +184,11 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#simpleStatement.
 	VisitSimpleStatement(ctx *SimpleStatementContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#assignmentStatement.
-	VisitAssignmentStatement(ctx *AssignmentStatementContext) interface{}
+	// Visit a parse tree produced by MinigoParser#normalAssignment.
+	VisitNormalAssignment(ctx *NormalAssignmentContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#inPlaceAssignment.
+	VisitInPlaceAssignment(ctx *InPlaceAssignmentContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#ifStatement.
 	VisitIfStatement(ctx *IfStatementContext) interface{}

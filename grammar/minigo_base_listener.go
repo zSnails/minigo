@@ -164,11 +164,43 @@ func (s *BaseMinigoListener) EnterIdentifierList(ctx *IdentifierListContext) {}
 // ExitIdentifierList is called when production identifierList is exited.
 func (s *BaseMinigoListener) ExitIdentifierList(ctx *IdentifierListContext) {}
 
-// EnterExpression is called when production expression is entered.
-func (s *BaseMinigoListener) EnterExpression(ctx *ExpressionContext) {}
+// EnterMinusExpression is called when production minusExpression is entered.
+func (s *BaseMinigoListener) EnterMinusExpression(ctx *MinusExpressionContext) {}
 
-// ExitExpression is called when production expression is exited.
-func (s *BaseMinigoListener) ExitExpression(ctx *ExpressionContext) {}
+// ExitMinusExpression is called when production minusExpression is exited.
+func (s *BaseMinigoListener) ExitMinusExpression(ctx *MinusExpressionContext) {}
+
+// EnterExpressionPrimaryExpression is called when production expressionPrimaryExpression is entered.
+func (s *BaseMinigoListener) EnterExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) {
+}
+
+// ExitExpressionPrimaryExpression is called when production expressionPrimaryExpression is exited.
+func (s *BaseMinigoListener) ExitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) {
+}
+
+// EnterNotExpression is called when production notExpression is entered.
+func (s *BaseMinigoListener) EnterNotExpression(ctx *NotExpressionContext) {}
+
+// ExitNotExpression is called when production notExpression is exited.
+func (s *BaseMinigoListener) ExitNotExpression(ctx *NotExpressionContext) {}
+
+// EnterCaretExpression is called when production caretExpression is entered.
+func (s *BaseMinigoListener) EnterCaretExpression(ctx *CaretExpressionContext) {}
+
+// ExitCaretExpression is called when production caretExpression is exited.
+func (s *BaseMinigoListener) ExitCaretExpression(ctx *CaretExpressionContext) {}
+
+// EnterOperationExpression is called when production operationExpression is entered.
+func (s *BaseMinigoListener) EnterOperationExpression(ctx *OperationExpressionContext) {}
+
+// ExitOperationExpression is called when production operationExpression is exited.
+func (s *BaseMinigoListener) ExitOperationExpression(ctx *OperationExpressionContext) {}
+
+// EnterPlusExpression is called when production plusExpression is entered.
+func (s *BaseMinigoListener) EnterPlusExpression(ctx *PlusExpressionContext) {}
+
+// ExitPlusExpression is called when production plusExpression is exited.
+func (s *BaseMinigoListener) ExitPlusExpression(ctx *PlusExpressionContext) {}
 
 // EnterExpressionList is called when production expressionList is entered.
 func (s *BaseMinigoListener) EnterExpressionList(ctx *ExpressionListContext) {}
@@ -188,11 +220,35 @@ func (s *BaseMinigoListener) EnterOperand(ctx *OperandContext) {}
 // ExitOperand is called when production operand is exited.
 func (s *BaseMinigoListener) ExitOperand(ctx *OperandContext) {}
 
-// EnterLiteral is called when production literal is entered.
-func (s *BaseMinigoListener) EnterLiteral(ctx *LiteralContext) {}
+// EnterIntLiteral is called when production intLiteral is entered.
+func (s *BaseMinigoListener) EnterIntLiteral(ctx *IntLiteralContext) {}
 
-// ExitLiteral is called when production literal is exited.
-func (s *BaseMinigoListener) ExitLiteral(ctx *LiteralContext) {}
+// ExitIntLiteral is called when production intLiteral is exited.
+func (s *BaseMinigoListener) ExitIntLiteral(ctx *IntLiteralContext) {}
+
+// EnterFloatLiteral is called when production floatLiteral is entered.
+func (s *BaseMinigoListener) EnterFloatLiteral(ctx *FloatLiteralContext) {}
+
+// ExitFloatLiteral is called when production floatLiteral is exited.
+func (s *BaseMinigoListener) ExitFloatLiteral(ctx *FloatLiteralContext) {}
+
+// EnterRuneLiteral is called when production runeLiteral is entered.
+func (s *BaseMinigoListener) EnterRuneLiteral(ctx *RuneLiteralContext) {}
+
+// ExitRuneLiteral is called when production runeLiteral is exited.
+func (s *BaseMinigoListener) ExitRuneLiteral(ctx *RuneLiteralContext) {}
+
+// EnterRawStringLiteral is called when production rawStringLiteral is entered.
+func (s *BaseMinigoListener) EnterRawStringLiteral(ctx *RawStringLiteralContext) {}
+
+// ExitRawStringLiteral is called when production rawStringLiteral is exited.
+func (s *BaseMinigoListener) ExitRawStringLiteral(ctx *RawStringLiteralContext) {}
+
+// EnterInterpretedStringLiteral is called when production interpretedStringLiteral is entered.
+func (s *BaseMinigoListener) EnterInterpretedStringLiteral(ctx *InterpretedStringLiteralContext) {}
+
+// ExitInterpretedStringLiteral is called when production interpretedStringLiteral is exited.
+func (s *BaseMinigoListener) ExitInterpretedStringLiteral(ctx *InterpretedStringLiteralContext) {}
 
 // EnterIndex is called when production index is entered.
 func (s *BaseMinigoListener) EnterIndex(ctx *IndexContext) {}
@@ -320,11 +376,17 @@ func (s *BaseMinigoListener) EnterSimpleStatement(ctx *SimpleStatementContext) {
 // ExitSimpleStatement is called when production simpleStatement is exited.
 func (s *BaseMinigoListener) ExitSimpleStatement(ctx *SimpleStatementContext) {}
 
-// EnterAssignmentStatement is called when production assignmentStatement is entered.
-func (s *BaseMinigoListener) EnterAssignmentStatement(ctx *AssignmentStatementContext) {}
+// EnterNormalAssignment is called when production normalAssignment is entered.
+func (s *BaseMinigoListener) EnterNormalAssignment(ctx *NormalAssignmentContext) {}
 
-// ExitAssignmentStatement is called when production assignmentStatement is exited.
-func (s *BaseMinigoListener) ExitAssignmentStatement(ctx *AssignmentStatementContext) {}
+// ExitNormalAssignment is called when production normalAssignment is exited.
+func (s *BaseMinigoListener) ExitNormalAssignment(ctx *NormalAssignmentContext) {}
+
+// EnterInPlaceAssignment is called when production inPlaceAssignment is entered.
+func (s *BaseMinigoListener) EnterInPlaceAssignment(ctx *InPlaceAssignmentContext) {}
+
+// ExitInPlaceAssignment is called when production inPlaceAssignment is exited.
+func (s *BaseMinigoListener) ExitInPlaceAssignment(ctx *InPlaceAssignmentContext) {}
 
 // EnterIfStatement is called when production ifStatement is entered.
 func (s *BaseMinigoListener) EnterIfStatement(ctx *IfStatementContext) {}
