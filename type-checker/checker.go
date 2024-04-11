@@ -16,80 +16,121 @@ type TypeChecker struct {
 	errors      []error
 }
 
-// Builtin symbols
-// const (
-// 	Int symboltable.Type = iota + 1
-// 	Int8
-// 	Int16
-// 	Int32
-// 	Int64
-// 	Uint
-// 	Uint8
-// 	Uint16
-// 	Uint32
-// 	Uint64
+var _ grammar.MinigoVisitor = &TypeChecker{}
 
-// 	Float32
-// 	Float64
+// VisitInPlaceAssignment implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentContext) interface{} {
+	lhs := ctx.GetLeft()
+	rhs := ctx.GetRight()
+	symbol, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+		return s.Name == lhs.GetText()
+	})
 
-// 	Complex64
-// 	Complex128
-
-// 	String
-// 	Rune
-// )
-
-type Primitive struct {
-	Name    string
-	Members []*symboltable.Symbol
-}
-
-// GetMembers implements symboltable.Type.
-func (p *Primitive) GetMembers() []*symboltable.Symbol {
-	return p.Members
-}
-
-// GetName implements symboltable.Type.
-func (p *Primitive) GetName() string {
-	return p.Name
-}
-
-// HasMembers implements symboltable.Type.
-func (p *Primitive) HasMembers() bool {
-	return len(p.Members) > 0
-}
-
-// IsPrimitive implements symboltable.Type.
-func (p *Primitive) IsPrimitive() bool {
-	return true
-}
-
-func NewPrimitive(name string) symboltable.Type {
-	return &Primitive{
-		Name:    name,
-		Members: nil,
+	if !found {
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined: %s", lhs.GetText())))
+		return nil
 	}
+	right, ok := t.Visit(rhs).(*symboltable.Symbol)
+	if !ok {
+		panic("unimplemented")
+	}
+
+	if symbol.Type != right {
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use %s as %s value in assignment", right.Name, symbol.Type.Name)))
+	}
+
+	return nil
 }
 
-// Dynamic symbol table
+// VisitNormalAssignment implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext) interface{} {
+	rhs := ctx.GetRight().AllExpression()
+	for idx, ident := range ctx.GetLeft().AllExpression() {
+		expression := rhs[idx]
+		symbol, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+			return s.Name == ident.GetText()
+		})
 
-var TypeTable = map[string]symboltable.Type{
-	"int":        NewPrimitive("int"),
-	"int8":       NewPrimitive("int8"),
-	"int16":      NewPrimitive("int16"),
-	"int32":      NewPrimitive("int32"),
-	"int64":      NewPrimitive("int64"),
-	"uint":       NewPrimitive("uint"),
-	"uint8":      NewPrimitive("uint8"),
-	"uint16":     NewPrimitive("uint16"),
-	"uint32":     NewPrimitive("uint32"),
-	"uint64":     NewPrimitive("uint64"),
-	"float32":    NewPrimitive("float32"),
-	"float64":    NewPrimitive("float64"),
-	"complex64":  NewPrimitive("complex64"),
-	"complex128": NewPrimitive("complex128"),
-	"string":     NewPrimitive("string"),
-	"rune":       NewPrimitive("rune"),
+		if !found {
+			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined: %s", ident.GetText())))
+			return nil
+		}
+
+		right, ok := t.Visit(expression).(*symboltable.Symbol)
+		if !ok {
+			panic("unimplemented")
+		}
+
+		if symbol.Type != right {
+			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use %s as %s value in assignment", right.Name, symbol.Type.Name)))
+		}
+	}
+
+	return nil
+}
+
+// VisitCaretExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitCaretExpression(ctx *grammar.CaretExpressionContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitExpressionPrimaryExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitExpressionPrimaryExpression(ctx *grammar.ExpressionPrimaryExpressionContext) interface{} {
+	return t.VisitChildren(ctx)
+}
+
+// VisitMinusExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitMinusExpression(ctx *grammar.MinusExpressionContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitNotExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitOperationExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitOperationExpression(ctx *grammar.OperationExpressionContext) interface{} {
+	// TODO: check for possible edge cases on this piece of shit
+	leftType, leftOk := t.Visit(ctx.GetLeft()).(*symboltable.Symbol)
+	rightType, rightOk := t.Visit(ctx.GetRight()).(*symboltable.Symbol)
+	if (leftType != rightType) && (leftOk && rightOk) {
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: %s and %s", leftType.Name, rightType.Name)))
+	}
+	if leftType == nil {
+		return rightOk
+	}
+	return leftType
+}
+
+// VisitPlusExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitPlusExpression(ctx *grammar.PlusExpressionContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitFloatLiteral implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitFloatLiteral(ctx *grammar.FloatLiteralContext) interface{} {
+	return symboltable.Float64
+}
+
+// VisitIntLiteral implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitIntLiteral(ctx *grammar.IntLiteralContext) interface{} {
+	return symboltable.Int
+}
+
+// VisitInterpretedStringLiteral implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitInterpretedStringLiteral(ctx *grammar.InterpretedStringLiteralContext) interface{} {
+	return symboltable.String
+}
+
+// VisitRawStringLiteral implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitRawStringLiteral(ctx *grammar.RawStringLiteralContext) interface{} {
+	return symboltable.String
+}
+
+// VisitRuneLiteral implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitRuneLiteral(ctx *grammar.RuneLiteralContext) interface{} {
+	return symboltable.Rune
 }
 
 // VisitRoot implements grammar.MinigoVisitor.
@@ -110,16 +151,7 @@ func (t *TypeChecker) VisitEmptyTypeDeclaration(ctx *grammar.EmptyTypeDeclaratio
 
 // VisitMultiTypeDeclaration implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitMultiTypeDeclaration(ctx *grammar.MultiTypeDeclarationContext) interface{} {
-	a := ctx.InnerTypeDecls()
-	for _, decl := range a.AllSingleTypeDecl() {
-		name := decl.IDENTIFIER()
-		typeName := decl.DeclType().IDENTIFIER()
-		err := t.SymbolTable.AddSymbol(name.GetText(), TypeTable[typeName.GetText()])
-		if err != nil {
-			t.errors = append(t.errors, t.MakeError(name.GetSymbol(), err))
-		}
-	}
-	return nil
+	return t.VisitChildren(ctx)
 }
 
 func (t *TypeChecker) MakeError(token antlr.Token, err error) error {
@@ -128,27 +160,12 @@ func (t *TypeChecker) MakeError(token antlr.Token, err error) error {
 
 // VisitSingleVarDeclsNoExpsDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSingleVarDeclsNoExpsDecl(ctx *grammar.SingleVarDeclsNoExpsDeclContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitTypeDeclaration implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitTypeDeclaration(ctx *grammar.TypeDeclarationContext) interface{} {
-	name := ctx.SingleTypeDecl().IDENTIFIER()
-	// TODO: this doesn't work for struct types or slice/array types
-	declType := ctx.SingleTypeDecl().DeclType()
-	if typeName := declType.IDENTIFIER(); typeName != nil {
-		err := t.SymbolTable.AddSymbol(name.GetText(), TypeTable[typeName.GetText()])
-		if err != nil {
-			t.errors = append(t.errors, t.MakeError(name.GetSymbol(), err))
-		}
-	} else if typeName := declType.SliceDeclType(); typeName != nil {
-		// TODO: add slice to the symbol table
-	} else if typeName := declType.ArrayDeclType(); typeName != nil {
-		// TODO: add array to the symbol table
-	} else if typeName := declType.StructDeclType(); typeName != nil {
-		// TODO: add struct to the symbol table
-	}
-	return nil
+	return t.VisitChildren(ctx)
 }
 
 // VisitTypedVarDecl implements grammar.MinigoVisitor.
@@ -158,7 +175,26 @@ func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 
 // VisitUntypedVarDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) interface{} {
-	panic("unimplemented")
+	identList := ctx.IdentifierList().AllIDENTIFIER()
+	exprList := ctx.ExpressionList().AllExpression()
+	if idenLen, exprLen := len(identList), len(exprList); idenLen != exprLen {
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d vaules", idenLen, exprLen)))
+		return nil // Unrecoverable
+	}
+	for idx, ident := range identList {
+		expr := exprList[idx]
+		_type, ok := t.Visit(expr).(*symboltable.Symbol)
+		if !ok {
+			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("invalid type")))
+		}
+		symbol := t.SymbolTable.NewVariable(ident.GetText(), _type)
+		err := t.SymbolTable.AddSymbol(symbol)
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(ident.GetSymbol(), err))
+		}
+	}
+
+	return nil
 }
 
 // VisitAppendExpression implements grammar.MinigoVisitor.
@@ -176,17 +212,9 @@ func (t *TypeChecker) VisitArrayDeclType(ctx *grammar.ArrayDeclTypeContext) inte
 	panic("unimplemented")
 }
 
-// VisitAssignmentStatement implements grammar.MinigoVisitor.
-func (t *TypeChecker) VisitAssignmentStatement(ctx *grammar.AssignmentStatementContext) interface{} {
-	panic("unimplemented")
-}
-
 // VisitBlock implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitBlock(ctx *grammar.BlockContext) interface{} {
-	t.SymbolTable.EnterScope()
-	res := t.VisitChildren(ctx)
-	t.SymbolTable.ExitScope()
-	return res
+	return t.VisitChildren(ctx)
 }
 
 // VisitBlockStatement implements grammar.MinigoVisitor.
@@ -211,7 +239,24 @@ func (t *TypeChecker) VisitContinueStatement(ctx *grammar.ContinueStatementConte
 
 // VisitDeclType implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitDeclType(ctx *grammar.DeclTypeContext) interface{} {
-	panic("unimplemented")
+	// Get the name
+	var name string
+	if ident := ctx.IDENTIFIER(); ident != nil {
+		name = ident.GetText()
+	} else if ident := ctx.SliceDeclType().DeclType().IDENTIFIER(); ident != nil {
+		name = ident.GetText()
+	} else if ident := ctx.ArrayDeclType().DeclType().IDENTIFIER(); ident != nil {
+		name = ident.GetText()
+	}
+
+	_type, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+		return s.Name == name
+	})
+	if !found {
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("typename %s not found", name)))
+		return nil
+	}
+	return _type
 }
 
 // VisitEmptyVariableDeclaration implements grammar.MinigoVisitor.
@@ -226,7 +271,7 @@ func (t *TypeChecker) VisitErrorNode(node antlr.ErrorNode) interface{} {
 
 // VisitExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitExpression(ctx *grammar.ExpressionContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitExpressionCaseClause implements grammar.MinigoVisitor.
@@ -251,22 +296,41 @@ func (t *TypeChecker) VisitExpressionSwitchCase(ctx *grammar.ExpressionSwitchCas
 
 // VisitFuncArgsDecls implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFuncArgsDecls(ctx *grammar.FuncArgsDeclsContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitFuncDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
+	defer t.SymbolTable.ExitScope() // This will exit the scope created in the FuncFrontDecl
 	return t.VisitChildren(ctx)
 }
 
 // VisitFuncFrontDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) interface{} {
-	return t.VisitChildren(ctx)
+	name := ctx.IDENTIFIER()
+	var _type *symboltable.Symbol = nil
+	if declType := ctx.DeclType(); declType != nil {
+		var ok bool
+		_type, ok = t.Visit(ctx.DeclType()).(*symboltable.Symbol)
+		if !ok {
+			_type = nil
+		}
+	}
+	symbol := t.SymbolTable.NewFunction(name.GetText(), _type)
+	err := t.SymbolTable.AddSymbol(symbol)
+	if err != nil {
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
+	}
+	t.SymbolTable.EnterScope() // This will enter the function scope
+	if funcArgs := ctx.FuncArgsDecls(); funcArgs != nil {
+		t.Visit(funcArgs)
+	}
+	return nil
 }
 
 // VisitIdentifierList implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIdentifierList(ctx *grammar.IdentifierListContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitIfStatement implements grammar.MinigoVisitor.
@@ -286,21 +350,16 @@ func (t *TypeChecker) VisitIndex(ctx *grammar.IndexContext) interface{} {
 
 // VisitInnerTypeDecls implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitInnerTypeDecls(ctx *grammar.InnerTypeDeclsContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitInnerVarDecls implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitInnerVarDecls(ctx *grammar.InnerVarDeclsContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitLengthExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitLengthExpression(ctx *grammar.LengthExpressionContext) interface{} {
-	panic("unimplemented")
-}
-
-// VisitLiteral implements grammar.MinigoVisitor.
-func (t *TypeChecker) VisitLiteral(ctx *grammar.LiteralContext) interface{} {
 	panic("unimplemented")
 }
 
@@ -316,17 +375,30 @@ func (t *TypeChecker) VisitLoopStatement(ctx *grammar.LoopStatementContext) inte
 
 // VisitMultiVariableDeclaration implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitMultiVariableDeclaration(ctx *grammar.MultiVariableDeclarationContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitOperand implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitOperand(ctx *grammar.OperandContext) interface{} {
-	panic("unimplemented")
+	if ident := ctx.IDENTIFIER(); ident != nil {
+		symbol, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+			return ident.GetText() == s.Name
+		})
+		if !found {
+			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined: %s", ident.GetText())))
+			return nil
+		}
+		return symbol.Type
+	}
+	return t.VisitChildren(ctx)
 }
 
 // VisitPrimaryExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitPrimaryExpression(ctx *grammar.PrimaryExpressionContext) interface{} {
-	panic("unimplemented")
+	if operand := ctx.Operand(); operand != nil {
+		return t.Visit(operand)
+	}
+	return t.VisitChildren(ctx)
 }
 
 // VisitPrintStatement implements grammar.MinigoVisitor.
@@ -351,27 +423,57 @@ func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
 
 // VisitSimpleStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSimpleStatement(ctx *grammar.SimpleStatementContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitSimpleStatementStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSimpleStatementStatement(ctx *grammar.SimpleStatementStatementContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitSingleTypeDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) interface{} {
-	panic("unimplemented")
+	name := ctx.IDENTIFIER()
+	declType := ctx.DeclType()
+	if typeName := declType.IDENTIFIER(); typeName != nil {
+		_type, err := t.SymbolTable.NewType(name.GetText(), typeName.GetText())
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(typeName.GetSymbol(), err))
+			return nil // Can't continue from here, it will just not work
+		}
+		err = t.SymbolTable.AddSymbol(_type)
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(name.GetSymbol(), err))
+		}
+	} else if typeName := declType.SliceDeclType(); typeName != nil {
+		// TODO: add slice to the symbol table
+	} else if typeName := declType.ArrayDeclType(); typeName != nil {
+		// TODO: add array to the symbol table
+	} else if typeName := declType.StructDeclType(); typeName != nil {
+		// TODO: add struct to the symbol table
+	}
+	return nil
 }
 
 // VisitSingleVarDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSingleVarDecl(ctx *grammar.SingleVarDeclContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitSingleVarDeclNoExps implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsContext) interface{} {
-	panic("unimplemented")
+	_type, ok := t.Visit(ctx.DeclType()).(*symboltable.Symbol)
+	if !ok {
+		return nil // Unrecoverable error
+	}
+	for _, ident := range ctx.IdentifierList().AllIDENTIFIER() {
+		symbol := t.SymbolTable.NewVariable(ident.GetText(), _type)
+		err := t.SymbolTable.AddSymbol(symbol)
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(ident.GetSymbol(), err))
+		}
+	}
+	return nil
 }
 
 // VisitSliceDeclType implements grammar.MinigoVisitor.
@@ -406,6 +508,15 @@ func (t *TypeChecker) VisitSwitchStatement(ctx *grammar.SwitchStatementContext) 
 
 // VisitTerminal implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitTerminal(node antlr.TerminalNode) interface{} {
+	// symbol, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+	//     return node.GetText() == s.Name
+	// })
+	// if found {
+	//     fmt.Printf("symbol: %v\n", symbol)
+	//     return symbol
+	// } else {
+	//     return nil
+	// }
 	return nil
 }
 
@@ -416,7 +527,7 @@ func (t *TypeChecker) VisitTopDeclarationList(ctx *grammar.TopDeclarationListCon
 
 // VisitTypeDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitTypeDecl(ctx *grammar.TypeDeclContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitTypeDeclStatement implements grammar.MinigoVisitor.

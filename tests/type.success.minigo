@@ -1,9 +1,7 @@
 package main;
 
 
-func funcion() {
-    type Hola string;
+func hola(nombre, semen string) string {
+    nombre += 22; 
+    nombre++;
 };
-
-type Nombre string;
-type Hola Nombre;
