@@ -58,15 +58,12 @@ func main() {
 		os.Exit(ParsingError)
 	}
 
-	// Type checking stage
-	s := ctx.ToStringTree(nil, parser)
-	fmt.Printf("s: %v\n", s)
-
+    fmt.Printf("ctx.ToStringTree(nil, parser): %v\n", ctx.ToStringTree(nil, parser))
 	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName())
 	typeChecker.Visit(ctx)
 	if typeChecker.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", typeChecker)
 	}
-    fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
+	fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
 
 }
