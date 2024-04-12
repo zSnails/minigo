@@ -47,6 +47,9 @@ type Symbol struct {
 }
 
 func (s Symbol) String() string {
+	if s.SymbolType == FunctionSymbol {
+		return fmt.Sprintf("Function(%d, %s, %s, %s)", s.Scope, s.Name, s.Type, s.Members)
+	}
 	return fmt.Sprintf("Symbol(%d, %s, %s)", s.Scope, s.Name, s.Type)
 }
 
@@ -111,7 +114,7 @@ func (t *SymbolTable) NewFunction(name string, _type *Symbol, members ...*Symbol
 		Scope:      t.Scope,
 		Name:       name,
 		Type:       _type,
-		Members:    []*Symbol{},
+		Members:    members,
 	}
 }
 
