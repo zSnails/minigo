@@ -173,6 +173,40 @@ func (t *TypeChecker) VisitRuneLiteral(ctx *grammar.RuneLiteralContext) interfac
 
 // VisitRoot implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
+	funcs := ctx.TopDeclarationList().AllFuncDecl()
+
+	// I did this piece of shit to register functions in the global scope, for
+	// cross reference
+	for _, fn := range funcs {
+		fun := fn.FuncFrontDecl()
+		fun.IDENTIFIER()
+		var rt *symboltable.Symbol = nil
+		if returnType := fun.DeclType(); returnType != nil {
+			rt = t.Visit(returnType).(*symboltable.Symbol)
+		}
+
+		var members []*symboltable.Symbol = nil
+		if arguments := fun.FuncArgsDecls(); arguments != nil {
+			vars := arguments.AllSingleVarDeclNoExps()
+			for _, _var := range vars {
+				_type := t.Visit(_var.DeclType()).(*symboltable.Symbol)
+				idents := _var.IdentifierList().AllIDENTIFIER()
+				for _, identifier := range idents {
+					members = append(members, t.SymbolTable.NewVariable(identifier.GetText(), _type))
+				}
+			}
+		}
+
+		symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetText(), rt, members...)
+		err := t.SymbolTable.AddSymbol(symbol)
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
+			return nil
+		}
+	}
+
+	t.SymbolTable.EnterScope()
+	defer t.SymbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
