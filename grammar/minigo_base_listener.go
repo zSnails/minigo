@@ -208,11 +208,47 @@ func (s *BaseMinigoListener) EnterExpressionList(ctx *ExpressionListContext) {}
 // ExitExpressionList is called when production expressionList is exited.
 func (s *BaseMinigoListener) ExitExpressionList(ctx *ExpressionListContext) {}
 
-// EnterPrimaryExpression is called when production primaryExpression is entered.
-func (s *BaseMinigoListener) EnterPrimaryExpression(ctx *PrimaryExpressionContext) {}
+// EnterSubIndex is called when production subIndex is entered.
+func (s *BaseMinigoListener) EnterSubIndex(ctx *SubIndexContext) {}
 
-// ExitPrimaryExpression is called when production primaryExpression is exited.
-func (s *BaseMinigoListener) ExitPrimaryExpression(ctx *PrimaryExpressionContext) {}
+// ExitSubIndex is called when production subIndex is exited.
+func (s *BaseMinigoListener) ExitSubIndex(ctx *SubIndexContext) {}
+
+// EnterFunctionCall is called when production functionCall is entered.
+func (s *BaseMinigoListener) EnterFunctionCall(ctx *FunctionCallContext) {}
+
+// ExitFunctionCall is called when production functionCall is exited.
+func (s *BaseMinigoListener) ExitFunctionCall(ctx *FunctionCallContext) {}
+
+// EnterCapCall is called when production capCall is entered.
+func (s *BaseMinigoListener) EnterCapCall(ctx *CapCallContext) {}
+
+// ExitCapCall is called when production capCall is exited.
+func (s *BaseMinigoListener) ExitCapCall(ctx *CapCallContext) {}
+
+// EnterOperandExpression is called when production operandExpression is entered.
+func (s *BaseMinigoListener) EnterOperandExpression(ctx *OperandExpressionContext) {}
+
+// ExitOperandExpression is called when production operandExpression is exited.
+func (s *BaseMinigoListener) ExitOperandExpression(ctx *OperandExpressionContext) {}
+
+// EnterAppendCall is called when production appendCall is entered.
+func (s *BaseMinigoListener) EnterAppendCall(ctx *AppendCallContext) {}
+
+// ExitAppendCall is called when production appendCall is exited.
+func (s *BaseMinigoListener) ExitAppendCall(ctx *AppendCallContext) {}
+
+// EnterLenCall is called when production lenCall is entered.
+func (s *BaseMinigoListener) EnterLenCall(ctx *LenCallContext) {}
+
+// ExitLenCall is called when production lenCall is exited.
+func (s *BaseMinigoListener) ExitLenCall(ctx *LenCallContext) {}
+
+// EnterMemberAccessor is called when production memberAccessor is entered.
+func (s *BaseMinigoListener) EnterMemberAccessor(ctx *MemberAccessorContext) {}
+
+// ExitMemberAccessor is called when production memberAccessor is exited.
+func (s *BaseMinigoListener) ExitMemberAccessor(ctx *MemberAccessorContext) {}
 
 // EnterOperand is called when production operand is entered.
 func (s *BaseMinigoListener) EnterOperand(ctx *OperandContext) {}

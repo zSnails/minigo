@@ -5110,17 +5110,6 @@ type IPrimaryExpressionContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
-
-	// Getter signatures
-	Operand() IOperandContext
-	AppendExpression() IAppendExpressionContext
-	LengthExpression() ILengthExpressionContext
-	CapExpression() ICapExpressionContext
-	PrimaryExpression() IPrimaryExpressionContext
-	Selector() ISelectorContext
-	Index() IIndexContext
-	Arguments() IArgumentsContext
-
 	// IsPrimaryExpressionContext differentiates from other interfaces.
 	IsPrimaryExpressionContext()
 }
@@ -5157,71 +5146,37 @@ func NewPrimaryExpressionContext(parser antlr.Parser, parent antlr.ParserRuleCon
 
 func (s *PrimaryExpressionContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *PrimaryExpressionContext) Operand() IOperandContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IOperandContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IOperandContext)
+func (s *PrimaryExpressionContext) CopyAll(ctx *PrimaryExpressionContext) {
+	s.CopyFrom(&ctx.BaseParserRuleContext)
 }
 
-func (s *PrimaryExpressionContext) AppendExpression() IAppendExpressionContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IAppendExpressionContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IAppendExpressionContext)
+func (s *PrimaryExpressionContext) GetRuleContext() antlr.RuleContext {
+	return s
 }
 
-func (s *PrimaryExpressionContext) LengthExpression() ILengthExpressionContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ILengthExpressionContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(ILengthExpressionContext)
+func (s *PrimaryExpressionContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *PrimaryExpressionContext) CapExpression() ICapExpressionContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ICapExpressionContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(ICapExpressionContext)
+type SubIndexContext struct {
+	PrimaryExpressionContext
 }
 
-func (s *PrimaryExpressionContext) PrimaryExpression() IPrimaryExpressionContext {
+func NewSubIndexContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *SubIndexContext {
+	var p = new(SubIndexContext)
+
+	InitEmptyPrimaryExpressionContext(&p.PrimaryExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*PrimaryExpressionContext))
+
+	return p
+}
+
+func (s *SubIndexContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *SubIndexContext) PrimaryExpression() IPrimaryExpressionContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IPrimaryExpressionContext); ok {
@@ -5237,23 +5192,7 @@ func (s *PrimaryExpressionContext) PrimaryExpression() IPrimaryExpressionContext
 	return t.(IPrimaryExpressionContext)
 }
 
-func (s *PrimaryExpressionContext) Selector() ISelectorContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ISelectorContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(ISelectorContext)
-}
-
-func (s *PrimaryExpressionContext) Index() IIndexContext {
+func (s *SubIndexContext) Index() IIndexContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IIndexContext); ok {
@@ -5269,7 +5208,63 @@ func (s *PrimaryExpressionContext) Index() IIndexContext {
 	return t.(IIndexContext)
 }
 
-func (s *PrimaryExpressionContext) Arguments() IArgumentsContext {
+func (s *SubIndexContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterSubIndex(s)
+	}
+}
+
+func (s *SubIndexContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitSubIndex(s)
+	}
+}
+
+func (s *SubIndexContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitSubIndex(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type FunctionCallContext struct {
+	PrimaryExpressionContext
+}
+
+func NewFunctionCallContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *FunctionCallContext {
+	var p = new(FunctionCallContext)
+
+	InitEmptyPrimaryExpressionContext(&p.PrimaryExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*PrimaryExpressionContext))
+
+	return p
+}
+
+func (s *FunctionCallContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *FunctionCallContext) PrimaryExpression() IPrimaryExpressionContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IPrimaryExpressionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IPrimaryExpressionContext)
+}
+
+func (s *FunctionCallContext) Arguments() IArgumentsContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IArgumentsContext); ok {
@@ -5285,30 +5280,318 @@ func (s *PrimaryExpressionContext) Arguments() IArgumentsContext {
 	return t.(IArgumentsContext)
 }
 
-func (s *PrimaryExpressionContext) GetRuleContext() antlr.RuleContext {
+func (s *FunctionCallContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterFunctionCall(s)
+	}
+}
+
+func (s *FunctionCallContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitFunctionCall(s)
+	}
+}
+
+func (s *FunctionCallContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitFunctionCall(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type CapCallContext struct {
+	PrimaryExpressionContext
+}
+
+func NewCapCallContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *CapCallContext {
+	var p = new(CapCallContext)
+
+	InitEmptyPrimaryExpressionContext(&p.PrimaryExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*PrimaryExpressionContext))
+
+	return p
+}
+
+func (s *CapCallContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *PrimaryExpressionContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
+func (s *CapCallContext) CapExpression() ICapExpressionContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ICapExpressionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ICapExpressionContext)
 }
 
-func (s *PrimaryExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *CapCallContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.EnterPrimaryExpression(s)
+		listenerT.EnterCapCall(s)
 	}
 }
 
-func (s *PrimaryExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *CapCallContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.ExitPrimaryExpression(s)
+		listenerT.ExitCapCall(s)
 	}
 }
 
-func (s *PrimaryExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *CapCallContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case MinigoVisitor:
-		return t.VisitPrimaryExpression(s)
+		return t.VisitCapCall(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type OperandExpressionContext struct {
+	PrimaryExpressionContext
+}
+
+func NewOperandExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *OperandExpressionContext {
+	var p = new(OperandExpressionContext)
+
+	InitEmptyPrimaryExpressionContext(&p.PrimaryExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*PrimaryExpressionContext))
+
+	return p
+}
+
+func (s *OperandExpressionContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *OperandExpressionContext) Operand() IOperandContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IOperandContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IOperandContext)
+}
+
+func (s *OperandExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterOperandExpression(s)
+	}
+}
+
+func (s *OperandExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitOperandExpression(s)
+	}
+}
+
+func (s *OperandExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitOperandExpression(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type AppendCallContext struct {
+	PrimaryExpressionContext
+}
+
+func NewAppendCallContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *AppendCallContext {
+	var p = new(AppendCallContext)
+
+	InitEmptyPrimaryExpressionContext(&p.PrimaryExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*PrimaryExpressionContext))
+
+	return p
+}
+
+func (s *AppendCallContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *AppendCallContext) AppendExpression() IAppendExpressionContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IAppendExpressionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IAppendExpressionContext)
+}
+
+func (s *AppendCallContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterAppendCall(s)
+	}
+}
+
+func (s *AppendCallContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitAppendCall(s)
+	}
+}
+
+func (s *AppendCallContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitAppendCall(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type LenCallContext struct {
+	PrimaryExpressionContext
+}
+
+func NewLenCallContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *LenCallContext {
+	var p = new(LenCallContext)
+
+	InitEmptyPrimaryExpressionContext(&p.PrimaryExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*PrimaryExpressionContext))
+
+	return p
+}
+
+func (s *LenCallContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *LenCallContext) LengthExpression() ILengthExpressionContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ILengthExpressionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ILengthExpressionContext)
+}
+
+func (s *LenCallContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterLenCall(s)
+	}
+}
+
+func (s *LenCallContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitLenCall(s)
+	}
+}
+
+func (s *LenCallContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitLenCall(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type MemberAccessorContext struct {
+	PrimaryExpressionContext
+}
+
+func NewMemberAccessorContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *MemberAccessorContext {
+	var p = new(MemberAccessorContext)
+
+	InitEmptyPrimaryExpressionContext(&p.PrimaryExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*PrimaryExpressionContext))
+
+	return p
+}
+
+func (s *MemberAccessorContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *MemberAccessorContext) PrimaryExpression() IPrimaryExpressionContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IPrimaryExpressionContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IPrimaryExpressionContext)
+}
+
+func (s *MemberAccessorContext) Selector() ISelectorContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ISelectorContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ISelectorContext)
+}
+
+func (s *MemberAccessorContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterMemberAccessor(s)
+	}
+}
+
+func (s *MemberAccessorContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitMemberAccessor(s)
+	}
+}
+
+func (s *MemberAccessorContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitMemberAccessor(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -5339,24 +5622,37 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 
 	switch p.GetTokenStream().LA(1) {
 	case MinigoParserLEFTPARENTHESIS, MinigoParserINTERPRETEDSTRINGLITERAL, MinigoParserRAWSTRINGLITERAL, MinigoParserRUNELITERAL, MinigoParserFLOATLITERAL, MinigoParserINTLITERAL, MinigoParserIDENTIFIER:
+		localctx = NewOperandExpressionContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
+
 		{
 			p.SetState(261)
 			p.Operand()
 		}
 
 	case MinigoParserAPPEND:
+		localctx = NewAppendCallContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
 		{
 			p.SetState(262)
 			p.AppendExpression()
 		}
 
 	case MinigoParserLEN:
+		localctx = NewLenCallContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
 		{
 			p.SetState(263)
 			p.LengthExpression()
 		}
 
 	case MinigoParserCAP:
+		localctx = NewCapCallContext(p, localctx)
+		p.SetParserRuleContext(localctx)
+		_prevctx = localctx
 		{
 			p.SetState(264)
 			p.CapExpression()
@@ -5390,7 +5686,7 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 
 			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 18, p.GetParserRuleContext()) {
 			case 1:
-				localctx = NewPrimaryExpressionContext(p, _parentctx, _parentState)
+				localctx = NewMemberAccessorContext(p, NewPrimaryExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_primaryExpression)
 				p.SetState(267)
 
@@ -5404,7 +5700,7 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 				}
 
 			case 2:
-				localctx = NewPrimaryExpressionContext(p, _parentctx, _parentState)
+				localctx = NewSubIndexContext(p, NewPrimaryExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_primaryExpression)
 				p.SetState(269)
 
@@ -5418,7 +5714,7 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 				}
 
 			case 3:
-				localctx = NewPrimaryExpressionContext(p, _parentctx, _parentState)
+				localctx = NewFunctionCallContext(p, NewPrimaryExpressionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_primaryExpression)
 				p.SetState(271)
 

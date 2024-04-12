@@ -100,8 +100,26 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#expressionList.
 	VisitExpressionList(ctx *ExpressionListContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#primaryExpression.
-	VisitPrimaryExpression(ctx *PrimaryExpressionContext) interface{}
+	// Visit a parse tree produced by MinigoParser#subIndex.
+	VisitSubIndex(ctx *SubIndexContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#functionCall.
+	VisitFunctionCall(ctx *FunctionCallContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#capCall.
+	VisitCapCall(ctx *CapCallContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#operandExpression.
+	VisitOperandExpression(ctx *OperandExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#appendCall.
+	VisitAppendCall(ctx *AppendCallContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#lenCall.
+	VisitLenCall(ctx *LenCallContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#memberAccessor.
+	VisitMemberAccessor(ctx *MemberAccessorContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#operand.
 	VisitOperand(ctx *OperandContext) interface{}

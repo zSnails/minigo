@@ -131,7 +131,31 @@ func (v *BaseMinigoVisitor) VisitExpressionList(ctx *ExpressionListContext) inte
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitPrimaryExpression(ctx *PrimaryExpressionContext) interface{} {
+func (v *BaseMinigoVisitor) VisitSubIndex(ctx *SubIndexContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitFunctionCall(ctx *FunctionCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitCapCall(ctx *CapCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitOperandExpression(ctx *OperandExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitAppendCall(ctx *AppendCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitLenCall(ctx *LenCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitMemberAccessor(ctx *MemberAccessorContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

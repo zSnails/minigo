@@ -100,8 +100,26 @@ type MinigoListener interface {
 	// EnterExpressionList is called when entering the expressionList production.
 	EnterExpressionList(c *ExpressionListContext)
 
-	// EnterPrimaryExpression is called when entering the primaryExpression production.
-	EnterPrimaryExpression(c *PrimaryExpressionContext)
+	// EnterSubIndex is called when entering the subIndex production.
+	EnterSubIndex(c *SubIndexContext)
+
+	// EnterFunctionCall is called when entering the functionCall production.
+	EnterFunctionCall(c *FunctionCallContext)
+
+	// EnterCapCall is called when entering the capCall production.
+	EnterCapCall(c *CapCallContext)
+
+	// EnterOperandExpression is called when entering the operandExpression production.
+	EnterOperandExpression(c *OperandExpressionContext)
+
+	// EnterAppendCall is called when entering the appendCall production.
+	EnterAppendCall(c *AppendCallContext)
+
+	// EnterLenCall is called when entering the lenCall production.
+	EnterLenCall(c *LenCallContext)
+
+	// EnterMemberAccessor is called when entering the memberAccessor production.
+	EnterMemberAccessor(c *MemberAccessorContext)
 
 	// EnterOperand is called when entering the operand production.
 	EnterOperand(c *OperandContext)
@@ -301,8 +319,26 @@ type MinigoListener interface {
 	// ExitExpressionList is called when exiting the expressionList production.
 	ExitExpressionList(c *ExpressionListContext)
 
-	// ExitPrimaryExpression is called when exiting the primaryExpression production.
-	ExitPrimaryExpression(c *PrimaryExpressionContext)
+	// ExitSubIndex is called when exiting the subIndex production.
+	ExitSubIndex(c *SubIndexContext)
+
+	// ExitFunctionCall is called when exiting the functionCall production.
+	ExitFunctionCall(c *FunctionCallContext)
+
+	// ExitCapCall is called when exiting the capCall production.
+	ExitCapCall(c *CapCallContext)
+
+	// ExitOperandExpression is called when exiting the operandExpression production.
+	ExitOperandExpression(c *OperandExpressionContext)
+
+	// ExitAppendCall is called when exiting the appendCall production.
+	ExitAppendCall(c *AppendCallContext)
+
+	// ExitLenCall is called when exiting the lenCall production.
+	ExitLenCall(c *LenCallContext)
+
+	// ExitMemberAccessor is called when exiting the memberAccessor production.
+	ExitMemberAccessor(c *MemberAccessorContext)
 
 	// ExitOperand is called when exiting the operand production.
 	ExitOperand(c *OperandContext)
