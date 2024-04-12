@@ -16,6 +16,44 @@ type TypeChecker struct {
 	errors      []error
 }
 
+// VisitAppendCall implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitAppendCall(ctx *grammar.AppendCallContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitCapCall implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitFunctionCall implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interface{} {
+    panic("unimplemented")
+}
+
+// VisitLenCall implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitLenCall(ctx *grammar.LenCallContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitMemberAccessor implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitMemberAccessor(ctx *grammar.MemberAccessorContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitOperandExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitOperandExpression(ctx *grammar.OperandExpressionContext) interface{} {
+	if operand := ctx.Operand(); operand != nil {
+		return t.Visit(operand)
+	}
+    return t.VisitChildren(ctx)
+}
+
+// VisitSubIndex implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
+	panic("unimplemented")
+}
+
 var _ grammar.MinigoVisitor = &TypeChecker{}
 
 // VisitInPlaceAssignment implements grammar.MinigoVisitor.
