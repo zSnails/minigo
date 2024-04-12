@@ -187,12 +187,10 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 
 		var members []*symboltable.Symbol = nil
 		if arguments := fun.FuncArgsDecls(); arguments != nil {
-			vars := arguments.AllSingleVarDeclNoExps()
-			for _, _var := range vars {
-				_type := t.Visit(_var.DeclType()).(*symboltable.Symbol)
-				idents := _var.IdentifierList().AllIDENTIFIER()
-				for _, identifier := range idents {
-					members = append(members, t.SymbolTable.NewVariable(identifier.GetText(), _type))
+			for _, variable := range arguments.AllSingleVarDeclNoExps() {
+				varType := t.Visit(variable.DeclType()).(*symboltable.Symbol)
+				for _, identifier := range variable.IdentifierList().AllIDENTIFIER() {
+					members = append(members, t.SymbolTable.NewVariable(identifier.GetText(), varType))
 				}
 			}
 		}
