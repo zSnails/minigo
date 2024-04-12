@@ -128,7 +128,7 @@ func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) inte
 }
 
 // VisitOperationExpression implements grammar.MinigoVisitor.
-func (t *TypeChecker) VisitOperationExpression(ctx *grammar.OperationExpressionContext) interface{} {
+func (t *TypeChecker) VisitOperation(ctx *grammar.OperationContext) interface{} {
 	// TODO: check for possible edge cases on this piece of shit
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(*symboltable.Symbol)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(*symboltable.Symbol)

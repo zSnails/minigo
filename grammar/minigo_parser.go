@@ -4520,173 +4520,6 @@ func (s *CaretExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 	}
 }
 
-type OperationExpressionContext struct {
-	ExpressionContext
-	left  IExpressionContext
-	right IExpressionContext
-}
-
-func NewOperationExpressionContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *OperationExpressionContext {
-	var p = new(OperationExpressionContext)
-
-	InitEmptyExpressionContext(&p.ExpressionContext)
-	p.parser = parser
-	p.CopyAll(ctx.(*ExpressionContext))
-
-	return p
-}
-
-func (s *OperationExpressionContext) GetLeft() IExpressionContext { return s.left }
-
-func (s *OperationExpressionContext) GetRight() IExpressionContext { return s.right }
-
-func (s *OperationExpressionContext) SetLeft(v IExpressionContext) { s.left = v }
-
-func (s *OperationExpressionContext) SetRight(v IExpressionContext) { s.right = v }
-
-func (s *OperationExpressionContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *OperationExpressionContext) AllExpression() []IExpressionContext {
-	children := s.GetChildren()
-	len := 0
-	for _, ctx := range children {
-		if _, ok := ctx.(IExpressionContext); ok {
-			len++
-		}
-	}
-
-	tst := make([]IExpressionContext, len)
-	i := 0
-	for _, ctx := range children {
-		if t, ok := ctx.(IExpressionContext); ok {
-			tst[i] = t.(IExpressionContext)
-			i++
-		}
-	}
-
-	return tst
-}
-
-func (s *OperationExpressionContext) Expression(i int) IExpressionContext {
-	var t antlr.RuleContext
-	j := 0
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IExpressionContext); ok {
-			if j == i {
-				t = ctx.(antlr.RuleContext)
-				break
-			}
-			j++
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IExpressionContext)
-}
-
-func (s *OperationExpressionContext) TIMES() antlr.TerminalNode {
-	return s.GetToken(MinigoParserTIMES, 0)
-}
-
-func (s *OperationExpressionContext) DIV() antlr.TerminalNode {
-	return s.GetToken(MinigoParserDIV, 0)
-}
-
-func (s *OperationExpressionContext) MOD() antlr.TerminalNode {
-	return s.GetToken(MinigoParserMOD, 0)
-}
-
-func (s *OperationExpressionContext) LEFTSHIFT() antlr.TerminalNode {
-	return s.GetToken(MinigoParserLEFTSHIFT, 0)
-}
-
-func (s *OperationExpressionContext) RIGHTSHIFT() antlr.TerminalNode {
-	return s.GetToken(MinigoParserRIGHTSHIFT, 0)
-}
-
-func (s *OperationExpressionContext) AMPERSAND() antlr.TerminalNode {
-	return s.GetToken(MinigoParserAMPERSAND, 0)
-}
-
-func (s *OperationExpressionContext) AMPERSANDCARET() antlr.TerminalNode {
-	return s.GetToken(MinigoParserAMPERSANDCARET, 0)
-}
-
-func (s *OperationExpressionContext) PLUS() antlr.TerminalNode {
-	return s.GetToken(MinigoParserPLUS, 0)
-}
-
-func (s *OperationExpressionContext) MINUS() antlr.TerminalNode {
-	return s.GetToken(MinigoParserMINUS, 0)
-}
-
-func (s *OperationExpressionContext) PIPE() antlr.TerminalNode {
-	return s.GetToken(MinigoParserPIPE, 0)
-}
-
-func (s *OperationExpressionContext) CARET() antlr.TerminalNode {
-	return s.GetToken(MinigoParserCARET, 0)
-}
-
-func (s *OperationExpressionContext) COMPARISON() antlr.TerminalNode {
-	return s.GetToken(MinigoParserCOMPARISON, 0)
-}
-
-func (s *OperationExpressionContext) NEGATION() antlr.TerminalNode {
-	return s.GetToken(MinigoParserNEGATION, 0)
-}
-
-func (s *OperationExpressionContext) LESSTHAN() antlr.TerminalNode {
-	return s.GetToken(MinigoParserLESSTHAN, 0)
-}
-
-func (s *OperationExpressionContext) GREATERTHAN() antlr.TerminalNode {
-	return s.GetToken(MinigoParserGREATERTHAN, 0)
-}
-
-func (s *OperationExpressionContext) LESSTHANEQUAL() antlr.TerminalNode {
-	return s.GetToken(MinigoParserLESSTHANEQUAL, 0)
-}
-
-func (s *OperationExpressionContext) GREATERTHANEQUAL() antlr.TerminalNode {
-	return s.GetToken(MinigoParserGREATERTHANEQUAL, 0)
-}
-
-func (s *OperationExpressionContext) AND() antlr.TerminalNode {
-	return s.GetToken(MinigoParserAND, 0)
-}
-
-func (s *OperationExpressionContext) OR() antlr.TerminalNode {
-	return s.GetToken(MinigoParserOR, 0)
-}
-
-func (s *OperationExpressionContext) EnterRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.EnterOperationExpression(s)
-	}
-}
-
-func (s *OperationExpressionContext) ExitRule(listener antlr.ParseTreeListener) {
-	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.ExitOperationExpression(s)
-	}
-}
-
-func (s *OperationExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case MinigoVisitor:
-		return t.VisitOperationExpression(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
 type PlusExpressionContext struct {
 	ExpressionContext
 }
@@ -4741,6 +4574,173 @@ func (s *PlusExpressionContext) Accept(visitor antlr.ParseTreeVisitor) interface
 	switch t := visitor.(type) {
 	case MinigoVisitor:
 		return t.VisitPlusExpression(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type OperationContext struct {
+	ExpressionContext
+	left  IExpressionContext
+	right IExpressionContext
+}
+
+func NewOperationContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *OperationContext {
+	var p = new(OperationContext)
+
+	InitEmptyExpressionContext(&p.ExpressionContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*ExpressionContext))
+
+	return p
+}
+
+func (s *OperationContext) GetLeft() IExpressionContext { return s.left }
+
+func (s *OperationContext) GetRight() IExpressionContext { return s.right }
+
+func (s *OperationContext) SetLeft(v IExpressionContext) { s.left = v }
+
+func (s *OperationContext) SetRight(v IExpressionContext) { s.right = v }
+
+func (s *OperationContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *OperationContext) AllExpression() []IExpressionContext {
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IExpressionContext); ok {
+			len++
+		}
+	}
+
+	tst := make([]IExpressionContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IExpressionContext); ok {
+			tst[i] = t.(IExpressionContext)
+			i++
+		}
+	}
+
+	return tst
+}
+
+func (s *OperationContext) Expression(i int) IExpressionContext {
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExpressionContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IExpressionContext)
+}
+
+func (s *OperationContext) TIMES() antlr.TerminalNode {
+	return s.GetToken(MinigoParserTIMES, 0)
+}
+
+func (s *OperationContext) DIV() antlr.TerminalNode {
+	return s.GetToken(MinigoParserDIV, 0)
+}
+
+func (s *OperationContext) MOD() antlr.TerminalNode {
+	return s.GetToken(MinigoParserMOD, 0)
+}
+
+func (s *OperationContext) LEFTSHIFT() antlr.TerminalNode {
+	return s.GetToken(MinigoParserLEFTSHIFT, 0)
+}
+
+func (s *OperationContext) RIGHTSHIFT() antlr.TerminalNode {
+	return s.GetToken(MinigoParserRIGHTSHIFT, 0)
+}
+
+func (s *OperationContext) AMPERSAND() antlr.TerminalNode {
+	return s.GetToken(MinigoParserAMPERSAND, 0)
+}
+
+func (s *OperationContext) AMPERSANDCARET() antlr.TerminalNode {
+	return s.GetToken(MinigoParserAMPERSANDCARET, 0)
+}
+
+func (s *OperationContext) PLUS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserPLUS, 0)
+}
+
+func (s *OperationContext) MINUS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserMINUS, 0)
+}
+
+func (s *OperationContext) PIPE() antlr.TerminalNode {
+	return s.GetToken(MinigoParserPIPE, 0)
+}
+
+func (s *OperationContext) CARET() antlr.TerminalNode {
+	return s.GetToken(MinigoParserCARET, 0)
+}
+
+func (s *OperationContext) COMPARISON() antlr.TerminalNode {
+	return s.GetToken(MinigoParserCOMPARISON, 0)
+}
+
+func (s *OperationContext) NEGATION() antlr.TerminalNode {
+	return s.GetToken(MinigoParserNEGATION, 0)
+}
+
+func (s *OperationContext) LESSTHAN() antlr.TerminalNode {
+	return s.GetToken(MinigoParserLESSTHAN, 0)
+}
+
+func (s *OperationContext) GREATERTHAN() antlr.TerminalNode {
+	return s.GetToken(MinigoParserGREATERTHAN, 0)
+}
+
+func (s *OperationContext) LESSTHANEQUAL() antlr.TerminalNode {
+	return s.GetToken(MinigoParserLESSTHANEQUAL, 0)
+}
+
+func (s *OperationContext) GREATERTHANEQUAL() antlr.TerminalNode {
+	return s.GetToken(MinigoParserGREATERTHANEQUAL, 0)
+}
+
+func (s *OperationContext) AND() antlr.TerminalNode {
+	return s.GetToken(MinigoParserAND, 0)
+}
+
+func (s *OperationContext) OR() antlr.TerminalNode {
+	return s.GetToken(MinigoParserOR, 0)
+}
+
+func (s *OperationContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterOperation(s)
+	}
+}
+
+func (s *OperationContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitOperation(s)
+	}
+}
+
+func (s *OperationContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitOperation(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -4870,8 +4870,8 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			localctx = NewOperationExpressionContext(p, NewExpressionContext(p, _parentctx, _parentState))
-			localctx.(*OperationExpressionContext).left = _prevctx
+			localctx = NewOperationContext(p, NewExpressionContext(p, _parentctx, _parentState))
+			localctx.(*OperationContext).left = _prevctx
 
 			p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_expression)
 			p.SetState(244)
@@ -4896,7 +4896,7 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 
 				var _x = p.expression(6)
 
-				localctx.(*OperationExpressionContext).right = _x
+				localctx.(*OperationContext).right = _x
 			}
 
 		}

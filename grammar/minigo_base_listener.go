@@ -190,17 +190,17 @@ func (s *BaseMinigoListener) EnterCaretExpression(ctx *CaretExpressionContext) {
 // ExitCaretExpression is called when production caretExpression is exited.
 func (s *BaseMinigoListener) ExitCaretExpression(ctx *CaretExpressionContext) {}
 
-// EnterOperationExpression is called when production operationExpression is entered.
-func (s *BaseMinigoListener) EnterOperationExpression(ctx *OperationExpressionContext) {}
-
-// ExitOperationExpression is called when production operationExpression is exited.
-func (s *BaseMinigoListener) ExitOperationExpression(ctx *OperationExpressionContext) {}
-
 // EnterPlusExpression is called when production plusExpression is entered.
 func (s *BaseMinigoListener) EnterPlusExpression(ctx *PlusExpressionContext) {}
 
 // ExitPlusExpression is called when production plusExpression is exited.
 func (s *BaseMinigoListener) ExitPlusExpression(ctx *PlusExpressionContext) {}
+
+// EnterOperation is called when production operation is entered.
+func (s *BaseMinigoListener) EnterOperation(ctx *OperationContext) {}
+
+// ExitOperation is called when production operation is exited.
+func (s *BaseMinigoListener) ExitOperation(ctx *OperationContext) {}
 
 // EnterExpressionList is called when production expressionList is entered.
 func (s *BaseMinigoListener) EnterExpressionList(ctx *ExpressionListContext) {}

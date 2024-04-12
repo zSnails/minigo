@@ -91,11 +91,11 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#caretExpression.
 	VisitCaretExpression(ctx *CaretExpressionContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#operationExpression.
-	VisitOperationExpression(ctx *OperationExpressionContext) interface{}
-
 	// Visit a parse tree produced by MinigoParser#plusExpression.
 	VisitPlusExpression(ctx *PlusExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#operation.
+	VisitOperation(ctx *OperationContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#expressionList.
 	VisitExpressionList(ctx *ExpressionListContext) interface{}

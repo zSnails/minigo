@@ -91,11 +91,11 @@ type MinigoListener interface {
 	// EnterCaretExpression is called when entering the caretExpression production.
 	EnterCaretExpression(c *CaretExpressionContext)
 
-	// EnterOperationExpression is called when entering the operationExpression production.
-	EnterOperationExpression(c *OperationExpressionContext)
-
 	// EnterPlusExpression is called when entering the plusExpression production.
 	EnterPlusExpression(c *PlusExpressionContext)
+
+	// EnterOperation is called when entering the operation production.
+	EnterOperation(c *OperationContext)
 
 	// EnterExpressionList is called when entering the expressionList production.
 	EnterExpressionList(c *ExpressionListContext)
@@ -310,11 +310,11 @@ type MinigoListener interface {
 	// ExitCaretExpression is called when exiting the caretExpression production.
 	ExitCaretExpression(c *CaretExpressionContext)
 
-	// ExitOperationExpression is called when exiting the operationExpression production.
-	ExitOperationExpression(c *OperationExpressionContext)
-
 	// ExitPlusExpression is called when exiting the plusExpression production.
 	ExitPlusExpression(c *PlusExpressionContext)
+
+	// ExitOperation is called when exiting the operation production.
+	ExitOperation(c *OperationContext)
 
 	// ExitExpressionList is called when exiting the expressionList production.
 	ExitExpressionList(c *ExpressionListContext)

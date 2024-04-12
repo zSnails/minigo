@@ -119,11 +119,11 @@ func (v *BaseMinigoVisitor) VisitCaretExpression(ctx *CaretExpressionContext) in
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitOperationExpression(ctx *OperationExpressionContext) interface{} {
+func (v *BaseMinigoVisitor) VisitPlusExpression(ctx *PlusExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitPlusExpression(ctx *PlusExpressionContext) interface{} {
+func (v *BaseMinigoVisitor) VisitOperation(ctx *OperationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

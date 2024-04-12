@@ -60,7 +60,7 @@ identifierList: IDENTIFIER (COMMA IDENTIFIER)*
               ;
 
 expression: primaryExpression #expressionPrimaryExpression
-          | left=expression (TIMES | DIV | MOD | LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET | COMPARISON | NEGATION | LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | AND | OR) right=expression #operationExpression
+          | left=expression (TIMES | DIV | MOD | LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET | COMPARISON | NEGATION | LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | AND | OR) right=expression #operation
           | PLUS expression #plusExpression
           | MINUS expression #minusExpression
           | NOT expression #notExpression
