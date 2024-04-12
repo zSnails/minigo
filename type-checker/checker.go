@@ -28,7 +28,7 @@ func (t *TypeChecker) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
 
 // VisitFunctionCall implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interface{} {
-    panic("unimplemented")
+	panic("unimplemented")
 }
 
 // VisitLenCall implements grammar.MinigoVisitor.
@@ -46,7 +46,7 @@ func (t *TypeChecker) VisitOperandExpression(ctx *grammar.OperandExpressionConte
 	if operand := ctx.Operand(); operand != nil {
 		return t.Visit(operand)
 	}
-    return t.VisitChildren(ctx)
+	return t.VisitChildren(ctx)
 }
 
 // VisitSubIndex implements grammar.MinigoVisitor.
