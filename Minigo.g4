@@ -70,13 +70,13 @@ expression: primaryExpression #expressionPrimaryExpression
 expressionList: expression (COMMA expression)*
               ;
 
-primaryExpression: operand
-                 | primaryExpression selector
-                 | primaryExpression index
-                 | primaryExpression arguments
-                 | appendExpression
-                 | lengthExpression
-                 | capExpression
+primaryExpression: operand #operandExpression
+                 | primaryExpression selector #memberAccessor
+                 | primaryExpression index #subIndex
+                 | primaryExpression arguments #functionCall
+                 | appendExpression #appendCall
+                 | lengthExpression #lenCall
+                 | capExpression #capCall
                  ;
 
 operand: literal
