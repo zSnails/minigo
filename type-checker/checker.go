@@ -377,20 +377,6 @@ func (t *TypeChecker) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 
 // VisitFuncFrontDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) interface{} {
-	name := ctx.IDENTIFIER()
-	var _type *symboltable.Symbol = nil
-	if declType := ctx.DeclType(); declType != nil {
-		var ok bool
-		_type, ok = t.Visit(ctx.DeclType()).(*symboltable.Symbol)
-		if !ok {
-			_type = nil
-		}
-	}
-	symbol := t.SymbolTable.NewFunction(name.GetText(), _type)
-	err := t.SymbolTable.AddSymbol(symbol)
-	if err != nil {
-		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
-	}
 	t.SymbolTable.EnterScope() // This will enter the function scope
 	if funcArgs := ctx.FuncArgsDecls(); funcArgs != nil {
 		t.Visit(funcArgs)
