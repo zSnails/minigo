@@ -175,18 +175,13 @@ func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 	panic("unimplemented")
 }
 
-var _ grammar.MinigoVisitor = &TypeChecker{}
-
 // VisitInPlaceAssignment implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentContext) interface{} {
 	lhs := ctx.GetLeft()
 	rhs := ctx.GetRight()
-	symbol, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
-		return s.Name == lhs.GetText()
-	})
-
+	symbol, found := t.SymbolTable.GetSymbol(lhs.GetText())
 	if !found {
-		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined: %s", lhs.GetText())))
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined symbol: %s", lhs.GetText())))
 		return nil
 	}
 	right, ok := t.Visit(rhs).(*symboltable.Symbol)
@@ -206,12 +201,13 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 	rhs := ctx.GetRight().AllExpression()
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 		expression := rhs[idx]
-		symbol, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
-			return s.Name == ident.GetText()
-		})
+		symbol, found := t.SymbolTable.GetSymbol(ident.GetText())
+		// .Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+		// return s.Name == ident.GetText()
+		// })
 
 		if !found {
-			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined: %s", ident.GetText())))
+			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined symbol: %s", ident.GetText())))
 			return nil
 		}
 
