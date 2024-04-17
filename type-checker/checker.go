@@ -2,6 +2,7 @@ package checker
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -435,7 +436,7 @@ func (t *TypeChecker) VisitBlock(ctx *grammar.BlockContext) interface{} {
 	return t.VisitChildren(ctx)
 }
 
-// VisitBlockStatement implements grammar.MinigoVisitor.
+// VisitBlockStatement implements grammar.MinigoVisitor.o
 func (t *TypeChecker) VisitBlockStatement(ctx *grammar.BlockStatementContext) interface{} {
 	panic("unimplemented")
 }
