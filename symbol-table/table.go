@@ -51,8 +51,24 @@ type Symbol struct {
 }
 
 func (s Symbol) String() string {
-	if s.SymbolType == FunctionSymbol {
-		return fmt.Sprintf("Function(%d, %s, %s, %s)", s.Scope, s.Name, s.Type, s.Members)
+	if s.SymbolType&FunctionSymbol != 0 {
+		return fmt.Sprintf("func %s%s -> %s", s.Name, s.Members, s.Type)
+	} else if s.SymbolType&VariableSymbol != 0 {
+		if s.IsSlice {
+			return fmt.Sprintf("Slice[%d, %s, %s]", s.Scope, s.Name, s.Type)
+		}
+		return fmt.Sprintf("Variable(%d, %s, %s)", s.Scope, s.Name, s.Type)
+	} else if s.SymbolType&SliceSymbol != 0 {
+		return fmt.Sprintf("Slice[%d, %s, %s]", s.Scope, s.Name, s.Type)
+	} else if s.SymbolType&ArraySymbol != 0 {
+		return fmt.Sprintf("Array(%d)[%d, %s, %s]", s.Size, s.Scope, s.Name, s.Type)
+	} else if s.SymbolType&StructSymbol != 0 {
+		return fmt.Sprintf("Struct(%d, %s, %d members (optimized out))", s.Scope, s.Name, len(s.Members))
+	} else if s.SymbolType&TypeSymbol != 0 {
+		if s.Type == nil {
+			return fmt.Sprintf("Type(%d, %s)", s.Scope, s.Name)
+		}
+		return fmt.Sprintf("Type(%d, %s, %s)", s.Scope, s.Name, s.Type)
 	}
 	return fmt.Sprintf("Symbol(%d, %s, %s)", s.Scope, s.Name, s.Type)
 }
