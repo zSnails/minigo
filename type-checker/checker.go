@@ -284,7 +284,7 @@ func (t *TypeChecker) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 		if !ok {
 			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("invalid type")))
 		}
-		symbol := t.SymbolTable.NewVariable(ident.GetText(), _type)
+		symbol := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
 			t.errors = append(t.errors, t.MakeError(ident.GetSymbol(), err))
