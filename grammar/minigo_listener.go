@@ -121,8 +121,14 @@ type MinigoListener interface {
 	// EnterMemberAccessor is called when entering the memberAccessor production.
 	EnterMemberAccessor(c *MemberAccessorContext)
 
-	// EnterOperand is called when entering the operand production.
-	EnterOperand(c *OperandContext)
+	// EnterLiteralOperand is called when entering the literalOperand production.
+	EnterLiteralOperand(c *LiteralOperandContext)
+
+	// EnterIdentifierOperand is called when entering the identifierOperand production.
+	EnterIdentifierOperand(c *IdentifierOperandContext)
+
+	// EnterExpressionOperand is called when entering the expressionOperand production.
+	EnterExpressionOperand(c *ExpressionOperandContext)
 
 	// EnterIntLiteral is called when entering the intLiteral production.
 	EnterIntLiteral(c *IntLiteralContext)
@@ -199,8 +205,14 @@ type MinigoListener interface {
 	// EnterVariableDeclStatement is called when entering the variableDeclStatement production.
 	EnterVariableDeclStatement(c *VariableDeclStatementContext)
 
-	// EnterSimpleStatement is called when entering the simpleStatement production.
-	EnterSimpleStatement(c *SimpleStatementContext)
+	// EnterExpressionSimpleStatement is called when entering the expressionSimpleStatement production.
+	EnterExpressionSimpleStatement(c *ExpressionSimpleStatementContext)
+
+	// EnterAssignmentSimpleStatement is called when entering the assignmentSimpleStatement production.
+	EnterAssignmentSimpleStatement(c *AssignmentSimpleStatementContext)
+
+	// EnterWalrusDeclaration is called when entering the walrusDeclaration production.
+	EnterWalrusDeclaration(c *WalrusDeclarationContext)
 
 	// EnterNormalAssignment is called when entering the normalAssignment production.
 	EnterNormalAssignment(c *NormalAssignmentContext)
@@ -340,8 +352,14 @@ type MinigoListener interface {
 	// ExitMemberAccessor is called when exiting the memberAccessor production.
 	ExitMemberAccessor(c *MemberAccessorContext)
 
-	// ExitOperand is called when exiting the operand production.
-	ExitOperand(c *OperandContext)
+	// ExitLiteralOperand is called when exiting the literalOperand production.
+	ExitLiteralOperand(c *LiteralOperandContext)
+
+	// ExitIdentifierOperand is called when exiting the identifierOperand production.
+	ExitIdentifierOperand(c *IdentifierOperandContext)
+
+	// ExitExpressionOperand is called when exiting the expressionOperand production.
+	ExitExpressionOperand(c *ExpressionOperandContext)
 
 	// ExitIntLiteral is called when exiting the intLiteral production.
 	ExitIntLiteral(c *IntLiteralContext)
@@ -418,8 +436,14 @@ type MinigoListener interface {
 	// ExitVariableDeclStatement is called when exiting the variableDeclStatement production.
 	ExitVariableDeclStatement(c *VariableDeclStatementContext)
 
-	// ExitSimpleStatement is called when exiting the simpleStatement production.
-	ExitSimpleStatement(c *SimpleStatementContext)
+	// ExitExpressionSimpleStatement is called when exiting the expressionSimpleStatement production.
+	ExitExpressionSimpleStatement(c *ExpressionSimpleStatementContext)
+
+	// ExitAssignmentSimpleStatement is called when exiting the assignmentSimpleStatement production.
+	ExitAssignmentSimpleStatement(c *AssignmentSimpleStatementContext)
+
+	// ExitWalrusDeclaration is called when exiting the walrusDeclaration production.
+	ExitWalrusDeclaration(c *WalrusDeclarationContext)
 
 	// ExitNormalAssignment is called when exiting the normalAssignment production.
 	ExitNormalAssignment(c *NormalAssignmentContext)

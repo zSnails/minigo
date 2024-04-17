@@ -121,8 +121,14 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#memberAccessor.
 	VisitMemberAccessor(ctx *MemberAccessorContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#operand.
-	VisitOperand(ctx *OperandContext) interface{}
+	// Visit a parse tree produced by MinigoParser#literalOperand.
+	VisitLiteralOperand(ctx *LiteralOperandContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#identifierOperand.
+	VisitIdentifierOperand(ctx *IdentifierOperandContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#expressionOperand.
+	VisitExpressionOperand(ctx *ExpressionOperandContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#intLiteral.
 	VisitIntLiteral(ctx *IntLiteralContext) interface{}
@@ -199,8 +205,14 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#variableDeclStatement.
 	VisitVariableDeclStatement(ctx *VariableDeclStatementContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#simpleStatement.
-	VisitSimpleStatement(ctx *SimpleStatementContext) interface{}
+	// Visit a parse tree produced by MinigoParser#expressionSimpleStatement.
+	VisitExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#assignmentSimpleStatement.
+	VisitAssignmentSimpleStatement(ctx *AssignmentSimpleStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#walrusDeclaration.
+	VisitWalrusDeclaration(ctx *WalrusDeclarationContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#normalAssignment.
 	VisitNormalAssignment(ctx *NormalAssignmentContext) interface{}

@@ -250,11 +250,23 @@ func (s *BaseMinigoListener) EnterMemberAccessor(ctx *MemberAccessorContext) {}
 // ExitMemberAccessor is called when production memberAccessor is exited.
 func (s *BaseMinigoListener) ExitMemberAccessor(ctx *MemberAccessorContext) {}
 
-// EnterOperand is called when production operand is entered.
-func (s *BaseMinigoListener) EnterOperand(ctx *OperandContext) {}
+// EnterLiteralOperand is called when production literalOperand is entered.
+func (s *BaseMinigoListener) EnterLiteralOperand(ctx *LiteralOperandContext) {}
 
-// ExitOperand is called when production operand is exited.
-func (s *BaseMinigoListener) ExitOperand(ctx *OperandContext) {}
+// ExitLiteralOperand is called when production literalOperand is exited.
+func (s *BaseMinigoListener) ExitLiteralOperand(ctx *LiteralOperandContext) {}
+
+// EnterIdentifierOperand is called when production identifierOperand is entered.
+func (s *BaseMinigoListener) EnterIdentifierOperand(ctx *IdentifierOperandContext) {}
+
+// ExitIdentifierOperand is called when production identifierOperand is exited.
+func (s *BaseMinigoListener) ExitIdentifierOperand(ctx *IdentifierOperandContext) {}
+
+// EnterExpressionOperand is called when production expressionOperand is entered.
+func (s *BaseMinigoListener) EnterExpressionOperand(ctx *ExpressionOperandContext) {}
+
+// ExitExpressionOperand is called when production expressionOperand is exited.
+func (s *BaseMinigoListener) ExitExpressionOperand(ctx *ExpressionOperandContext) {}
 
 // EnterIntLiteral is called when production intLiteral is entered.
 func (s *BaseMinigoListener) EnterIntLiteral(ctx *IntLiteralContext) {}
@@ -406,11 +418,23 @@ func (s *BaseMinigoListener) EnterVariableDeclStatement(ctx *VariableDeclStateme
 // ExitVariableDeclStatement is called when production variableDeclStatement is exited.
 func (s *BaseMinigoListener) ExitVariableDeclStatement(ctx *VariableDeclStatementContext) {}
 
-// EnterSimpleStatement is called when production simpleStatement is entered.
-func (s *BaseMinigoListener) EnterSimpleStatement(ctx *SimpleStatementContext) {}
+// EnterExpressionSimpleStatement is called when production expressionSimpleStatement is entered.
+func (s *BaseMinigoListener) EnterExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) {}
 
-// ExitSimpleStatement is called when production simpleStatement is exited.
-func (s *BaseMinigoListener) ExitSimpleStatement(ctx *SimpleStatementContext) {}
+// ExitExpressionSimpleStatement is called when production expressionSimpleStatement is exited.
+func (s *BaseMinigoListener) ExitExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) {}
+
+// EnterAssignmentSimpleStatement is called when production assignmentSimpleStatement is entered.
+func (s *BaseMinigoListener) EnterAssignmentSimpleStatement(ctx *AssignmentSimpleStatementContext) {}
+
+// ExitAssignmentSimpleStatement is called when production assignmentSimpleStatement is exited.
+func (s *BaseMinigoListener) ExitAssignmentSimpleStatement(ctx *AssignmentSimpleStatementContext) {}
+
+// EnterWalrusDeclaration is called when production walrusDeclaration is entered.
+func (s *BaseMinigoListener) EnterWalrusDeclaration(ctx *WalrusDeclarationContext) {}
+
+// ExitWalrusDeclaration is called when production walrusDeclaration is exited.
+func (s *BaseMinigoListener) ExitWalrusDeclaration(ctx *WalrusDeclarationContext) {}
 
 // EnterNormalAssignment is called when production normalAssignment is entered.
 func (s *BaseMinigoListener) EnterNormalAssignment(ctx *NormalAssignmentContext) {}

@@ -159,7 +159,15 @@ func (v *BaseMinigoVisitor) VisitMemberAccessor(ctx *MemberAccessorContext) inte
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitOperand(ctx *OperandContext) interface{} {
+func (v *BaseMinigoVisitor) VisitLiteralOperand(ctx *LiteralOperandContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIdentifierOperand(ctx *IdentifierOperandContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitExpressionOperand(ctx *ExpressionOperandContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -263,7 +271,15 @@ func (v *BaseMinigoVisitor) VisitVariableDeclStatement(ctx *VariableDeclStatemen
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitSimpleStatement(ctx *SimpleStatementContext) interface{} {
+func (v *BaseMinigoVisitor) VisitExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitAssignmentSimpleStatement(ctx *AssignmentSimpleStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitWalrusDeclaration(ctx *WalrusDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
