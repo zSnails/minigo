@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/zSnails/minigo/linked-list/single"
 )
 
@@ -40,6 +41,9 @@ const (
 
 type Symbol struct {
 	SymbolType SymbolType
+	Token      antlr.Token
+	IsSlice    bool
+	Size       uint64 //  this field will only be used if the symbol is an array
 	Scope      uint8
 	Name       string
 	Type       *Symbol
@@ -98,9 +102,12 @@ func NewPrimitive(name string) *Symbol {
 	}
 }
 
-func (t *SymbolTable) NewVariable(name string, _type *Symbol) *Symbol {
+func (t *SymbolTable) NewVariable(token antlr.Token, name string, _type *Symbol) *Symbol {
 	return &Symbol{
 		SymbolType: VariableSymbol,
+		Token:      token,
+		IsSlice:    false,
+		Size:       0,
 		Scope:      t.Scope,
 		Name:       name,
 		Type:       _type,
@@ -108,9 +115,12 @@ func (t *SymbolTable) NewVariable(name string, _type *Symbol) *Symbol {
 	}
 }
 
-func (t *SymbolTable) NewFunction(name string, _type *Symbol, members ...*Symbol) *Symbol {
+func (t *SymbolTable) NewFunction(token antlr.Token, name string, _type *Symbol, members ...*Symbol) *Symbol {
 	return &Symbol{
 		SymbolType: FunctionSymbol,
+		Token:      token,
+		IsSlice:    false,
+		Size:       0,
 		Scope:      t.Scope,
 		Name:       name,
 		Type:       _type,
@@ -118,20 +128,53 @@ func (t *SymbolTable) NewFunction(name string, _type *Symbol, members ...*Symbol
 	}
 }
 
-func (t *SymbolTable) NewType(name string, typename string) (*Symbol, error) {
-	_type, found := t.Symbols.FindFirst(func(s *Symbol) bool {
-		return s.Name == typename
-	})
-	if !found {
-		return nil, fmt.Errorf("type %s does not exist", typename)
+func (t *SymbolTable) NewStructType(token antlr.Token, name string, members ...*Symbol) *Symbol {
+	return &Symbol{
+		SymbolType: TypeSymbol | StructSymbol,
+		Token:      token,
+		IsSlice:    false,
+		Size:       0,
+		Scope:      t.Scope,
+		Name:       name,
+		Type:       nil,
+		Members:    members,
 	}
+}
+
+func (t *SymbolTable) NewAliasType(token antlr.Token, name string, _type *Symbol) *Symbol {
 	return &Symbol{
 		SymbolType: TypeSymbol,
-		Scope:      0, // Types are always global, so the 0 scope is used
+		Token:      token,
+		IsSlice:    false,
+		Size:       0,
+		Scope:      t.Scope,
 		Name:       name,
 		Type:       _type,
-		Members:    nil, // TODO: this should be defined for struct types, I'll probably just create another helper method for that
-	}, nil
+		Members:    nil,
+	}
+}
+func (t *SymbolTable) NewArrayType(token antlr.Token, name string, _type *Symbol, size uint64) *Symbol {
+	return &Symbol{
+		SymbolType: ArraySymbol,
+		Size:       size,
+		Scope:      t.Scope,
+		Name:       name,
+		Type:       _type,
+		Members:    nil,
+	}
+}
+
+func (t *SymbolTable) NewSliceType(token antlr.Token, name string, _type *Symbol) *Symbol {
+	return &Symbol{
+		SymbolType: SliceSymbol,
+		Token:      token,
+		IsSlice:    false,
+		Size:       0,
+		Scope:      t.Scope,
+		Name:       name,
+		Type:       _type,
+		Members:    nil,
+	}
 }
 
 var (
