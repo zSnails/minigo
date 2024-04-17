@@ -252,7 +252,7 @@ func (t *TypeChecker) VisitMultiTypeDeclaration(ctx *grammar.MultiTypeDeclaratio
 }
 
 func (t *TypeChecker) MakeError(token antlr.Token, err error) error {
-	return fmt.Errorf("%s:%d:%d: %w", t.filename, token.GetLine(), token.GetTokenSource().GetCharPositionInLine(), err)
+	return fmt.Errorf("%s:%d:%d: %w", t.filename, token.GetLine(), token.GetColumn(), err)
 }
 
 // VisitSingleVarDeclsNoExpsDecl implements grammar.MinigoVisitor.
