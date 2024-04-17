@@ -402,7 +402,17 @@ func (t *TypeChecker) VisitExpressionCaseClauseList(ctx *grammar.ExpressionCaseC
 
 // VisitExpressionList implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitExpressionList(ctx *grammar.ExpressionListContext) interface{} {
-	panic("unimplemented")
+	exprs := ctx.AllExpression()
+	out := []*symboltable.Symbol{}
+	for _, expr := range exprs {
+		_type, ok := t.Visit(expr).(*symboltable.Symbol)
+		if !ok {
+			panic("deos")
+			continue
+		}
+		out = append(out, _type)
+	}
+	return out
 }
 
 // VisitExpressionSwitchCase implements grammar.MinigoVisitor.
