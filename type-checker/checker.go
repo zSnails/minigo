@@ -26,9 +26,33 @@ func (t *TypeChecker) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
 	panic("unimplemented")
 }
 
+func (t *TypeChecker) FindGlobalSymbol(name string) (*symboltable.Symbol, bool) {
+	return t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+		return s.Scope == 0 && s.Name == name
+	})
+}
+
 // VisitFunctionCall implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interface{} {
-	panic("unimplemented")
+	fn := t.Visit(ctx.PrimaryExpression()).(*symboltable.Symbol)
+	args := t.VisitExpressionList(ctx.Arguments().ExpressionList(0).(*grammar.ExpressionListContext)).([]*symboltable.Symbol)
+	expectedMembers := len(fn.Members)
+	gotArgs := len(args)
+	if gotArgs != expectedMembers {
+		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("expected %d arguments but got %d instead", expectedMembers, gotArgs)))
+	}
+	if expectedMembers <= gotArgs {
+		for idx, member := range fn.Members {
+			arg := args[idx]
+			if arg.SymbolType != symboltable.TypeSymbol {
+				arg = arg.Type
+			}
+			if member.Type != arg {
+				t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("expected type '%s' but got '%s' instead", member.Type.Name, arg.Name)))
+			}
+		}
+	}
+	return nil
 }
 
 // VisitLenCall implements grammar.MinigoVisitor.
