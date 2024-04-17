@@ -212,14 +212,17 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 		var members []*symboltable.Symbol = nil
 		if arguments := fun.FuncArgsDecls(); arguments != nil {
 			for _, variable := range arguments.AllSingleVarDeclNoExps() {
-				varType := t.Visit(variable.DeclType()).(*symboltable.Symbol)
+				varType, ok := t.Visit(variable.DeclType()).(declTypePayload)
+				if !ok {
+					continue // unrecoverable
+				}
 				for _, identifier := range variable.IdentifierList().AllIDENTIFIER() {
-					members = append(members, t.SymbolTable.NewVariable(identifier.GetText(), varType))
+					members = append(members, t.SymbolTable.NewVariable(identifier.GetSymbol(), identifier.GetText(), getType(varType.symbol)))
 				}
 			}
 		}
 
-		symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetText(), rt, members...)
+		symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetSymbol(), fun.IDENTIFIER().GetText(), rt, members...)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
 			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
@@ -331,26 +334,45 @@ func (t *TypeChecker) VisitContinueStatement(ctx *grammar.ContinueStatementConte
 	panic("unimplemented")
 }
 
+type declTypePayload struct {
+	symbol  *symboltable.Symbol
+	IsSlice bool
+	IsArray bool
+}
+
 // VisitDeclType implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitDeclType(ctx *grammar.DeclTypeContext) interface{} {
 	// Get the name
+	out := declTypePayload{
+		symbol:  nil,
+		IsSlice: false,
+		IsArray: false,
+	}
 	var name string
 	if ident := ctx.IDENTIFIER(); ident != nil {
 		name = ident.GetText()
-	} else if ident := ctx.SliceDeclType().DeclType().IDENTIFIER(); ident != nil {
-		name = ident.GetText()
-	} else if ident := ctx.ArrayDeclType().DeclType().IDENTIFIER(); ident != nil {
-		name = ident.GetText()
+	} else if slice := ctx.SliceDeclType(); slice != nil {
+		if ident := slice.DeclType().IDENTIFIER(); ident != nil {
+			name = ident.GetText()
+			out.IsSlice = true
+		}
+	} else if array := ctx.ArrayDeclType(); array != nil {
+		if ident := array.DeclType().IDENTIFIER(); ident != nil {
+			name = ident.GetText()
+			out.IsArray = true
+		}
+	} else if _struct := ctx.StructDeclType(); _struct != nil {
+		panic("TODO: implement handling inline struct types, NOTE: I'll probably just create an in memory temp type")
+		return nil // I'll probably return either way so I'll leave this here
 	}
 
-	_type, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
-		return s.Name == name
-	})
+	_type, found := t.SymbolTable.GetSymbol(name)
 	if !found {
 		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("typename %s not found", name)))
 		return nil
 	}
-	return _type
+	out.symbol = _type
+	return out
 }
 
 // VisitEmptyVariableDeclaration implements grammar.MinigoVisitor.
@@ -513,21 +535,67 @@ func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) in
 	name := ctx.IDENTIFIER()
 	declType := ctx.DeclType()
 	if typeName := declType.IDENTIFIER(); typeName != nil {
-		_type, err := t.SymbolTable.NewType(name.GetText(), typeName.GetText())
-		if err != nil {
-			t.errors = append(t.errors, t.MakeError(typeName.GetSymbol(), err))
+		_type, found := t.SymbolTable.GetSymbol(typeName.GetText())
+		if !found {
+			t.errors = append(t.errors, t.MakeError(typeName.GetSymbol(), fmt.Errorf("unkown symbol '%s'", typeName.GetText())))
 			return nil // Can't continue from here, it will just not work
 		}
-		err = t.SymbolTable.AddSymbol(_type)
+		symbol := t.SymbolTable.NewAliasType(name.GetSymbol(), name.GetText(), _type)
+		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
 			t.errors = append(t.errors, t.MakeError(name.GetSymbol(), err))
 		}
-	} else if typeName := declType.SliceDeclType(); typeName != nil {
-		// TODO: add slice to the symbol table
-	} else if typeName := declType.ArrayDeclType(); typeName != nil {
-		// TODO: add array to the symbol table
-	} else if typeName := declType.StructDeclType(); typeName != nil {
-		// TODO: add struct to the symbol table
+	} else if sliceDecl := declType.SliceDeclType(); sliceDecl != nil {
+		typeName := sliceDecl.DeclType().IDENTIFIER().GetText()
+		_type, found := t.SymbolTable.GetSymbol(typeName)
+		if !found {
+			t.errors = append(t.errors, t.MakeError(sliceDecl.GetStart(), fmt.Errorf("unknown symbol '%s'", typeName)))
+			return nil // Can't continue from here, it will just not work
+		}
+		symbol := t.SymbolTable.NewSliceType(name.GetSymbol(), name.GetText(), _type)
+		err := t.SymbolTable.AddSymbol(symbol)
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(name.GetSymbol(), err))
+		}
+	} else if arrayDecl := declType.ArrayDeclType(); arrayDecl != nil {
+		originalSize := arrayDecl.INTLITERAL().GetText()
+		size, _ := strconv.ParseUint(originalSize, 10, 64)
+		typeName := arrayDecl.DeclType().IDENTIFIER().GetText()
+		_type, found := t.SymbolTable.GetSymbol(typeName)
+		if !found {
+			t.errors = append(t.errors, t.MakeError(arrayDecl.GetStart(), fmt.Errorf("unkown symbol '%s'", typeName)))
+			return nil // Can't continue from here, it will just not work
+		}
+		symbol := t.SymbolTable.NewArrayType(name.GetSymbol(), name.GetText(), _type, size)
+		err := t.SymbolTable.AddSymbol(symbol)
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(name.GetSymbol(), err))
+		}
+	} else if structType := declType.StructDeclType(); structType != nil {
+		symbol := t.SymbolTable.NewStructType(name.GetSymbol(), name.GetText())
+		err := t.SymbolTable.AddSymbol(symbol)
+		if err != nil {
+			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
+			return nil
+		}
+		if members := structType.StructMemDecls(); members != nil {
+			decls := members.AllSingleVarDeclNoExps()
+			for _, decl := range decls {
+				idents := decl.IdentifierList().AllIDENTIFIER()
+				_type, ok := t.Visit(decl.DeclType()).(declTypePayload)
+				if !ok {
+					continue
+				}
+				for _, ident := range idents {
+					variable := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type.symbol)
+					if _type.IsSlice || _type.IsArray {
+						variable.IsSlice = true
+					}
+					symbol.Members = append(symbol.Members, variable)
+				}
+			}
+		}
+		return nil
 	}
 	return nil
 }
@@ -539,12 +607,15 @@ func (t *TypeChecker) VisitSingleVarDecl(ctx *grammar.SingleVarDeclContext) inte
 
 // VisitSingleVarDeclNoExps implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsContext) interface{} {
-	_type, ok := t.Visit(ctx.DeclType()).(*symboltable.Symbol)
+	_type, ok := t.Visit(ctx.DeclType()).(declTypePayload)
 	if !ok {
 		return nil // Unrecoverable error
 	}
 	for _, ident := range ctx.IdentifierList().AllIDENTIFIER() {
-		symbol := t.SymbolTable.NewVariable(ident.GetText(), _type)
+		symbol := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type.symbol)
+		if _type.IsArray || _type.IsSlice {
+			symbol.IsSlice = true
+		}
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
 			t.errors = append(t.errors, t.MakeError(ident.GetSymbol(), err))
