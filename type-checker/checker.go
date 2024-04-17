@@ -230,9 +230,20 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 		}
 	}
 
-	t.SymbolTable.EnterScope()
-	defer t.SymbolTable.ExitScope()
-	return t.VisitChildren(ctx)
+	variables := ctx.TopDeclarationList().AllVariableDecl()
+	for _, variable := range variables {
+		t.Visit(variable)
+	}
+
+    funcs = ctx.TopDeclarationList().AllFuncDecl()
+    for _, _func := range funcs {
+        t.Visit(_func)
+    }
+
+	// t.SymbolTable.EnterScope()
+	// defer t.SymbolTable.ExitScope()
+	// return t.VisitChildren(ctx)
+    return nil
 }
 
 // Visit implements grammar.MinigoVisitor.
