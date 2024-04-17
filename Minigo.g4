@@ -79,9 +79,9 @@ primaryExpression: operand #operandExpression
                  | capExpression #capCall
                  ;
 
-operand: literal
-       | IDENTIFIER
-       | LEFTPARENTHESIS expression RIGHTPARENTHESIS
+operand: literal #literalOperand
+       | IDENTIFIER #identifierOperand
+       | LEFTPARENTHESIS expression RIGHTPARENTHESIS #expressionOperand
        ;
 
 literal: INTLITERAL #intLiteral
@@ -129,9 +129,9 @@ statement: PRINT LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #pri
          | variableDecl #variableDeclStatement
          ;
 
-simpleStatement: expression (POSTINC | POSTDEC)?
-               | assignmentStatement
-               | expressionList WALRUS expressionList
+simpleStatement: expression (POSTINC | POSTDEC)? #expressionSimpleStatement
+               | assignmentStatement #assignmentSimpleStatement
+               | left=expressionList WALRUS right=expressionList #walrusDeclaration
                ;
 
 assignmentStatement: left=expressionList EQUALS right=expressionList #normalAssignment
