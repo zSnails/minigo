@@ -151,16 +151,31 @@ func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) inte
 	panic("unimplemented")
 }
 
+func getType(in *symboltable.Symbol) *symboltable.Symbol {
+	if in != nil && in.SymbolType != symboltable.TypeSymbol {
+		return getType(in.Type)
+	}
+	return in
+}
+
 // VisitOperationExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitOperation(ctx *grammar.OperationContext) interface{} {
-	// TODO: check for possible edge cases on this piece of shit
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(*symboltable.Symbol)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(*symboltable.Symbol)
-	if (leftType != rightType) && (leftOk && rightOk) {
+
+	if leftOk {
+		leftType = getType(leftType)
+	}
+
+	if rightOk {
+		rightType = getType(rightType)
+	}
+
+	if (leftOk && rightOk) && (leftType != rightType) {
 		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: %s and %s", leftType.Name, rightType.Name)))
 	}
 	if leftType == nil {
-		return rightOk
+		return rightType
 	}
 	return leftType
 }
