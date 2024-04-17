@@ -83,12 +83,12 @@ func (t *SymbolTable) AddSymbol(symbol *Symbol) error {
 	})
 	if added {
 		switch symbol.SymbolType {
-		case FunctionSymbol: // TODO:
-			return fmt.Errorf("function %s already defined in the current scope", symbol.Name)
+		case FunctionSymbol:
+			return fmt.Errorf("function '%s' already defined in the current scope", symbol.Name)
 		case TypeSymbol:
-			return fmt.Errorf("type %s already defined in the current scope", symbol.Name)
+			return fmt.Errorf("type '%s' already defined in the current scope", symbol.Name)
 		default:
-			return fmt.Errorf("symbol %s already defined in the current scope", symbol.Name)
+			return fmt.Errorf("symbol '%s' already defined in the current scope", symbol.Name)
 		}
 	}
 	t.Symbols.Add(symbol)
