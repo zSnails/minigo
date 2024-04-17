@@ -1,12 +1,12 @@
 // The following code should not produce an error when ran through the parser.
 package main;
 
-var ages []int;
-var names []string;
+type Ages []int;
+var ages Ages;
+var names [9]string;
 var days, years []int;
 
 var (
     otherNames []string;
-    otherDays, otherYears []int;
     otherDays, otherYears []int;
 );
