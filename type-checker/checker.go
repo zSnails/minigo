@@ -315,9 +315,9 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 	for _, fn := range funcs {
 		fun := fn.FuncFrontDecl()
 		fun.IDENTIFIER()
-		var rt *symboltable.Symbol = nil
+		var rt declTypePayload
 		if returnType := fun.DeclType(); returnType != nil {
-			rt = t.Visit(returnType).(*symboltable.Symbol)
+            rt = t.Visit(returnType).(declTypePayload)
 		}
 
 		var members []*symboltable.Symbol = nil
@@ -333,7 +333,7 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 			}
 		}
 
-		symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetSymbol(), fun.IDENTIFIER().GetText(), rt, members...)
+		symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetSymbol(), fun.IDENTIFIER().GetText(), rt.symbol, members...)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
 			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
