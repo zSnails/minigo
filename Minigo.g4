@@ -50,7 +50,7 @@ sliceDeclType: LEFTBRACKET RIGHTBRACKET declType
 arrayDeclType: LEFTBRACKET INTLITERAL RIGHTBRACKET declType
              ;
 
-structDeclType: STRUCT LEFTCURLYBRACE structMemDecls* RIGHTCURLYBRACE
+structDeclType: STRUCT LEFTCURLYBRACE structMemDecls? RIGHTCURLYBRACE
               ;
 
 structMemDecls: singleVarDeclNoExps SEMICOLON (singleVarDeclNoExps SEMICOLON)*
