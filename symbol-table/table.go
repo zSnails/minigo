@@ -30,7 +30,7 @@ func (t SymbolTable) String() string {
 type SymbolType int
 
 const (
-	TypeSymbol SymbolType = iota + 1
+	TypeSymbol SymbolType = 2 << iota
 	VariableSymbol
 	FunctionSymbol
 	SliceSymbol
