@@ -164,9 +164,6 @@ func (t *TypeChecker) VisitMemberAccessor(ctx *grammar.MemberAccessorContext) in
 
 // VisitOperandExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitOperandExpression(ctx *grammar.OperandExpressionContext) interface{} {
-	if operand := ctx.Operand(); operand != nil {
-		return t.Visit(operand)
-	}
 	return t.VisitChildren(ctx)
 }
 
