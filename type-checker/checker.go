@@ -531,7 +531,7 @@ func (t *TypeChecker) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsC
 
 // VisitSliceDeclType implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSliceDeclType(ctx *grammar.SliceDeclTypeContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitStatementList implements grammar.MinigoVisitor.
