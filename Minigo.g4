@@ -10,17 +10,17 @@ variableDecl: VAR singleVarDecl SEMICOLON                                   #var
             ;
 innerVarDecls: singleVarDecl SEMICOLON (singleVarDecl SEMICOLON)*;
 
-singleVarDecl: identifierList declType EQUALS expressionList
-             | identifierList EQUALS expressionList
-             | singleVarDeclNoExps
+singleVarDecl: identifierList declType EQUALS expressionList #typedVarDecl
+             | identifierList EQUALS expressionList #untypedVarDecl
+             | singleVarDeclNoExps #singleVarDeclsNoExpsDecl
              ;
 
 singleVarDeclNoExps: identifierList declType
                    ;
 
-typeDecl: TYPE singleTypeDecl SEMICOLON
-        | TYPE LEFTPARENTHESIS innerTypeDecls RIGHTPARENTHESIS SEMICOLON
-        | TYPE LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON
+typeDecl: TYPE singleTypeDecl SEMICOLON #typeDeclaration
+        | TYPE LEFTPARENTHESIS innerTypeDecls RIGHTPARENTHESIS SEMICOLON #multiTypeDeclaration
+        | TYPE LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON #emptyTypeDeclaration
         ;
 
 innerTypeDecls: singleTypeDecl SEMICOLON (singleTypeDecl SEMICOLON)*
@@ -50,7 +50,7 @@ sliceDeclType: LEFTBRACKET RIGHTBRACKET declType
 arrayDeclType: LEFTBRACKET INTLITERAL RIGHTBRACKET declType
              ;
 
-structDeclType: STRUCT LEFTCURLYBRACE structMemDecls* RIGHTCURLYBRACE
+structDeclType: STRUCT LEFTCURLYBRACE structMemDecls? RIGHTCURLYBRACE
               ;
 
 structMemDecls: singleVarDeclNoExps SEMICOLON (singleVarDeclNoExps SEMICOLON)*
@@ -59,36 +59,36 @@ structMemDecls: singleVarDeclNoExps SEMICOLON (singleVarDeclNoExps SEMICOLON)*
 identifierList: IDENTIFIER (COMMA IDENTIFIER)*
               ;
 
-expression: primaryExpression
-          | expression (TIMES | DIV | MOD | LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET | COMPARISON | NEGATION | LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | AND | OR) expression
-          | PLUS expression
-          | MINUS expression
-          | NOT expression
-          | CARET expression
+expression: primaryExpression #expressionPrimaryExpression
+          | left=expression (TIMES | DIV | MOD | LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET | COMPARISON | NEGATION | LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | AND | OR) right=expression #operation
+          | PLUS expression #plusExpression
+          | MINUS expression #minusExpression
+          | NOT expression #notExpression
+          | CARET expression #caretExpression
           ;
 
 expressionList: expression (COMMA expression)*
               ;
 
-primaryExpression: operand
-                 | primaryExpression selector
-                 | primaryExpression index
-                 | primaryExpression arguments
-                 | appendExpression
-                 | lengthExpression
-                 | capExpression
+primaryExpression: operand #operandExpression
+                 | primaryExpression selector #memberAccessor
+                 | primaryExpression index #subIndex
+                 | primaryExpression arguments #functionCall
+                 | appendExpression #appendCall
+                 | lengthExpression #lenCall
+                 | capExpression #capCall
                  ;
 
-operand: literal
-       | IDENTIFIER
-       | LEFTPARENTHESIS expression RIGHTPARENTHESIS
+operand: literal #literalOperand
+       | IDENTIFIER #identifierOperand
+       | LEFTPARENTHESIS expression RIGHTPARENTHESIS #expressionOperand
        ;
 
-literal: INTLITERAL
-       | FLOATLITERAL
-       | RUNELITERAL
-       | RAWSTRINGLITERAL
-       | INTERPRETEDSTRINGLITERAL
+literal: INTLITERAL #intLiteral
+       | FLOATLITERAL #floatLiteral
+       | RUNELITERAL #runeLiteral
+       | RAWSTRINGLITERAL #rawStringLiteral
+       | INTERPRETEDSTRINGLITERAL #interpretedStringLiteral
        ;
 
 index: LEFTBRACKET expression RIGHTBRACKET
@@ -129,13 +129,13 @@ statement: PRINT LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #pri
          | variableDecl #variableDeclStatement
          ;
 
-simpleStatement: expression (POSTINC | POSTDEC)?
-               | assignmentStatement
-               | expressionList WALRUS expressionList
+simpleStatement: expression (POSTINC | POSTDEC)? #expressionSimpleStatement
+               | assignmentStatement #assignmentSimpleStatement
+               | left=expressionList WALRUS right=expressionList #walrusDeclaration
                ;
 
-assignmentStatement: expressionList EQUALS expressionList
-                   | expression (IADD|IAND|ISUB|IOR|IMUL|IXOR|ILEFTSHIFT|IRIGHTSHIFT|IANDXOR|IMOD|IDIV) expression
+assignmentStatement: left=expressionList EQUALS right=expressionList #normalAssignment
+                   | left=expression (IADD|IAND|ISUB|IOR|IMUL|IXOR|ILEFTSHIFT|IRIGHTSHIFT|IANDXOR|IMOD|IDIV) right=expression #inPlaceAssignment
                    ;
 
 ifStatement: IF expression block

@@ -25,14 +25,26 @@ type MinigoListener interface {
 	// EnterInnerVarDecls is called when entering the innerVarDecls production.
 	EnterInnerVarDecls(c *InnerVarDeclsContext)
 
-	// EnterSingleVarDecl is called when entering the singleVarDecl production.
-	EnterSingleVarDecl(c *SingleVarDeclContext)
+	// EnterTypedVarDecl is called when entering the typedVarDecl production.
+	EnterTypedVarDecl(c *TypedVarDeclContext)
+
+	// EnterUntypedVarDecl is called when entering the untypedVarDecl production.
+	EnterUntypedVarDecl(c *UntypedVarDeclContext)
+
+	// EnterSingleVarDeclsNoExpsDecl is called when entering the singleVarDeclsNoExpsDecl production.
+	EnterSingleVarDeclsNoExpsDecl(c *SingleVarDeclsNoExpsDeclContext)
 
 	// EnterSingleVarDeclNoExps is called when entering the singleVarDeclNoExps production.
 	EnterSingleVarDeclNoExps(c *SingleVarDeclNoExpsContext)
 
-	// EnterTypeDecl is called when entering the typeDecl production.
-	EnterTypeDecl(c *TypeDeclContext)
+	// EnterTypeDeclaration is called when entering the typeDeclaration production.
+	EnterTypeDeclaration(c *TypeDeclarationContext)
+
+	// EnterMultiTypeDeclaration is called when entering the multiTypeDeclaration production.
+	EnterMultiTypeDeclaration(c *MultiTypeDeclarationContext)
+
+	// EnterEmptyTypeDeclaration is called when entering the emptyTypeDeclaration production.
+	EnterEmptyTypeDeclaration(c *EmptyTypeDeclarationContext)
 
 	// EnterInnerTypeDecls is called when entering the innerTypeDecls production.
 	EnterInnerTypeDecls(c *InnerTypeDeclsContext)
@@ -67,20 +79,71 @@ type MinigoListener interface {
 	// EnterIdentifierList is called when entering the identifierList production.
 	EnterIdentifierList(c *IdentifierListContext)
 
-	// EnterExpression is called when entering the expression production.
-	EnterExpression(c *ExpressionContext)
+	// EnterMinusExpression is called when entering the minusExpression production.
+	EnterMinusExpression(c *MinusExpressionContext)
+
+	// EnterExpressionPrimaryExpression is called when entering the expressionPrimaryExpression production.
+	EnterExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
+
+	// EnterNotExpression is called when entering the notExpression production.
+	EnterNotExpression(c *NotExpressionContext)
+
+	// EnterCaretExpression is called when entering the caretExpression production.
+	EnterCaretExpression(c *CaretExpressionContext)
+
+	// EnterPlusExpression is called when entering the plusExpression production.
+	EnterPlusExpression(c *PlusExpressionContext)
+
+	// EnterOperation is called when entering the operation production.
+	EnterOperation(c *OperationContext)
 
 	// EnterExpressionList is called when entering the expressionList production.
 	EnterExpressionList(c *ExpressionListContext)
 
-	// EnterPrimaryExpression is called when entering the primaryExpression production.
-	EnterPrimaryExpression(c *PrimaryExpressionContext)
+	// EnterSubIndex is called when entering the subIndex production.
+	EnterSubIndex(c *SubIndexContext)
 
-	// EnterOperand is called when entering the operand production.
-	EnterOperand(c *OperandContext)
+	// EnterFunctionCall is called when entering the functionCall production.
+	EnterFunctionCall(c *FunctionCallContext)
 
-	// EnterLiteral is called when entering the literal production.
-	EnterLiteral(c *LiteralContext)
+	// EnterCapCall is called when entering the capCall production.
+	EnterCapCall(c *CapCallContext)
+
+	// EnterOperandExpression is called when entering the operandExpression production.
+	EnterOperandExpression(c *OperandExpressionContext)
+
+	// EnterAppendCall is called when entering the appendCall production.
+	EnterAppendCall(c *AppendCallContext)
+
+	// EnterLenCall is called when entering the lenCall production.
+	EnterLenCall(c *LenCallContext)
+
+	// EnterMemberAccessor is called when entering the memberAccessor production.
+	EnterMemberAccessor(c *MemberAccessorContext)
+
+	// EnterLiteralOperand is called when entering the literalOperand production.
+	EnterLiteralOperand(c *LiteralOperandContext)
+
+	// EnterIdentifierOperand is called when entering the identifierOperand production.
+	EnterIdentifierOperand(c *IdentifierOperandContext)
+
+	// EnterExpressionOperand is called when entering the expressionOperand production.
+	EnterExpressionOperand(c *ExpressionOperandContext)
+
+	// EnterIntLiteral is called when entering the intLiteral production.
+	EnterIntLiteral(c *IntLiteralContext)
+
+	// EnterFloatLiteral is called when entering the floatLiteral production.
+	EnterFloatLiteral(c *FloatLiteralContext)
+
+	// EnterRuneLiteral is called when entering the runeLiteral production.
+	EnterRuneLiteral(c *RuneLiteralContext)
+
+	// EnterRawStringLiteral is called when entering the rawStringLiteral production.
+	EnterRawStringLiteral(c *RawStringLiteralContext)
+
+	// EnterInterpretedStringLiteral is called when entering the interpretedStringLiteral production.
+	EnterInterpretedStringLiteral(c *InterpretedStringLiteralContext)
 
 	// EnterIndex is called when entering the index production.
 	EnterIndex(c *IndexContext)
@@ -142,11 +205,20 @@ type MinigoListener interface {
 	// EnterVariableDeclStatement is called when entering the variableDeclStatement production.
 	EnterVariableDeclStatement(c *VariableDeclStatementContext)
 
-	// EnterSimpleStatement is called when entering the simpleStatement production.
-	EnterSimpleStatement(c *SimpleStatementContext)
+	// EnterExpressionSimpleStatement is called when entering the expressionSimpleStatement production.
+	EnterExpressionSimpleStatement(c *ExpressionSimpleStatementContext)
 
-	// EnterAssignmentStatement is called when entering the assignmentStatement production.
-	EnterAssignmentStatement(c *AssignmentStatementContext)
+	// EnterAssignmentSimpleStatement is called when entering the assignmentSimpleStatement production.
+	EnterAssignmentSimpleStatement(c *AssignmentSimpleStatementContext)
+
+	// EnterWalrusDeclaration is called when entering the walrusDeclaration production.
+	EnterWalrusDeclaration(c *WalrusDeclarationContext)
+
+	// EnterNormalAssignment is called when entering the normalAssignment production.
+	EnterNormalAssignment(c *NormalAssignmentContext)
+
+	// EnterInPlaceAssignment is called when entering the inPlaceAssignment production.
+	EnterInPlaceAssignment(c *InPlaceAssignmentContext)
 
 	// EnterIfStatement is called when entering the ifStatement production.
 	EnterIfStatement(c *IfStatementContext)
@@ -184,14 +256,26 @@ type MinigoListener interface {
 	// ExitInnerVarDecls is called when exiting the innerVarDecls production.
 	ExitInnerVarDecls(c *InnerVarDeclsContext)
 
-	// ExitSingleVarDecl is called when exiting the singleVarDecl production.
-	ExitSingleVarDecl(c *SingleVarDeclContext)
+	// ExitTypedVarDecl is called when exiting the typedVarDecl production.
+	ExitTypedVarDecl(c *TypedVarDeclContext)
+
+	// ExitUntypedVarDecl is called when exiting the untypedVarDecl production.
+	ExitUntypedVarDecl(c *UntypedVarDeclContext)
+
+	// ExitSingleVarDeclsNoExpsDecl is called when exiting the singleVarDeclsNoExpsDecl production.
+	ExitSingleVarDeclsNoExpsDecl(c *SingleVarDeclsNoExpsDeclContext)
 
 	// ExitSingleVarDeclNoExps is called when exiting the singleVarDeclNoExps production.
 	ExitSingleVarDeclNoExps(c *SingleVarDeclNoExpsContext)
 
-	// ExitTypeDecl is called when exiting the typeDecl production.
-	ExitTypeDecl(c *TypeDeclContext)
+	// ExitTypeDeclaration is called when exiting the typeDeclaration production.
+	ExitTypeDeclaration(c *TypeDeclarationContext)
+
+	// ExitMultiTypeDeclaration is called when exiting the multiTypeDeclaration production.
+	ExitMultiTypeDeclaration(c *MultiTypeDeclarationContext)
+
+	// ExitEmptyTypeDeclaration is called when exiting the emptyTypeDeclaration production.
+	ExitEmptyTypeDeclaration(c *EmptyTypeDeclarationContext)
 
 	// ExitInnerTypeDecls is called when exiting the innerTypeDecls production.
 	ExitInnerTypeDecls(c *InnerTypeDeclsContext)
@@ -226,20 +310,71 @@ type MinigoListener interface {
 	// ExitIdentifierList is called when exiting the identifierList production.
 	ExitIdentifierList(c *IdentifierListContext)
 
-	// ExitExpression is called when exiting the expression production.
-	ExitExpression(c *ExpressionContext)
+	// ExitMinusExpression is called when exiting the minusExpression production.
+	ExitMinusExpression(c *MinusExpressionContext)
+
+	// ExitExpressionPrimaryExpression is called when exiting the expressionPrimaryExpression production.
+	ExitExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
+
+	// ExitNotExpression is called when exiting the notExpression production.
+	ExitNotExpression(c *NotExpressionContext)
+
+	// ExitCaretExpression is called when exiting the caretExpression production.
+	ExitCaretExpression(c *CaretExpressionContext)
+
+	// ExitPlusExpression is called when exiting the plusExpression production.
+	ExitPlusExpression(c *PlusExpressionContext)
+
+	// ExitOperation is called when exiting the operation production.
+	ExitOperation(c *OperationContext)
 
 	// ExitExpressionList is called when exiting the expressionList production.
 	ExitExpressionList(c *ExpressionListContext)
 
-	// ExitPrimaryExpression is called when exiting the primaryExpression production.
-	ExitPrimaryExpression(c *PrimaryExpressionContext)
+	// ExitSubIndex is called when exiting the subIndex production.
+	ExitSubIndex(c *SubIndexContext)
 
-	// ExitOperand is called when exiting the operand production.
-	ExitOperand(c *OperandContext)
+	// ExitFunctionCall is called when exiting the functionCall production.
+	ExitFunctionCall(c *FunctionCallContext)
 
-	// ExitLiteral is called when exiting the literal production.
-	ExitLiteral(c *LiteralContext)
+	// ExitCapCall is called when exiting the capCall production.
+	ExitCapCall(c *CapCallContext)
+
+	// ExitOperandExpression is called when exiting the operandExpression production.
+	ExitOperandExpression(c *OperandExpressionContext)
+
+	// ExitAppendCall is called when exiting the appendCall production.
+	ExitAppendCall(c *AppendCallContext)
+
+	// ExitLenCall is called when exiting the lenCall production.
+	ExitLenCall(c *LenCallContext)
+
+	// ExitMemberAccessor is called when exiting the memberAccessor production.
+	ExitMemberAccessor(c *MemberAccessorContext)
+
+	// ExitLiteralOperand is called when exiting the literalOperand production.
+	ExitLiteralOperand(c *LiteralOperandContext)
+
+	// ExitIdentifierOperand is called when exiting the identifierOperand production.
+	ExitIdentifierOperand(c *IdentifierOperandContext)
+
+	// ExitExpressionOperand is called when exiting the expressionOperand production.
+	ExitExpressionOperand(c *ExpressionOperandContext)
+
+	// ExitIntLiteral is called when exiting the intLiteral production.
+	ExitIntLiteral(c *IntLiteralContext)
+
+	// ExitFloatLiteral is called when exiting the floatLiteral production.
+	ExitFloatLiteral(c *FloatLiteralContext)
+
+	// ExitRuneLiteral is called when exiting the runeLiteral production.
+	ExitRuneLiteral(c *RuneLiteralContext)
+
+	// ExitRawStringLiteral is called when exiting the rawStringLiteral production.
+	ExitRawStringLiteral(c *RawStringLiteralContext)
+
+	// ExitInterpretedStringLiteral is called when exiting the interpretedStringLiteral production.
+	ExitInterpretedStringLiteral(c *InterpretedStringLiteralContext)
 
 	// ExitIndex is called when exiting the index production.
 	ExitIndex(c *IndexContext)
@@ -301,11 +436,20 @@ type MinigoListener interface {
 	// ExitVariableDeclStatement is called when exiting the variableDeclStatement production.
 	ExitVariableDeclStatement(c *VariableDeclStatementContext)
 
-	// ExitSimpleStatement is called when exiting the simpleStatement production.
-	ExitSimpleStatement(c *SimpleStatementContext)
+	// ExitExpressionSimpleStatement is called when exiting the expressionSimpleStatement production.
+	ExitExpressionSimpleStatement(c *ExpressionSimpleStatementContext)
 
-	// ExitAssignmentStatement is called when exiting the assignmentStatement production.
-	ExitAssignmentStatement(c *AssignmentStatementContext)
+	// ExitAssignmentSimpleStatement is called when exiting the assignmentSimpleStatement production.
+	ExitAssignmentSimpleStatement(c *AssignmentSimpleStatementContext)
+
+	// ExitWalrusDeclaration is called when exiting the walrusDeclaration production.
+	ExitWalrusDeclaration(c *WalrusDeclarationContext)
+
+	// ExitNormalAssignment is called when exiting the normalAssignment production.
+	ExitNormalAssignment(c *NormalAssignmentContext)
+
+	// ExitInPlaceAssignment is called when exiting the inPlaceAssignment production.
+	ExitInPlaceAssignment(c *InPlaceAssignmentContext)
 
 	// ExitIfStatement is called when exiting the ifStatement production.
 	ExitIfStatement(c *IfStatementContext)

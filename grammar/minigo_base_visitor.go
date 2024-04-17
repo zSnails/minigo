@@ -31,7 +31,15 @@ func (v *BaseMinigoVisitor) VisitInnerVarDecls(ctx *InnerVarDeclsContext) interf
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitSingleVarDecl(ctx *SingleVarDeclContext) interface{} {
+func (v *BaseMinigoVisitor) VisitTypedVarDecl(ctx *TypedVarDeclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitUntypedVarDecl(ctx *UntypedVarDeclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitSingleVarDeclsNoExpsDecl(ctx *SingleVarDeclsNoExpsDeclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -39,7 +47,15 @@ func (v *BaseMinigoVisitor) VisitSingleVarDeclNoExps(ctx *SingleVarDeclNoExpsCon
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitTypeDecl(ctx *TypeDeclContext) interface{} {
+func (v *BaseMinigoVisitor) VisitTypeDeclaration(ctx *TypeDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitMultiTypeDeclaration(ctx *MultiTypeDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitEmptyTypeDeclaration(ctx *EmptyTypeDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -87,7 +103,27 @@ func (v *BaseMinigoVisitor) VisitIdentifierList(ctx *IdentifierListContext) inte
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitExpression(ctx *ExpressionContext) interface{} {
+func (v *BaseMinigoVisitor) VisitMinusExpression(ctx *MinusExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitNotExpression(ctx *NotExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitCaretExpression(ctx *CaretExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitPlusExpression(ctx *PlusExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitOperation(ctx *OperationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -95,15 +131,63 @@ func (v *BaseMinigoVisitor) VisitExpressionList(ctx *ExpressionListContext) inte
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitPrimaryExpression(ctx *PrimaryExpressionContext) interface{} {
+func (v *BaseMinigoVisitor) VisitSubIndex(ctx *SubIndexContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitOperand(ctx *OperandContext) interface{} {
+func (v *BaseMinigoVisitor) VisitFunctionCall(ctx *FunctionCallContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitLiteral(ctx *LiteralContext) interface{} {
+func (v *BaseMinigoVisitor) VisitCapCall(ctx *CapCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitOperandExpression(ctx *OperandExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitAppendCall(ctx *AppendCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitLenCall(ctx *LenCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitMemberAccessor(ctx *MemberAccessorContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitLiteralOperand(ctx *LiteralOperandContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIdentifierOperand(ctx *IdentifierOperandContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitExpressionOperand(ctx *ExpressionOperandContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIntLiteral(ctx *IntLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitFloatLiteral(ctx *FloatLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitRuneLiteral(ctx *RuneLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitRawStringLiteral(ctx *RawStringLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitInterpretedStringLiteral(ctx *InterpretedStringLiteralContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -187,11 +271,23 @@ func (v *BaseMinigoVisitor) VisitVariableDeclStatement(ctx *VariableDeclStatemen
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitSimpleStatement(ctx *SimpleStatementContext) interface{} {
+func (v *BaseMinigoVisitor) VisitExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitAssignmentStatement(ctx *AssignmentStatementContext) interface{} {
+func (v *BaseMinigoVisitor) VisitAssignmentSimpleStatement(ctx *AssignmentSimpleStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitWalrusDeclaration(ctx *WalrusDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitNormalAssignment(ctx *NormalAssignmentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitInPlaceAssignment(ctx *InPlaceAssignmentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
