@@ -199,6 +199,11 @@ func (t *TypeChecker) VisitRuneLiteral(ctx *grammar.RuneLiteralContext) interfac
 func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 	funcs := ctx.TopDeclarationList().AllFuncDecl()
 
+	types := ctx.TopDeclarationList().AllTypeDecl()
+	for _, _type := range types {
+		t.Visit(_type)
+	}
+
 	// I did this piece of shit to register functions in the global scope, for
 	// cross reference
 	for _, fn := range funcs {
