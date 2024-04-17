@@ -63,6 +63,7 @@ func main() {
 	typeChecker.Visit(ctx)
 	if typeChecker.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", typeChecker)
+        os.Exit(ParsingError)
 	}
 	fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
 
