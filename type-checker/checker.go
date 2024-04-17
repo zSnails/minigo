@@ -482,16 +482,6 @@ func (t *TypeChecker) VisitMultiVariableDeclaration(ctx *grammar.MultiVariableDe
 
 // VisitOperand implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitOperand(ctx *grammar.OperandContext) interface{} {
-	if ident := ctx.IDENTIFIER(); ident != nil {
-		symbol, found := t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
-			return ident.GetText() == s.Name
-		})
-		if !found {
-			t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("undefined: %s", ident.GetText())))
-			return nil
-		}
-		return symbol.Type
-	}
 	return t.VisitChildren(ctx)
 }
 
