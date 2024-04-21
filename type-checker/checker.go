@@ -315,15 +315,15 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 		t.Visit(variable)
 	}
 
-    funcs = ctx.TopDeclarationList().AllFuncDecl()
-    for _, _func := range funcs {
-        t.Visit(_func)
-    }
+	funcs = ctx.TopDeclarationList().AllFuncDecl()
+	for _, _func := range funcs {
+		t.Visit(_func)
+	}
 
 	// t.SymbolTable.EnterScope()
 	// defer t.SymbolTable.ExitScope()
 	// return t.VisitChildren(ctx)
-    return nil
+	return nil
 }
 
 // Visit implements grammar.MinigoVisitor.
