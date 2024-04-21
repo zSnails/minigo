@@ -19,37 +19,6 @@ type TypeChecker struct {
 
 var _ grammar.MinigoVisitor = &TypeChecker{}
 
-// VisitAliasType implements grammar.MinigoVisitor.
-// func (t *TypeChecker) VisitAliasType(ctx *grammar.AliasTypeContext) interface{} {
-// 	name := ctx.IDENTIFIER().GetText()
-// 	_type, found := t.SymbolTable.GetSymbol(name)
-// 	if !found {
-// 		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), fmt.Errorf("unknown symbol: %s", name)))
-// 		return nil
-// 	}
-
-// 	_, err := t.SymbolTable.NewAliasType("", _type.Name)
-// 	if err != nil {
-// 		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
-// 		return nil
-// 	}
-// 	return _type
-// }
-
-// VisitSliceType implements grammar.MinigoVisitor.
-// func (t *TypeChecker) VisitSliceType(ctx *grammar.SliceTypeContext) interface{} {
-// 	typeName, ok := t.Visit(ctx.SliceDeclType()).(*symboltable.Symbol)
-// 	if !ok {
-// 		return nil // unrecoverable
-// 	}
-// 	symbol, err := t.SymbolTable.NewSliceType("", typeName.Name)
-// 	if err != nil {
-// 		t.errors = append(t.errors, t.MakeError(ctx.GetStart(), err))
-// 		return nil
-// 	}
-// 	return symbol
-// }
-
 // VisitAssignmentSimpleStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitAssignmentSimpleStatement(ctx *grammar.AssignmentSimpleStatementContext) interface{} {
 	return t.VisitChildren(ctx)
