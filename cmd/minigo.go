@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/zSnails/minigo/grammar"
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	ParsingError = iota + 1
+	CompilerError = iota + 1
 	InternalError
 )
 
@@ -28,10 +29,20 @@ func init() {
 }
 
 func main() {
+	// defer func() {
+	// 	message := recover()
+	// 	if message != nil {
+	// 		fmt.Fprintf(os.Stderr, "%s\n", message)
+	// 		os.Exit(InternalError)
+	// 	}
+	// }()
+
 	if filename == "" {
 		fmt.Fprintln(os.Stderr, "`file` can't be empty")
 		os.Exit(InternalError)
 	}
+
+	filename = path.Clean(filename)
 
 	fileStream, err := antlr.NewFileStream(filename)
 	if err != nil {
@@ -39,7 +50,7 @@ func main() {
 		os.Exit(InternalError)
 	}
 	lexer := grammar.NewMinigoLexer(fileStream)
-    lexer.RemoveErrorListeners()
+	lexer.RemoveErrorListeners()
 	cts := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	parser := grammar.NewMinigoParser(cts)
 
@@ -52,20 +63,20 @@ func main() {
 		r = reporter.NewReporter(fileStream.GetSourceName())
 	}
 
-    lexer.AddErrorListener(r.(antlr.ErrorListener))
+	lexer.AddErrorListener(r.(antlr.ErrorListener))
 	parser.AddErrorListener(r.(antlr.ErrorListener))
 	ctx := parser.Root()
 	if r.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
-		os.Exit(ParsingError)
+		os.Exit(CompilerError)
 	}
+	fmt.Printf("ctx.ToStringTree(): %v\n", ctx.ToStringTree(nil, parser))
 
-    fmt.Printf("ctx.ToStringTree(nil, parser): %v\n", ctx.ToStringTree(nil, parser))
 	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName())
 	typeChecker.Visit(ctx)
 	if typeChecker.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", typeChecker)
-        os.Exit(ParsingError)
+		os.Exit(CompilerError)
 	}
 	fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
 
