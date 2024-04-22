@@ -194,6 +194,7 @@ func (t *SymbolTable) NewSliceType(token antlr.Token, name string, _type *Symbol
 }
 
 var (
+	Bool       = NewPrimitive("bool")
 	Int        = NewPrimitive("int")
 	Int8       = NewPrimitive("int8")
 	Int16      = NewPrimitive("int16")
@@ -210,6 +211,8 @@ var (
 	Complex128 = NewPrimitive("complex128")
 	String     = NewPrimitive("string")
 	Rune       = NewPrimitive("rune")
+	True       *Symbol
+	False      *Symbol
 )
 
 func (t *SymbolTable) addPrimitives() {
@@ -229,6 +232,10 @@ func (t *SymbolTable) addPrimitives() {
 	_ = t.AddSymbol(Complex128)
 	_ = t.AddSymbol(String)
 	_ = t.AddSymbol(Rune)
+	True = t.NewVariable(nil, "true", Bool)
+	False = t.NewVariable(nil, "false", Bool)
+	_ = t.AddSymbol(True)
+	_ = t.AddSymbol(False)
 }
 
 func NewSymbolTable() *SymbolTable {
