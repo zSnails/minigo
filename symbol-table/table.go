@@ -59,9 +59,9 @@ func (s Symbol) String() string {
 		}
 		return fmt.Sprintf("Variable(%d, %s, %s)", s.Scope, s.Name, s.Type)
 	} else if s.SymbolType&SliceSymbol != 0 {
-		return fmt.Sprintf("Slice[%d, %s, %s]", s.Scope, s.Name, s.Type)
+		return fmt.Sprintf("[]%s", s.Type)
 	} else if s.SymbolType&ArraySymbol != 0 {
-		return fmt.Sprintf("Array(%d)[%d, %s, %s]", s.Size, s.Scope, s.Name, s.Type)
+		return fmt.Sprintf("[%d]%s", s.Size, s.Name)
 	} else if s.SymbolType&StructSymbol != 0 {
 		return fmt.Sprintf("Struct(%d, %s, %d members (optimized out))", s.Scope, s.Name, len(s.Members))
 	} else if s.SymbolType&TypeSymbol != 0 {
