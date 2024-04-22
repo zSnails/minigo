@@ -140,17 +140,17 @@ assignmentStatement: left=expressionList EQUALS right=expressionList #normalAssi
                    | left=expression (IADD|IAND|ISUB|IOR|IMUL|IXOR|ILEFTSHIFT|IRIGHTSHIFT|IANDXOR|IMOD|IDIV) right=expression #inPlaceAssignment
                    ;
 
-ifStatement: IF expression block
-           | IF expression block ELSE (block|ifStatement)
-           | IF simpleStatement SEMICOLON expression block
-           | IF simpleStatement SEMICOLON expression block ELSE ifStatement
-           | IF simpleStatement SEMICOLON expression block ELSE block
+ifStatement: IF expression block #ifSingleExpression
+           | IF expression block ELSE ifStatement #ifElseIf
+           | IF expression block ELSE block #ifElseBlock
+           | IF simpleStatement SEMICOLON expression block #ifSimpleNoElse
+           | IF simpleStatement SEMICOLON expression block ELSE ifStatement #ifSimpleElseIf
+           | IF simpleStatement SEMICOLON expression block ELSE block #ifSimpleElseBlock
            ;
 
-loop: FOR block
-    | FOR expression block
-    | FOR simpleStatement SEMICOLON expression SEMICOLON simpleStatement block
-    | FOR simpleStatement SEMICOLON SEMICOLON simpleStatement block
+loop: FOR block #infiniteFor
+    | FOR expression block #whileFor
+    | FOR simpleStatement SEMICOLON expression? SEMICOLON simpleStatement block #threePartFor
     ;
 
 switch: SWITCH simpleStatement SEMICOLON expression LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE
