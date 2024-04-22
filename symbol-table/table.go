@@ -43,6 +43,7 @@ type Symbol struct {
 	SymbolType SymbolType
 	Token      antlr.Token
 	IsSlice    bool
+	IsArray    bool
 	Size       uint64 //  this field will only be used if the symbol is an array
 	Scope      uint8
 	Name       string
