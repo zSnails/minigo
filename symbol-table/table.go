@@ -50,7 +50,21 @@ type Symbol struct {
 	Members    []*Symbol
 }
 
+func (s *Symbol) Equals(other *Symbol) bool {
+	return other != nil && s.Type == other.Type && s.IsSlice == other.IsSlice && s.IsArray == other.IsArray && s.Name == other.Name
+}
+
 func (s Symbol) String() string {
+	if s.SymbolType&ArraySymbol != 0 {
+		return fmt.Sprintf("[%d]%s", s.Size, s.Name)
+	} else if s.SymbolType&SliceSymbol != 0 {
+		return fmt.Sprintf("[]%s", s.Name)
+	}
+
+	return s.Name
+}
+
+func (s Symbol) Repr() string {
 	if s.SymbolType&FunctionSymbol != 0 {
 		return fmt.Sprintf("func %s%s -> %s", s.Name, s.Members, s.Type)
 	} else if s.SymbolType&VariableSymbol != 0 {
