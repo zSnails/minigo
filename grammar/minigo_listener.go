@@ -82,6 +82,9 @@ type MinigoListener interface {
 	// EnterMinusExpression is called when entering the minusExpression production.
 	EnterMinusExpression(c *MinusExpressionContext)
 
+	// EnterComparison is called when entering the comparison production.
+	EnterComparison(c *ComparisonContext)
+
 	// EnterExpressionPrimaryExpression is called when entering the expressionPrimaryExpression production.
 	EnterExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
 
@@ -93,6 +96,9 @@ type MinigoListener interface {
 
 	// EnterPlusExpression is called when entering the plusExpression production.
 	EnterPlusExpression(c *PlusExpressionContext)
+
+	// EnterBooleanOperation is called when entering the booleanOperation production.
+	EnterBooleanOperation(c *BooleanOperationContext)
 
 	// EnterOperation is called when entering the operation production.
 	EnterOperation(c *OperationContext)
@@ -220,11 +226,32 @@ type MinigoListener interface {
 	// EnterInPlaceAssignment is called when entering the inPlaceAssignment production.
 	EnterInPlaceAssignment(c *InPlaceAssignmentContext)
 
-	// EnterIfStatement is called when entering the ifStatement production.
-	EnterIfStatement(c *IfStatementContext)
+	// EnterIfSingleExpression is called when entering the ifSingleExpression production.
+	EnterIfSingleExpression(c *IfSingleExpressionContext)
 
-	// EnterLoop is called when entering the loop production.
-	EnterLoop(c *LoopContext)
+	// EnterIfElseIf is called when entering the ifElseIf production.
+	EnterIfElseIf(c *IfElseIfContext)
+
+	// EnterIfElseBlock is called when entering the ifElseBlock production.
+	EnterIfElseBlock(c *IfElseBlockContext)
+
+	// EnterIfSimpleNoElse is called when entering the ifSimpleNoElse production.
+	EnterIfSimpleNoElse(c *IfSimpleNoElseContext)
+
+	// EnterIfSimpleElseIf is called when entering the ifSimpleElseIf production.
+	EnterIfSimpleElseIf(c *IfSimpleElseIfContext)
+
+	// EnterIfSimpleElseBlock is called when entering the ifSimpleElseBlock production.
+	EnterIfSimpleElseBlock(c *IfSimpleElseBlockContext)
+
+	// EnterInfiniteFor is called when entering the infiniteFor production.
+	EnterInfiniteFor(c *InfiniteForContext)
+
+	// EnterWhileFor is called when entering the whileFor production.
+	EnterWhileFor(c *WhileForContext)
+
+	// EnterThreePartFor is called when entering the threePartFor production.
+	EnterThreePartFor(c *ThreePartForContext)
 
 	// EnterSwitch is called when entering the switch production.
 	EnterSwitch(c *SwitchContext)
@@ -313,6 +340,9 @@ type MinigoListener interface {
 	// ExitMinusExpression is called when exiting the minusExpression production.
 	ExitMinusExpression(c *MinusExpressionContext)
 
+	// ExitComparison is called when exiting the comparison production.
+	ExitComparison(c *ComparisonContext)
+
 	// ExitExpressionPrimaryExpression is called when exiting the expressionPrimaryExpression production.
 	ExitExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
 
@@ -324,6 +354,9 @@ type MinigoListener interface {
 
 	// ExitPlusExpression is called when exiting the plusExpression production.
 	ExitPlusExpression(c *PlusExpressionContext)
+
+	// ExitBooleanOperation is called when exiting the booleanOperation production.
+	ExitBooleanOperation(c *BooleanOperationContext)
 
 	// ExitOperation is called when exiting the operation production.
 	ExitOperation(c *OperationContext)
@@ -451,11 +484,32 @@ type MinigoListener interface {
 	// ExitInPlaceAssignment is called when exiting the inPlaceAssignment production.
 	ExitInPlaceAssignment(c *InPlaceAssignmentContext)
 
-	// ExitIfStatement is called when exiting the ifStatement production.
-	ExitIfStatement(c *IfStatementContext)
+	// ExitIfSingleExpression is called when exiting the ifSingleExpression production.
+	ExitIfSingleExpression(c *IfSingleExpressionContext)
 
-	// ExitLoop is called when exiting the loop production.
-	ExitLoop(c *LoopContext)
+	// ExitIfElseIf is called when exiting the ifElseIf production.
+	ExitIfElseIf(c *IfElseIfContext)
+
+	// ExitIfElseBlock is called when exiting the ifElseBlock production.
+	ExitIfElseBlock(c *IfElseBlockContext)
+
+	// ExitIfSimpleNoElse is called when exiting the ifSimpleNoElse production.
+	ExitIfSimpleNoElse(c *IfSimpleNoElseContext)
+
+	// ExitIfSimpleElseIf is called when exiting the ifSimpleElseIf production.
+	ExitIfSimpleElseIf(c *IfSimpleElseIfContext)
+
+	// ExitIfSimpleElseBlock is called when exiting the ifSimpleElseBlock production.
+	ExitIfSimpleElseBlock(c *IfSimpleElseBlockContext)
+
+	// ExitInfiniteFor is called when exiting the infiniteFor production.
+	ExitInfiniteFor(c *InfiniteForContext)
+
+	// ExitWhileFor is called when exiting the whileFor production.
+	ExitWhileFor(c *WhileForContext)
+
+	// ExitThreePartFor is called when exiting the threePartFor production.
+	ExitThreePartFor(c *ThreePartForContext)
 
 	// ExitSwitch is called when exiting the switch production.
 	ExitSwitch(c *SwitchContext)

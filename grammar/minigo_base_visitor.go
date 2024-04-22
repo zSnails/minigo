@@ -107,6 +107,10 @@ func (v *BaseMinigoVisitor) VisitMinusExpression(ctx *MinusExpressionContext) in
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseMinigoVisitor) VisitComparison(ctx *ComparisonContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseMinigoVisitor) VisitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -120,6 +124,10 @@ func (v *BaseMinigoVisitor) VisitCaretExpression(ctx *CaretExpressionContext) in
 }
 
 func (v *BaseMinigoVisitor) VisitPlusExpression(ctx *PlusExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitBooleanOperation(ctx *BooleanOperationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -291,11 +299,39 @@ func (v *BaseMinigoVisitor) VisitInPlaceAssignment(ctx *InPlaceAssignmentContext
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitIfStatement(ctx *IfStatementContext) interface{} {
+func (v *BaseMinigoVisitor) VisitIfSingleExpression(ctx *IfSingleExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitLoop(ctx *LoopContext) interface{} {
+func (v *BaseMinigoVisitor) VisitIfElseIf(ctx *IfElseIfContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIfElseBlock(ctx *IfElseBlockContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIfSimpleNoElse(ctx *IfSimpleNoElseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIfSimpleElseIf(ctx *IfSimpleElseIfContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIfSimpleElseBlock(ctx *IfSimpleElseBlockContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitInfiniteFor(ctx *InfiniteForContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitWhileFor(ctx *WhileForContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitThreePartFor(ctx *ThreePartForContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

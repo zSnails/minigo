@@ -170,6 +170,12 @@ func (s *BaseMinigoListener) EnterMinusExpression(ctx *MinusExpressionContext) {
 // ExitMinusExpression is called when production minusExpression is exited.
 func (s *BaseMinigoListener) ExitMinusExpression(ctx *MinusExpressionContext) {}
 
+// EnterComparison is called when production comparison is entered.
+func (s *BaseMinigoListener) EnterComparison(ctx *ComparisonContext) {}
+
+// ExitComparison is called when production comparison is exited.
+func (s *BaseMinigoListener) ExitComparison(ctx *ComparisonContext) {}
+
 // EnterExpressionPrimaryExpression is called when production expressionPrimaryExpression is entered.
 func (s *BaseMinigoListener) EnterExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) {
 }
@@ -195,6 +201,12 @@ func (s *BaseMinigoListener) EnterPlusExpression(ctx *PlusExpressionContext) {}
 
 // ExitPlusExpression is called when production plusExpression is exited.
 func (s *BaseMinigoListener) ExitPlusExpression(ctx *PlusExpressionContext) {}
+
+// EnterBooleanOperation is called when production booleanOperation is entered.
+func (s *BaseMinigoListener) EnterBooleanOperation(ctx *BooleanOperationContext) {}
+
+// ExitBooleanOperation is called when production booleanOperation is exited.
+func (s *BaseMinigoListener) ExitBooleanOperation(ctx *BooleanOperationContext) {}
 
 // EnterOperation is called when production operation is entered.
 func (s *BaseMinigoListener) EnterOperation(ctx *OperationContext) {}
@@ -448,17 +460,59 @@ func (s *BaseMinigoListener) EnterInPlaceAssignment(ctx *InPlaceAssignmentContex
 // ExitInPlaceAssignment is called when production inPlaceAssignment is exited.
 func (s *BaseMinigoListener) ExitInPlaceAssignment(ctx *InPlaceAssignmentContext) {}
 
-// EnterIfStatement is called when production ifStatement is entered.
-func (s *BaseMinigoListener) EnterIfStatement(ctx *IfStatementContext) {}
+// EnterIfSingleExpression is called when production ifSingleExpression is entered.
+func (s *BaseMinigoListener) EnterIfSingleExpression(ctx *IfSingleExpressionContext) {}
 
-// ExitIfStatement is called when production ifStatement is exited.
-func (s *BaseMinigoListener) ExitIfStatement(ctx *IfStatementContext) {}
+// ExitIfSingleExpression is called when production ifSingleExpression is exited.
+func (s *BaseMinigoListener) ExitIfSingleExpression(ctx *IfSingleExpressionContext) {}
 
-// EnterLoop is called when production loop is entered.
-func (s *BaseMinigoListener) EnterLoop(ctx *LoopContext) {}
+// EnterIfElseIf is called when production ifElseIf is entered.
+func (s *BaseMinigoListener) EnterIfElseIf(ctx *IfElseIfContext) {}
 
-// ExitLoop is called when production loop is exited.
-func (s *BaseMinigoListener) ExitLoop(ctx *LoopContext) {}
+// ExitIfElseIf is called when production ifElseIf is exited.
+func (s *BaseMinigoListener) ExitIfElseIf(ctx *IfElseIfContext) {}
+
+// EnterIfElseBlock is called when production ifElseBlock is entered.
+func (s *BaseMinigoListener) EnterIfElseBlock(ctx *IfElseBlockContext) {}
+
+// ExitIfElseBlock is called when production ifElseBlock is exited.
+func (s *BaseMinigoListener) ExitIfElseBlock(ctx *IfElseBlockContext) {}
+
+// EnterIfSimpleNoElse is called when production ifSimpleNoElse is entered.
+func (s *BaseMinigoListener) EnterIfSimpleNoElse(ctx *IfSimpleNoElseContext) {}
+
+// ExitIfSimpleNoElse is called when production ifSimpleNoElse is exited.
+func (s *BaseMinigoListener) ExitIfSimpleNoElse(ctx *IfSimpleNoElseContext) {}
+
+// EnterIfSimpleElseIf is called when production ifSimpleElseIf is entered.
+func (s *BaseMinigoListener) EnterIfSimpleElseIf(ctx *IfSimpleElseIfContext) {}
+
+// ExitIfSimpleElseIf is called when production ifSimpleElseIf is exited.
+func (s *BaseMinigoListener) ExitIfSimpleElseIf(ctx *IfSimpleElseIfContext) {}
+
+// EnterIfSimpleElseBlock is called when production ifSimpleElseBlock is entered.
+func (s *BaseMinigoListener) EnterIfSimpleElseBlock(ctx *IfSimpleElseBlockContext) {}
+
+// ExitIfSimpleElseBlock is called when production ifSimpleElseBlock is exited.
+func (s *BaseMinigoListener) ExitIfSimpleElseBlock(ctx *IfSimpleElseBlockContext) {}
+
+// EnterInfiniteFor is called when production infiniteFor is entered.
+func (s *BaseMinigoListener) EnterInfiniteFor(ctx *InfiniteForContext) {}
+
+// ExitInfiniteFor is called when production infiniteFor is exited.
+func (s *BaseMinigoListener) ExitInfiniteFor(ctx *InfiniteForContext) {}
+
+// EnterWhileFor is called when production whileFor is entered.
+func (s *BaseMinigoListener) EnterWhileFor(ctx *WhileForContext) {}
+
+// ExitWhileFor is called when production whileFor is exited.
+func (s *BaseMinigoListener) ExitWhileFor(ctx *WhileForContext) {}
+
+// EnterThreePartFor is called when production threePartFor is entered.
+func (s *BaseMinigoListener) EnterThreePartFor(ctx *ThreePartForContext) {}
+
+// ExitThreePartFor is called when production threePartFor is exited.
+func (s *BaseMinigoListener) ExitThreePartFor(ctx *ThreePartForContext) {}
 
 // EnterSwitch is called when production switch is entered.
 func (s *BaseMinigoListener) EnterSwitch(ctx *SwitchContext) {}

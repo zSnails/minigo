@@ -82,6 +82,9 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#minusExpression.
 	VisitMinusExpression(ctx *MinusExpressionContext) interface{}
 
+	// Visit a parse tree produced by MinigoParser#comparison.
+	VisitComparison(ctx *ComparisonContext) interface{}
+
 	// Visit a parse tree produced by MinigoParser#expressionPrimaryExpression.
 	VisitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) interface{}
 
@@ -93,6 +96,9 @@ type MinigoVisitor interface {
 
 	// Visit a parse tree produced by MinigoParser#plusExpression.
 	VisitPlusExpression(ctx *PlusExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#booleanOperation.
+	VisitBooleanOperation(ctx *BooleanOperationContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#operation.
 	VisitOperation(ctx *OperationContext) interface{}
@@ -220,11 +226,32 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#inPlaceAssignment.
 	VisitInPlaceAssignment(ctx *InPlaceAssignmentContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#ifStatement.
-	VisitIfStatement(ctx *IfStatementContext) interface{}
+	// Visit a parse tree produced by MinigoParser#ifSingleExpression.
+	VisitIfSingleExpression(ctx *IfSingleExpressionContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#loop.
-	VisitLoop(ctx *LoopContext) interface{}
+	// Visit a parse tree produced by MinigoParser#ifElseIf.
+	VisitIfElseIf(ctx *IfElseIfContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#ifElseBlock.
+	VisitIfElseBlock(ctx *IfElseBlockContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#ifSimpleNoElse.
+	VisitIfSimpleNoElse(ctx *IfSimpleNoElseContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#ifSimpleElseIf.
+	VisitIfSimpleElseIf(ctx *IfSimpleElseIfContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#ifSimpleElseBlock.
+	VisitIfSimpleElseBlock(ctx *IfSimpleElseBlockContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#infiniteFor.
+	VisitInfiniteFor(ctx *InfiniteForContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#whileFor.
+	VisitWhileFor(ctx *WhileForContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#threePartFor.
+	VisitThreePartFor(ctx *ThreePartForContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#switch.
 	VisitSwitch(ctx *SwitchContext) interface{}
