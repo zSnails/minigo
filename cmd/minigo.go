@@ -29,14 +29,6 @@ func init() {
 }
 
 func main() {
-	// defer func() {
-	// 	message := recover()
-	// 	if message != nil {
-	// 		fmt.Fprintf(os.Stderr, "%s\n", message)
-	// 		os.Exit(InternalError)
-	// 	}
-	// }()
-
 	if filename == "" {
 		fmt.Fprintln(os.Stderr, "`file` can't be empty")
 		os.Exit(InternalError)
