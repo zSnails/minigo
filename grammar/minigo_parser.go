@@ -32,6 +32,7 @@ var MinigoParserStaticData struct {
 func minigoParserInit() {
 	staticData := &MinigoParserStaticData
 	staticData.LiteralNames = []string{
+<<<<<<< HEAD
 		"", "", "", "'('", "')'", "'default'", "'case'", "':'", "'switch'",
 		"'for'", "'if'", "'else'", "'/='", "'%='", "'&^='", "'<<='", "'>>='",
 		"'^='", "'*='", "'|='", "'-='", "'&='", "'+='", "'++'", "'--'", "'continue'",
@@ -39,10 +40,20 @@ func minigoParserInit() {
 		"'append'", "'.'", "", "", "", "", "", "", "", "'!'", "'||'", "'&&'",
 		"'>='", "'<='", "'>'", "'<'", "'!='", "'=='", "'^'", "'|'", "'-'", "'+'",
 		"'&^'", "'&'", "'>>'", "'<<'", "'%'", "'/'", "'*'", "'{'", "'}'", "'struct'",
+=======
+		"", "", "'('", "')'", "'default'", "'case'", "':'", "'switch'", "'for'",
+		"'if'", "'else'", "'/='", "'%='", "'&^='", "'<<='", "'>>='", "'^='",
+		"'*='", "'|='", "'-='", "'&='", "'+='", "'++'", "'--'", "'continue'",
+		"':='", "'break'", "'return'", "'println'", "'print'", "'cap'", "'len'",
+		"'append'", "'.'", "", "", "", "", "", "", "'!'", "'||'", "'&&'", "'>='",
+		"'<='", "'>'", "'<'", "'!='", "'=='", "'^'", "'|'", "'-'", "'+'", "'&^'",
+		"'&'", "'>>'", "'<<'", "'%'", "'/'", "'*'", "'{'", "'}'", "'struct'",
+>>>>>>> a9dd69d (Initial Commit)
 		"", "'['", "']'", "','", "'func'", "'type'", "';'", "'var'", "'='",
 		"'package'",
 	}
 	staticData.SymbolicNames = []string{
+<<<<<<< HEAD
 		"", "COMMENT", "MULTILINE_COMMENT", "LEFTPARENTHESIS", "RIGHTPARENTHESIS",
 		"DEFAULT", "CASE", "COLON", "SWITCH", "FOR", "IF", "ELSE", "IDIV", "IMOD",
 		"IANDXOR", "ILEFTSHIFT", "IRIGHTSHIFT", "IXOR", "IMUL", "IOR", "ISUB",
@@ -55,6 +66,19 @@ func minigoParserInit() {
 		"LEFTSHIFT", "MOD", "DIV", "TIMES", "LEFTCURLYBRACE", "RIGHTCURLYBRACE",
 		"STRUCT", "INTLITERAL", "LEFTBRACKET", "RIGHTBRACKET", "COMMA", "FUNC",
 		"TYPE", "SEMICOLON", "VAR", "EQUALS", "PACKAGE", "IDENTIFIER",
+=======
+		"", "COMMENT", "LEFTPARENTHESIS", "RIGHTPARENTHESIS", "DEFAULT", "CASE",
+		"COLON", "SWITCH", "FOR", "IF", "ELSE", "IDIV", "IMOD", "IANDXOR", "ILEFTSHIFT",
+		"IRIGHTSHIFT", "IXOR", "IMUL", "IOR", "ISUB", "IAND", "IADD", "POSTINC",
+		"POSTDEC", "CONTINUE", "WALRUS", "BREAK", "RETURN", "PRINTLN", "PRINT",
+		"CAP", "LEN", "APPEND", "DOT", "WHITESPACE", "NEWLINE", "INTERPRETEDSTRINGLITERAL",
+		"RAWSTRINGLITERAL", "RUNELITERAL", "FLOATLITERAL", "NOT", "OR", "AND",
+		"GREATERTHANEQUAL", "LESSTHANEQUAL", "GREATERTHAN", "LESSTHAN", "NEGATION",
+		"COMPARISON", "CARET", "PIPE", "MINUS", "PLUS", "AMPERSANDCARET", "AMPERSAND",
+		"RIGHTSHIFT", "LEFTSHIFT", "MOD", "DIV", "TIMES", "LEFTCURLYBRACE",
+		"RIGHTCURLYBRACE", "STRUCT", "INTLITERAL", "LEFTBRACKET", "RIGHTBRACKET",
+		"COMMA", "FUNC", "TYPE", "SEMICOLON", "VAR", "EQUALS", "PACKAGE", "IDENTIFIER",
+>>>>>>> a9dd69d (Initial Commit)
 	}
 	staticData.RuleNames = []string{
 		"root", "topDeclarationList", "variableDecl", "innerVarDecls", "singleVarDecl",
@@ -69,7 +93,11 @@ func minigoParserInit() {
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
+<<<<<<< HEAD
 		4, 1, 75, 499, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+=======
+		4, 1, 73, 514, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+>>>>>>> a9dd69d (Initial Commit)
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7,
 		10, 2, 11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 7, 15,
 		2, 16, 7, 16, 2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 2, 20, 7, 20, 2,
@@ -84,6 +112,7 @@ func minigoParserInit() {
 		4, 3, 4, 130, 8, 4, 1, 5, 1, 5, 1, 5, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1,
 		6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 3, 6, 149, 8, 6, 1,
 		7, 1, 7, 1, 7, 1, 7, 1, 7, 5, 7, 156, 8, 7, 10, 7, 12, 7, 159, 9, 7, 1,
+<<<<<<< HEAD
 		8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 1, 10, 3, 10,
 		172, 8, 10, 1, 10, 1, 10, 3, 10, 176, 8, 10, 1, 11, 1, 11, 1, 11, 5, 11,
 		181, 8, 11, 10, 11, 12, 11, 184, 9, 11, 1, 12, 1, 12, 1, 12, 1, 12, 1,
@@ -288,6 +317,218 @@ func minigoParserInit() {
 		495, 1, 0, 0, 0, 497, 79, 1, 0, 0, 0, 36, 88, 90, 107, 116, 129, 148, 157,
 		171, 175, 182, 193, 209, 221, 229, 242, 249, 257, 265, 273, 275, 284, 296,
 		324, 334, 341, 347, 371, 375, 382, 392, 404, 428, 451, 479, 486, 496,
+=======
+		8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 1, 10, 5, 10,
+		172, 8, 10, 10, 10, 12, 10, 175, 9, 10, 1, 10, 1, 10, 5, 10, 179, 8, 10,
+		10, 10, 12, 10, 182, 9, 10, 1, 11, 1, 11, 1, 11, 5, 11, 187, 8, 11, 10,
+		11, 12, 11, 190, 9, 11, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12,
+		1, 12, 3, 12, 200, 8, 12, 1, 13, 1, 13, 1, 13, 1, 13, 1, 14, 1, 14, 1,
+		14, 1, 14, 1, 14, 1, 15, 1, 15, 1, 15, 5, 15, 214, 8, 15, 10, 15, 12, 15,
+		217, 9, 15, 1, 15, 1, 15, 1, 16, 1, 16, 1, 16, 1, 16, 1, 16, 5, 16, 226,
+		8, 16, 10, 16, 12, 16, 229, 9, 16, 1, 17, 1, 17, 1, 17, 5, 17, 234, 8,
+		17, 10, 17, 12, 17, 237, 9, 17, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18,
+		1, 18, 1, 18, 1, 18, 1, 18, 3, 18, 249, 8, 18, 1, 18, 1, 18, 1, 18, 5,
+		18, 254, 8, 18, 10, 18, 12, 18, 257, 9, 18, 1, 19, 1, 19, 1, 19, 5, 19,
+		262, 8, 19, 10, 19, 12, 19, 265, 9, 19, 1, 20, 1, 20, 1, 20, 1, 20, 1,
+		20, 3, 20, 272, 8, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 5, 20,
+		280, 8, 20, 10, 20, 12, 20, 283, 9, 20, 1, 21, 1, 21, 1, 21, 1, 21, 1,
+		21, 1, 21, 3, 21, 291, 8, 21, 1, 22, 1, 22, 1, 23, 1, 23, 1, 23, 1, 23,
+		1, 24, 1, 24, 5, 24, 301, 8, 24, 10, 24, 12, 24, 304, 9, 24, 1, 24, 1,
+		24, 1, 25, 1, 25, 1, 25, 1, 26, 1, 26, 1, 26, 1, 26, 1, 26, 1, 26, 1, 26,
+		1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1,
+		29, 5, 29, 329, 8, 29, 10, 29, 12, 29, 332, 9, 29, 1, 30, 1, 30, 1, 30,
+		1, 30, 1, 31, 1, 31, 1, 31, 5, 31, 341, 8, 31, 10, 31, 12, 31, 344, 9,
+		31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 5, 31, 351, 8, 31, 10, 31, 12, 31,
+		354, 9, 31, 1, 31, 1, 31, 1, 31, 1, 31, 5, 31, 360, 8, 31, 10, 31, 12,
+		31, 363, 9, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31,
+		1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1,
+		31, 1, 31, 1, 31, 1, 31, 3, 31, 387, 8, 31, 1, 32, 1, 32, 1, 32, 1, 32,
+		3, 32, 393, 8, 32, 1, 32, 1, 32, 1, 32, 1, 32, 1, 32, 3, 32, 400, 8, 32,
+		1, 33, 1, 33, 1, 33, 1, 33, 1, 33, 1, 33, 1, 33, 1, 33, 3, 33, 410, 8,
+		33, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34,
+		1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1,
+		34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34, 1, 34,
+		1, 34, 3, 34, 444, 8, 34, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35, 1,
+		35, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35, 1, 35,
+		1, 35, 1, 35, 1, 35, 1, 35, 3, 35, 467, 8, 35, 1, 36, 1, 36, 1, 36, 1,
+		36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36,
+		1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1, 36, 1,
+		36, 1, 36, 3, 36, 495, 8, 36, 1, 37, 1, 37, 1, 37, 5, 37, 500, 8, 37, 10,
+		37, 12, 37, 503, 9, 37, 1, 38, 1, 38, 1, 38, 1, 38, 1, 39, 1, 39, 1, 39,
+		3, 39, 512, 8, 39, 1, 39, 0, 2, 36, 40, 40, 0, 2, 4, 6, 8, 10, 12, 14,
+		16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50,
+		52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 0, 3, 1, 0, 41,
+		59, 2, 0, 36, 39, 63, 63, 1, 0, 11, 21, 541, 0, 80, 1, 0, 0, 0, 2, 90,
+		1, 0, 0, 0, 4, 107, 1, 0, 0, 0, 6, 109, 1, 0, 0, 0, 8, 129, 1, 0, 0, 0,
+		10, 131, 1, 0, 0, 0, 12, 148, 1, 0, 0, 0, 14, 150, 1, 0, 0, 0, 16, 160,
+		1, 0, 0, 0, 18, 163, 1, 0, 0, 0, 20, 167, 1, 0, 0, 0, 22, 183, 1, 0, 0,
+		0, 24, 199, 1, 0, 0, 0, 26, 201, 1, 0, 0, 0, 28, 205, 1, 0, 0, 0, 30, 210,
+		1, 0, 0, 0, 32, 220, 1, 0, 0, 0, 34, 230, 1, 0, 0, 0, 36, 248, 1, 0, 0,
+		0, 38, 258, 1, 0, 0, 0, 40, 271, 1, 0, 0, 0, 42, 290, 1, 0, 0, 0, 44, 292,
+		1, 0, 0, 0, 46, 294, 1, 0, 0, 0, 48, 298, 1, 0, 0, 0, 50, 307, 1, 0, 0,
+		0, 52, 310, 1, 0, 0, 0, 54, 317, 1, 0, 0, 0, 56, 322, 1, 0, 0, 0, 58, 330,
+		1, 0, 0, 0, 60, 333, 1, 0, 0, 0, 62, 386, 1, 0, 0, 0, 64, 399, 1, 0, 0,
+		0, 66, 409, 1, 0, 0, 0, 68, 443, 1, 0, 0, 0, 70, 466, 1, 0, 0, 0, 72, 494,
+		1, 0, 0, 0, 74, 501, 1, 0, 0, 0, 76, 504, 1, 0, 0, 0, 78, 511, 1, 0, 0,
+		0, 80, 81, 5, 72, 0, 0, 81, 82, 5, 73, 0, 0, 82, 83, 5, 69, 0, 0, 83, 84,
+		3, 2, 1, 0, 84, 1, 1, 0, 0, 0, 85, 89, 3, 4, 2, 0, 86, 89, 3, 12, 6, 0,
+		87, 89, 3, 18, 9, 0, 88, 85, 1, 0, 0, 0, 88, 86, 1, 0, 0, 0, 88, 87, 1,
+		0, 0, 0, 89, 92, 1, 0, 0, 0, 90, 88, 1, 0, 0, 0, 90, 91, 1, 0, 0, 0, 91,
+		3, 1, 0, 0, 0, 92, 90, 1, 0, 0, 0, 93, 94, 5, 70, 0, 0, 94, 95, 3, 8, 4,
+		0, 95, 96, 5, 69, 0, 0, 96, 108, 1, 0, 0, 0, 97, 98, 5, 70, 0, 0, 98, 99,
+		5, 2, 0, 0, 99, 100, 3, 6, 3, 0, 100, 101, 5, 3, 0, 0, 101, 102, 5, 69,
+		0, 0, 102, 108, 1, 0, 0, 0, 103, 104, 5, 70, 0, 0, 104, 105, 5, 2, 0, 0,
+		105, 106, 5, 3, 0, 0, 106, 108, 5, 69, 0, 0, 107, 93, 1, 0, 0, 0, 107,
+		97, 1, 0, 0, 0, 107, 103, 1, 0, 0, 0, 108, 5, 1, 0, 0, 0, 109, 110, 3,
+		8, 4, 0, 110, 116, 5, 69, 0, 0, 111, 112, 3, 8, 4, 0, 112, 113, 5, 69,
+		0, 0, 113, 115, 1, 0, 0, 0, 114, 111, 1, 0, 0, 0, 115, 118, 1, 0, 0, 0,
+		116, 114, 1, 0, 0, 0, 116, 117, 1, 0, 0, 0, 117, 7, 1, 0, 0, 0, 118, 116,
+		1, 0, 0, 0, 119, 120, 3, 34, 17, 0, 120, 121, 3, 24, 12, 0, 121, 122, 5,
+		71, 0, 0, 122, 123, 3, 38, 19, 0, 123, 130, 1, 0, 0, 0, 124, 125, 3, 34,
+		17, 0, 125, 126, 5, 71, 0, 0, 126, 127, 3, 38, 19, 0, 127, 130, 1, 0, 0,
+		0, 128, 130, 3, 10, 5, 0, 129, 119, 1, 0, 0, 0, 129, 124, 1, 0, 0, 0, 129,
+		128, 1, 0, 0, 0, 130, 9, 1, 0, 0, 0, 131, 132, 3, 34, 17, 0, 132, 133,
+		3, 24, 12, 0, 133, 11, 1, 0, 0, 0, 134, 135, 5, 68, 0, 0, 135, 136, 3,
+		16, 8, 0, 136, 137, 5, 69, 0, 0, 137, 149, 1, 0, 0, 0, 138, 139, 5, 68,
+		0, 0, 139, 140, 5, 2, 0, 0, 140, 141, 3, 14, 7, 0, 141, 142, 5, 3, 0, 0,
+		142, 143, 5, 69, 0, 0, 143, 149, 1, 0, 0, 0, 144, 145, 5, 68, 0, 0, 145,
+		146, 5, 2, 0, 0, 146, 147, 5, 3, 0, 0, 147, 149, 5, 69, 0, 0, 148, 134,
+		1, 0, 0, 0, 148, 138, 1, 0, 0, 0, 148, 144, 1, 0, 0, 0, 149, 13, 1, 0,
+		0, 0, 150, 151, 3, 16, 8, 0, 151, 157, 5, 69, 0, 0, 152, 153, 3, 16, 8,
+		0, 153, 154, 5, 69, 0, 0, 154, 156, 1, 0, 0, 0, 155, 152, 1, 0, 0, 0, 156,
+		159, 1, 0, 0, 0, 157, 155, 1, 0, 0, 0, 157, 158, 1, 0, 0, 0, 158, 15, 1,
+		0, 0, 0, 159, 157, 1, 0, 0, 0, 160, 161, 5, 73, 0, 0, 161, 162, 3, 24,
+		12, 0, 162, 17, 1, 0, 0, 0, 163, 164, 3, 20, 10, 0, 164, 165, 3, 60, 30,
+		0, 165, 166, 5, 69, 0, 0, 166, 19, 1, 0, 0, 0, 167, 168, 5, 67, 0, 0, 168,
+		169, 5, 73, 0, 0, 169, 173, 5, 2, 0, 0, 170, 172, 3, 22, 11, 0, 171, 170,
+		1, 0, 0, 0, 172, 175, 1, 0, 0, 0, 173, 171, 1, 0, 0, 0, 173, 174, 1, 0,
+		0, 0, 174, 176, 1, 0, 0, 0, 175, 173, 1, 0, 0, 0, 176, 180, 5, 3, 0, 0,
+		177, 179, 3, 24, 12, 0, 178, 177, 1, 0, 0, 0, 179, 182, 1, 0, 0, 0, 180,
+		178, 1, 0, 0, 0, 180, 181, 1, 0, 0, 0, 181, 21, 1, 0, 0, 0, 182, 180, 1,
+		0, 0, 0, 183, 188, 3, 10, 5, 0, 184, 185, 5, 66, 0, 0, 185, 187, 3, 10,
+		5, 0, 186, 184, 1, 0, 0, 0, 187, 190, 1, 0, 0, 0, 188, 186, 1, 0, 0, 0,
+		188, 189, 1, 0, 0, 0, 189, 23, 1, 0, 0, 0, 190, 188, 1, 0, 0, 0, 191, 192,
+		5, 2, 0, 0, 192, 193, 3, 24, 12, 0, 193, 194, 5, 3, 0, 0, 194, 200, 1,
+		0, 0, 0, 195, 200, 5, 73, 0, 0, 196, 200, 3, 26, 13, 0, 197, 200, 3, 28,
+		14, 0, 198, 200, 3, 30, 15, 0, 199, 191, 1, 0, 0, 0, 199, 195, 1, 0, 0,
+		0, 199, 196, 1, 0, 0, 0, 199, 197, 1, 0, 0, 0, 199, 198, 1, 0, 0, 0, 200,
+		25, 1, 0, 0, 0, 201, 202, 5, 64, 0, 0, 202, 203, 5, 65, 0, 0, 203, 204,
+		3, 24, 12, 0, 204, 27, 1, 0, 0, 0, 205, 206, 5, 64, 0, 0, 206, 207, 5,
+		63, 0, 0, 207, 208, 5, 65, 0, 0, 208, 209, 3, 24, 12, 0, 209, 29, 1, 0,
+		0, 0, 210, 211, 5, 62, 0, 0, 211, 215, 5, 60, 0, 0, 212, 214, 3, 32, 16,
+		0, 213, 212, 1, 0, 0, 0, 214, 217, 1, 0, 0, 0, 215, 213, 1, 0, 0, 0, 215,
+		216, 1, 0, 0, 0, 216, 218, 1, 0, 0, 0, 217, 215, 1, 0, 0, 0, 218, 219,
+		5, 61, 0, 0, 219, 31, 1, 0, 0, 0, 220, 221, 3, 10, 5, 0, 221, 227, 5, 69,
+		0, 0, 222, 223, 3, 10, 5, 0, 223, 224, 5, 69, 0, 0, 224, 226, 1, 0, 0,
+		0, 225, 222, 1, 0, 0, 0, 226, 229, 1, 0, 0, 0, 227, 225, 1, 0, 0, 0, 227,
+		228, 1, 0, 0, 0, 228, 33, 1, 0, 0, 0, 229, 227, 1, 0, 0, 0, 230, 235, 5,
+		73, 0, 0, 231, 232, 5, 66, 0, 0, 232, 234, 5, 73, 0, 0, 233, 231, 1, 0,
+		0, 0, 234, 237, 1, 0, 0, 0, 235, 233, 1, 0, 0, 0, 235, 236, 1, 0, 0, 0,
+		236, 35, 1, 0, 0, 0, 237, 235, 1, 0, 0, 0, 238, 239, 6, 18, -1, 0, 239,
+		249, 3, 40, 20, 0, 240, 241, 5, 52, 0, 0, 241, 249, 3, 36, 18, 4, 242,
+		243, 5, 51, 0, 0, 243, 249, 3, 36, 18, 3, 244, 245, 5, 40, 0, 0, 245, 249,
+		3, 36, 18, 2, 246, 247, 5, 49, 0, 0, 247, 249, 3, 36, 18, 1, 248, 238,
+		1, 0, 0, 0, 248, 240, 1, 0, 0, 0, 248, 242, 1, 0, 0, 0, 248, 244, 1, 0,
+		0, 0, 248, 246, 1, 0, 0, 0, 249, 255, 1, 0, 0, 0, 250, 251, 10, 5, 0, 0,
+		251, 252, 7, 0, 0, 0, 252, 254, 3, 36, 18, 6, 253, 250, 1, 0, 0, 0, 254,
+		257, 1, 0, 0, 0, 255, 253, 1, 0, 0, 0, 255, 256, 1, 0, 0, 0, 256, 37, 1,
+		0, 0, 0, 257, 255, 1, 0, 0, 0, 258, 263, 3, 36, 18, 0, 259, 260, 5, 66,
+		0, 0, 260, 262, 3, 36, 18, 0, 261, 259, 1, 0, 0, 0, 262, 265, 1, 0, 0,
+		0, 263, 261, 1, 0, 0, 0, 263, 264, 1, 0, 0, 0, 264, 39, 1, 0, 0, 0, 265,
+		263, 1, 0, 0, 0, 266, 267, 6, 20, -1, 0, 267, 272, 3, 42, 21, 0, 268, 272,
+		3, 52, 26, 0, 269, 272, 3, 54, 27, 0, 270, 272, 3, 56, 28, 0, 271, 266,
+		1, 0, 0, 0, 271, 268, 1, 0, 0, 0, 271, 269, 1, 0, 0, 0, 271, 270, 1, 0,
+		0, 0, 272, 281, 1, 0, 0, 0, 273, 274, 10, 6, 0, 0, 274, 280, 3, 50, 25,
+		0, 275, 276, 10, 5, 0, 0, 276, 280, 3, 46, 23, 0, 277, 278, 10, 4, 0, 0,
+		278, 280, 3, 48, 24, 0, 279, 273, 1, 0, 0, 0, 279, 275, 1, 0, 0, 0, 279,
+		277, 1, 0, 0, 0, 280, 283, 1, 0, 0, 0, 281, 279, 1, 0, 0, 0, 281, 282,
+		1, 0, 0, 0, 282, 41, 1, 0, 0, 0, 283, 281, 1, 0, 0, 0, 284, 291, 3, 44,
+		22, 0, 285, 291, 5, 73, 0, 0, 286, 287, 5, 2, 0, 0, 287, 288, 3, 36, 18,
+		0, 288, 289, 5, 3, 0, 0, 289, 291, 1, 0, 0, 0, 290, 284, 1, 0, 0, 0, 290,
+		285, 1, 0, 0, 0, 290, 286, 1, 0, 0, 0, 291, 43, 1, 0, 0, 0, 292, 293, 7,
+		1, 0, 0, 293, 45, 1, 0, 0, 0, 294, 295, 5, 64, 0, 0, 295, 296, 3, 36, 18,
+		0, 296, 297, 5, 65, 0, 0, 297, 47, 1, 0, 0, 0, 298, 302, 5, 2, 0, 0, 299,
+		301, 3, 38, 19, 0, 300, 299, 1, 0, 0, 0, 301, 304, 1, 0, 0, 0, 302, 300,
+		1, 0, 0, 0, 302, 303, 1, 0, 0, 0, 303, 305, 1, 0, 0, 0, 304, 302, 1, 0,
+		0, 0, 305, 306, 5, 3, 0, 0, 306, 49, 1, 0, 0, 0, 307, 308, 5, 33, 0, 0,
+		308, 309, 5, 73, 0, 0, 309, 51, 1, 0, 0, 0, 310, 311, 5, 32, 0, 0, 311,
+		312, 5, 2, 0, 0, 312, 313, 3, 36, 18, 0, 313, 314, 5, 66, 0, 0, 314, 315,
+		3, 36, 18, 0, 315, 316, 5, 3, 0, 0, 316, 53, 1, 0, 0, 0, 317, 318, 5, 31,
+		0, 0, 318, 319, 5, 2, 0, 0, 319, 320, 3, 36, 18, 0, 320, 321, 5, 3, 0,
+		0, 321, 55, 1, 0, 0, 0, 322, 323, 5, 30, 0, 0, 323, 324, 5, 2, 0, 0, 324,
+		325, 3, 36, 18, 0, 325, 326, 5, 3, 0, 0, 326, 57, 1, 0, 0, 0, 327, 329,
+		3, 62, 31, 0, 328, 327, 1, 0, 0, 0, 329, 332, 1, 0, 0, 0, 330, 328, 1,
+		0, 0, 0, 330, 331, 1, 0, 0, 0, 331, 59, 1, 0, 0, 0, 332, 330, 1, 0, 0,
+		0, 333, 334, 5, 60, 0, 0, 334, 335, 3, 58, 29, 0, 335, 336, 5, 61, 0, 0,
+		336, 61, 1, 0, 0, 0, 337, 338, 5, 29, 0, 0, 338, 342, 5, 2, 0, 0, 339,
+		341, 3, 38, 19, 0, 340, 339, 1, 0, 0, 0, 341, 344, 1, 0, 0, 0, 342, 340,
+		1, 0, 0, 0, 342, 343, 1, 0, 0, 0, 343, 345, 1, 0, 0, 0, 344, 342, 1, 0,
+		0, 0, 345, 346, 5, 3, 0, 0, 346, 387, 5, 69, 0, 0, 347, 348, 5, 28, 0,
+		0, 348, 352, 5, 2, 0, 0, 349, 351, 3, 38, 19, 0, 350, 349, 1, 0, 0, 0,
+		351, 354, 1, 0, 0, 0, 352, 350, 1, 0, 0, 0, 352, 353, 1, 0, 0, 0, 353,
+		355, 1, 0, 0, 0, 354, 352, 1, 0, 0, 0, 355, 356, 5, 3, 0, 0, 356, 387,
+		5, 69, 0, 0, 357, 361, 5, 27, 0, 0, 358, 360, 3, 36, 18, 0, 359, 358, 1,
+		0, 0, 0, 360, 363, 1, 0, 0, 0, 361, 359, 1, 0, 0, 0, 361, 362, 1, 0, 0,
+		0, 362, 364, 1, 0, 0, 0, 363, 361, 1, 0, 0, 0, 364, 387, 5, 69, 0, 0, 365,
+		366, 5, 26, 0, 0, 366, 387, 5, 69, 0, 0, 367, 368, 5, 24, 0, 0, 368, 387,
+		5, 69, 0, 0, 369, 370, 3, 64, 32, 0, 370, 371, 5, 69, 0, 0, 371, 387, 1,
+		0, 0, 0, 372, 373, 3, 60, 30, 0, 373, 374, 5, 69, 0, 0, 374, 387, 1, 0,
+		0, 0, 375, 376, 3, 72, 36, 0, 376, 377, 5, 69, 0, 0, 377, 387, 1, 0, 0,
+		0, 378, 379, 3, 68, 34, 0, 379, 380, 5, 69, 0, 0, 380, 387, 1, 0, 0, 0,
+		381, 382, 3, 70, 35, 0, 382, 383, 5, 69, 0, 0, 383, 387, 1, 0, 0, 0, 384,
+		387, 3, 12, 6, 0, 385, 387, 3, 4, 2, 0, 386, 337, 1, 0, 0, 0, 386, 347,
+		1, 0, 0, 0, 386, 357, 1, 0, 0, 0, 386, 365, 1, 0, 0, 0, 386, 367, 1, 0,
+		0, 0, 386, 369, 1, 0, 0, 0, 386, 372, 1, 0, 0, 0, 386, 375, 1, 0, 0, 0,
+		386, 378, 1, 0, 0, 0, 386, 381, 1, 0, 0, 0, 386, 384, 1, 0, 0, 0, 386,
+		385, 1, 0, 0, 0, 387, 63, 1, 0, 0, 0, 388, 392, 3, 36, 18, 0, 389, 393,
+		5, 22, 0, 0, 390, 393, 5, 23, 0, 0, 391, 393, 1, 0, 0, 0, 392, 389, 1,
+		0, 0, 0, 392, 390, 1, 0, 0, 0, 392, 391, 1, 0, 0, 0, 393, 400, 1, 0, 0,
+		0, 394, 400, 3, 66, 33, 0, 395, 396, 3, 38, 19, 0, 396, 397, 5, 25, 0,
+		0, 397, 398, 3, 38, 19, 0, 398, 400, 1, 0, 0, 0, 399, 388, 1, 0, 0, 0,
+		399, 394, 1, 0, 0, 0, 399, 395, 1, 0, 0, 0, 400, 65, 1, 0, 0, 0, 401, 402,
+		3, 38, 19, 0, 402, 403, 5, 71, 0, 0, 403, 404, 3, 38, 19, 0, 404, 410,
+		1, 0, 0, 0, 405, 406, 3, 36, 18, 0, 406, 407, 7, 2, 0, 0, 407, 408, 3,
+		36, 18, 0, 408, 410, 1, 0, 0, 0, 409, 401, 1, 0, 0, 0, 409, 405, 1, 0,
+		0, 0, 410, 67, 1, 0, 0, 0, 411, 412, 5, 9, 0, 0, 412, 413, 3, 36, 18, 0,
+		413, 414, 3, 60, 30, 0, 414, 444, 1, 0, 0, 0, 415, 416, 5, 9, 0, 0, 416,
+		417, 3, 36, 18, 0, 417, 418, 3, 60, 30, 0, 418, 419, 5, 10, 0, 0, 419,
+		420, 3, 68, 34, 0, 420, 444, 1, 0, 0, 0, 421, 422, 5, 9, 0, 0, 422, 423,
+		3, 64, 32, 0, 423, 424, 5, 69, 0, 0, 424, 425, 3, 36, 18, 0, 425, 426,
+		3, 60, 30, 0, 426, 444, 1, 0, 0, 0, 427, 428, 5, 9, 0, 0, 428, 429, 3,
+		64, 32, 0, 429, 430, 5, 69, 0, 0, 430, 431, 3, 36, 18, 0, 431, 432, 3,
+		60, 30, 0, 432, 433, 5, 10, 0, 0, 433, 434, 3, 68, 34, 0, 434, 444, 1,
+		0, 0, 0, 435, 436, 5, 9, 0, 0, 436, 437, 3, 64, 32, 0, 437, 438, 5, 69,
+		0, 0, 438, 439, 3, 36, 18, 0, 439, 440, 3, 60, 30, 0, 440, 441, 5, 10,
+		0, 0, 441, 442, 3, 60, 30, 0, 442, 444, 1, 0, 0, 0, 443, 411, 1, 0, 0,
+		0, 443, 415, 1, 0, 0, 0, 443, 421, 1, 0, 0, 0, 443, 427, 1, 0, 0, 0, 443,
+		435, 1, 0, 0, 0, 444, 69, 1, 0, 0, 0, 445, 446, 5, 8, 0, 0, 446, 467, 3,
+		60, 30, 0, 447, 448, 5, 8, 0, 0, 448, 449, 3, 36, 18, 0, 449, 450, 3, 60,
+		30, 0, 450, 467, 1, 0, 0, 0, 451, 452, 5, 8, 0, 0, 452, 453, 3, 64, 32,
+		0, 453, 454, 5, 69, 0, 0, 454, 455, 3, 36, 18, 0, 455, 456, 5, 69, 0, 0,
+		456, 457, 3, 64, 32, 0, 457, 458, 3, 60, 30, 0, 458, 467, 1, 0, 0, 0, 459,
+		460, 5, 8, 0, 0, 460, 461, 3, 64, 32, 0, 461, 462, 5, 69, 0, 0, 462, 463,
+		5, 69, 0, 0, 463, 464, 3, 64, 32, 0, 464, 465, 3, 60, 30, 0, 465, 467,
+		1, 0, 0, 0, 466, 445, 1, 0, 0, 0, 466, 447, 1, 0, 0, 0, 466, 451, 1, 0,
+		0, 0, 466, 459, 1, 0, 0, 0, 467, 71, 1, 0, 0, 0, 468, 469, 5, 7, 0, 0,
+		469, 470, 3, 64, 32, 0, 470, 471, 5, 69, 0, 0, 471, 472, 3, 36, 18, 0,
+		472, 473, 5, 60, 0, 0, 473, 474, 3, 74, 37, 0, 474, 475, 5, 61, 0, 0, 475,
+		495, 1, 0, 0, 0, 476, 477, 5, 7, 0, 0, 477, 478, 3, 36, 18, 0, 478, 479,
+		5, 60, 0, 0, 479, 480, 3, 74, 37, 0, 480, 481, 5, 61, 0, 0, 481, 495, 1,
+		0, 0, 0, 482, 483, 5, 7, 0, 0, 483, 484, 3, 64, 32, 0, 484, 485, 5, 69,
+		0, 0, 485, 486, 5, 60, 0, 0, 486, 487, 3, 74, 37, 0, 487, 488, 5, 61, 0,
+		0, 488, 495, 1, 0, 0, 0, 489, 490, 5, 7, 0, 0, 490, 491, 5, 60, 0, 0, 491,
+		492, 3, 74, 37, 0, 492, 493, 5, 61, 0, 0, 493, 495, 1, 0, 0, 0, 494, 468,
+		1, 0, 0, 0, 494, 476, 1, 0, 0, 0, 494, 482, 1, 0, 0, 0, 494, 489, 1, 0,
+		0, 0, 495, 73, 1, 0, 0, 0, 496, 497, 3, 76, 38, 0, 497, 498, 3, 74, 37,
+		0, 498, 500, 1, 0, 0, 0, 499, 496, 1, 0, 0, 0, 500, 503, 1, 0, 0, 0, 501,
+		499, 1, 0, 0, 0, 501, 502, 1, 0, 0, 0, 502, 75, 1, 0, 0, 0, 503, 501, 1,
+		0, 0, 0, 504, 505, 3, 78, 39, 0, 505, 506, 5, 6, 0, 0, 506, 507, 3, 58,
+		29, 0, 507, 77, 1, 0, 0, 0, 508, 509, 5, 5, 0, 0, 509, 512, 3, 38, 19,
+		0, 510, 512, 5, 4, 0, 0, 511, 508, 1, 0, 0, 0, 511, 510, 1, 0, 0, 0, 512,
+		79, 1, 0, 0, 0, 35, 88, 90, 107, 116, 129, 148, 157, 173, 180, 188, 199,
+		215, 227, 235, 248, 255, 263, 271, 279, 281, 290, 302, 330, 342, 352, 361,
+		386, 392, 399, 409, 443, 466, 494, 501, 511,
+>>>>>>> a9dd69d (Initial Commit)
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -327,6 +568,7 @@ func NewMinigoParser(input antlr.TokenStream) *MinigoParser {
 const (
 	MinigoParserEOF                      = antlr.TokenEOF
 	MinigoParserCOMMENT                  = 1
+<<<<<<< HEAD
 	MinigoParserMULTILINE_COMMENT        = 2
 	MinigoParserLEFTPARENTHESIS          = 3
 	MinigoParserRIGHTPARENTHESIS         = 4
@@ -401,6 +643,80 @@ const (
 	MinigoParserEQUALS                   = 73
 	MinigoParserPACKAGE                  = 74
 	MinigoParserIDENTIFIER               = 75
+=======
+	MinigoParserLEFTPARENTHESIS          = 2
+	MinigoParserRIGHTPARENTHESIS         = 3
+	MinigoParserDEFAULT                  = 4
+	MinigoParserCASE                     = 5
+	MinigoParserCOLON                    = 6
+	MinigoParserSWITCH                   = 7
+	MinigoParserFOR                      = 8
+	MinigoParserIF                       = 9
+	MinigoParserELSE                     = 10
+	MinigoParserIDIV                     = 11
+	MinigoParserIMOD                     = 12
+	MinigoParserIANDXOR                  = 13
+	MinigoParserILEFTSHIFT               = 14
+	MinigoParserIRIGHTSHIFT              = 15
+	MinigoParserIXOR                     = 16
+	MinigoParserIMUL                     = 17
+	MinigoParserIOR                      = 18
+	MinigoParserISUB                     = 19
+	MinigoParserIAND                     = 20
+	MinigoParserIADD                     = 21
+	MinigoParserPOSTINC                  = 22
+	MinigoParserPOSTDEC                  = 23
+	MinigoParserCONTINUE                 = 24
+	MinigoParserWALRUS                   = 25
+	MinigoParserBREAK                    = 26
+	MinigoParserRETURN                   = 27
+	MinigoParserPRINTLN                  = 28
+	MinigoParserPRINT                    = 29
+	MinigoParserCAP                      = 30
+	MinigoParserLEN                      = 31
+	MinigoParserAPPEND                   = 32
+	MinigoParserDOT                      = 33
+	MinigoParserWHITESPACE               = 34
+	MinigoParserNEWLINE                  = 35
+	MinigoParserINTERPRETEDSTRINGLITERAL = 36
+	MinigoParserRAWSTRINGLITERAL         = 37
+	MinigoParserRUNELITERAL              = 38
+	MinigoParserFLOATLITERAL             = 39
+	MinigoParserNOT                      = 40
+	MinigoParserOR                       = 41
+	MinigoParserAND                      = 42
+	MinigoParserGREATERTHANEQUAL         = 43
+	MinigoParserLESSTHANEQUAL            = 44
+	MinigoParserGREATERTHAN              = 45
+	MinigoParserLESSTHAN                 = 46
+	MinigoParserNEGATION                 = 47
+	MinigoParserCOMPARISON               = 48
+	MinigoParserCARET                    = 49
+	MinigoParserPIPE                     = 50
+	MinigoParserMINUS                    = 51
+	MinigoParserPLUS                     = 52
+	MinigoParserAMPERSANDCARET           = 53
+	MinigoParserAMPERSAND                = 54
+	MinigoParserRIGHTSHIFT               = 55
+	MinigoParserLEFTSHIFT                = 56
+	MinigoParserMOD                      = 57
+	MinigoParserDIV                      = 58
+	MinigoParserTIMES                    = 59
+	MinigoParserLEFTCURLYBRACE           = 60
+	MinigoParserRIGHTCURLYBRACE          = 61
+	MinigoParserSTRUCT                   = 62
+	MinigoParserINTLITERAL               = 63
+	MinigoParserLEFTBRACKET              = 64
+	MinigoParserRIGHTBRACKET             = 65
+	MinigoParserCOMMA                    = 66
+	MinigoParserFUNC                     = 67
+	MinigoParserTYPE                     = 68
+	MinigoParserSEMICOLON                = 69
+	MinigoParserVAR                      = 70
+	MinigoParserEQUALS                   = 71
+	MinigoParserPACKAGE                  = 72
+	MinigoParserIDENTIFIER               = 73
+>>>>>>> a9dd69d (Initial Commit)
 )
 
 // MinigoParser rules.
@@ -817,7 +1133,11 @@ func (p *MinigoParser) TopDeclarationList() (localctx ITopDeclarationListContext
 	}
 	_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 	for (int64((_la-69)) & ^0x3f) == 0 && ((int64(1)<<(_la-69))&11) != 0 {
+=======
+	for (int64((_la-67)) & ^0x3f) == 0 && ((int64(1)<<(_la-67))&11) != 0 {
+>>>>>>> a9dd69d (Initial Commit)
 		p.SetState(88)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
@@ -875,6 +1195,18 @@ type IVariableDeclContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
+<<<<<<< HEAD
+=======
+
+	// Getter signatures
+	VAR() antlr.TerminalNode
+	SingleVarDecl() ISingleVarDeclContext
+	SEMICOLON() antlr.TerminalNode
+	LEFTPARENTHESIS() antlr.TerminalNode
+	InnerVarDecls() IInnerVarDeclsContext
+	RIGHTPARENTHESIS() antlr.TerminalNode
+
+>>>>>>> a9dd69d (Initial Commit)
 	// IsVariableDeclContext differentiates from other interfaces.
 	IsVariableDeclContext()
 }
@@ -911,6 +1243,7 @@ func NewVariableDeclContext(parser antlr.Parser, parent antlr.ParserRuleContext,
 
 func (s *VariableDeclContext) GetParser() antlr.Parser { return s.parser }
 
+<<<<<<< HEAD
 func (s *VariableDeclContext) CopyAll(ctx *VariableDeclContext) {
 	s.CopyFrom(&ctx.BaseParserRuleContext)
 }
@@ -1074,6 +1407,13 @@ func (s *VariableDeclarationContext) VAR() antlr.TerminalNode {
 }
 
 func (s *VariableDeclarationContext) SingleVarDecl() ISingleVarDeclContext {
+=======
+func (s *VariableDeclContext) VAR() antlr.TerminalNode {
+	return s.GetToken(MinigoParserVAR, 0)
+}
+
+func (s *VariableDeclContext) SingleVarDecl() ISingleVarDeclContext {
+>>>>>>> a9dd69d (Initial Commit)
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(ISingleVarDeclContext); ok {
@@ -1089,6 +1429,7 @@ func (s *VariableDeclarationContext) SingleVarDecl() ISingleVarDeclContext {
 	return t.(ISingleVarDeclContext)
 }
 
+<<<<<<< HEAD
 func (s *VariableDeclarationContext) SEMICOLON() antlr.TerminalNode {
 	return s.GetToken(MinigoParserSEMICOLON, 0)
 }
@@ -1109,6 +1450,60 @@ func (s *VariableDeclarationContext) Accept(visitor antlr.ParseTreeVisitor) inte
 	switch t := visitor.(type) {
 	case MinigoVisitor:
 		return t.VisitVariableDeclaration(s)
+=======
+func (s *VariableDeclContext) SEMICOLON() antlr.TerminalNode {
+	return s.GetToken(MinigoParserSEMICOLON, 0)
+}
+
+func (s *VariableDeclContext) LEFTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserLEFTPARENTHESIS, 0)
+}
+
+func (s *VariableDeclContext) InnerVarDecls() IInnerVarDeclsContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IInnerVarDeclsContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IInnerVarDeclsContext)
+}
+
+func (s *VariableDeclContext) RIGHTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
+}
+
+func (s *VariableDeclContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *VariableDeclContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *VariableDeclContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterVariableDecl(s)
+	}
+}
+
+func (s *VariableDeclContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitVariableDecl(s)
+	}
+}
+
+func (s *VariableDeclContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitVariableDecl(s)
+>>>>>>> a9dd69d (Initial Commit)
 
 	default:
 		return t.VisitChildren(s)
@@ -1126,7 +1521,10 @@ func (p *MinigoParser) VariableDecl() (localctx IVariableDeclContext) {
 
 	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 2, p.GetParserRuleContext()) {
 	case 1:
+<<<<<<< HEAD
 		localctx = NewVariableDeclarationContext(p, localctx)
+=======
+>>>>>>> a9dd69d (Initial Commit)
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(93)
@@ -1150,7 +1548,10 @@ func (p *MinigoParser) VariableDecl() (localctx IVariableDeclContext) {
 		}
 
 	case 2:
+<<<<<<< HEAD
 		localctx = NewMultiVariableDeclarationContext(p, localctx)
+=======
+>>>>>>> a9dd69d (Initial Commit)
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(97)
@@ -1190,7 +1591,10 @@ func (p *MinigoParser) VariableDecl() (localctx IVariableDeclContext) {
 		}
 
 	case 3:
+<<<<<<< HEAD
 		localctx = NewEmptyVariableDeclarationContext(p, localctx)
+=======
+>>>>>>> a9dd69d (Initial Commit)
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(103)
@@ -2517,8 +2921,15 @@ type IFuncFrontDeclContext interface {
 	IDENTIFIER() antlr.TerminalNode
 	LEFTPARENTHESIS() antlr.TerminalNode
 	RIGHTPARENTHESIS() antlr.TerminalNode
+<<<<<<< HEAD
 	FuncArgsDecls() IFuncArgsDeclsContext
 	DeclType() IDeclTypeContext
+=======
+	AllFuncArgsDecls() []IFuncArgsDeclsContext
+	FuncArgsDecls(i int) IFuncArgsDeclsContext
+	AllDeclType() []IDeclTypeContext
+	DeclType(i int) IDeclTypeContext
+>>>>>>> a9dd69d (Initial Commit)
 
 	// IsFuncFrontDeclContext differentiates from other interfaces.
 	IsFuncFrontDeclContext()
@@ -2572,12 +2983,46 @@ func (s *FuncFrontDeclContext) RIGHTPARENTHESIS() antlr.TerminalNode {
 	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
 }
 
+<<<<<<< HEAD
 func (s *FuncFrontDeclContext) FuncArgsDecls() IFuncArgsDeclsContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IFuncArgsDeclsContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
+=======
+func (s *FuncFrontDeclContext) AllFuncArgsDecls() []IFuncArgsDeclsContext {
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IFuncArgsDeclsContext); ok {
+			len++
+		}
+	}
+
+	tst := make([]IFuncArgsDeclsContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IFuncArgsDeclsContext); ok {
+			tst[i] = t.(IFuncArgsDeclsContext)
+			i++
+		}
+	}
+
+	return tst
+}
+
+func (s *FuncFrontDeclContext) FuncArgsDecls(i int) IFuncArgsDeclsContext {
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IFuncArgsDeclsContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+>>>>>>> a9dd69d (Initial Commit)
 		}
 	}
 
@@ -2588,12 +3033,46 @@ func (s *FuncFrontDeclContext) FuncArgsDecls() IFuncArgsDeclsContext {
 	return t.(IFuncArgsDeclsContext)
 }
 
+<<<<<<< HEAD
 func (s *FuncFrontDeclContext) DeclType() IDeclTypeContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IDeclTypeContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
+=======
+func (s *FuncFrontDeclContext) AllDeclType() []IDeclTypeContext {
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IDeclTypeContext); ok {
+			len++
+		}
+	}
+
+	tst := make([]IDeclTypeContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IDeclTypeContext); ok {
+			tst[i] = t.(IDeclTypeContext)
+			i++
+		}
+	}
+
+	return tst
+}
+
+func (s *FuncFrontDeclContext) DeclType(i int) IDeclTypeContext {
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IDeclTypeContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+>>>>>>> a9dd69d (Initial Commit)
 		}
 	}
 
@@ -2664,41 +3143,80 @@ func (p *MinigoParser) FuncFrontDecl() (localctx IFuncFrontDeclContext) {
 			goto errorExit
 		}
 	}
+<<<<<<< HEAD
 	p.SetState(171)
+=======
+	p.SetState(173)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 	if _la == MinigoParserIDENTIFIER {
+=======
+	for _la == MinigoParserIDENTIFIER {
+>>>>>>> a9dd69d (Initial Commit)
 		{
 			p.SetState(170)
 			p.FuncArgsDecls()
 		}
 
+<<<<<<< HEAD
 	}
 	{
 		p.SetState(173)
+=======
+		p.SetState(175)
+		p.GetErrorHandler().Sync(p)
+		if p.HasError() {
+			goto errorExit
+		}
+		_la = p.GetTokenStream().LA(1)
+	}
+	{
+		p.SetState(176)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
+<<<<<<< HEAD
 	p.SetState(175)
+=======
+	p.SetState(180)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 	if _la == MinigoParserLEFTPARENTHESIS || ((int64((_la-64)) & ^0x3f) == 0 && ((int64(1)<<(_la-64))&2053) != 0) {
 		{
 			p.SetState(174)
 			p.DeclType()
 		}
 
+=======
+	for _la == MinigoParserLEFTPARENTHESIS || _la == MinigoParserSTRUCT || _la == MinigoParserLEFTBRACKET || _la == MinigoParserIDENTIFIER {
+		{
+			p.SetState(177)
+			p.DeclType()
+		}
+
+		p.SetState(182)
+		p.GetErrorHandler().Sync(p)
+		if p.HasError() {
+			goto errorExit
+		}
+		_la = p.GetTokenStream().LA(1)
+>>>>>>> a9dd69d (Initial Commit)
 	}
 
 errorExit:
@@ -2849,10 +3367,17 @@ func (p *MinigoParser) FuncArgsDecls() (localctx IFuncArgsDeclsContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(177)
 		p.SingleVarDeclNoExps()
 	}
 	p.SetState(182)
+=======
+		p.SetState(183)
+		p.SingleVarDeclNoExps()
+	}
+	p.SetState(188)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -2861,7 +3386,11 @@ func (p *MinigoParser) FuncArgsDecls() (localctx IFuncArgsDeclsContext) {
 
 	for _la == MinigoParserCOMMA {
 		{
+<<<<<<< HEAD
 			p.SetState(178)
+=======
+			p.SetState(184)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserCOMMA)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2869,11 +3398,19 @@ func (p *MinigoParser) FuncArgsDecls() (localctx IFuncArgsDeclsContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(179)
 			p.SingleVarDeclNoExps()
 		}
 
 		p.SetState(184)
+=======
+			p.SetState(185)
+			p.SingleVarDeclNoExps()
+		}
+
+		p.SetState(190)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -3055,7 +3592,11 @@ func (s *DeclTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 	localctx = NewDeclTypeContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 24, MinigoParserRULE_declType)
+<<<<<<< HEAD
 	p.SetState(193)
+=======
+	p.SetState(199)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3065,7 +3606,11 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
+<<<<<<< HEAD
 			p.SetState(185)
+=======
+			p.SetState(191)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -3073,11 +3618,19 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(186)
 			p.DeclType()
 		}
 		{
 			p.SetState(187)
+=======
+			p.SetState(192)
+			p.DeclType()
+		}
+		{
+			p.SetState(193)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -3088,7 +3641,11 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(189)
+=======
+			p.SetState(195)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIDENTIFIER)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -3099,21 +3656,33 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
+<<<<<<< HEAD
 			p.SetState(190)
+=======
+			p.SetState(196)
+>>>>>>> a9dd69d (Initial Commit)
 			p.SliceDeclType()
 		}
 
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
+<<<<<<< HEAD
 			p.SetState(191)
+=======
+			p.SetState(197)
+>>>>>>> a9dd69d (Initial Commit)
 			p.ArrayDeclType()
 		}
 
 	case 5:
 		p.EnterOuterAlt(localctx, 5)
 		{
+<<<<<<< HEAD
 			p.SetState(192)
+=======
+			p.SetState(198)
+>>>>>>> a9dd69d (Initial Commit)
 			p.StructDeclType()
 		}
 
@@ -3241,7 +3810,11 @@ func (p *MinigoParser) SliceDeclType() (localctx ISliceDeclTypeContext) {
 	p.EnterRule(localctx, 26, MinigoParserRULE_sliceDeclType)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(195)
+=======
+		p.SetState(201)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTBRACKET)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3249,7 +3822,11 @@ func (p *MinigoParser) SliceDeclType() (localctx ISliceDeclTypeContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(196)
+=======
+		p.SetState(202)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTBRACKET)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3257,7 +3834,11 @@ func (p *MinigoParser) SliceDeclType() (localctx ISliceDeclTypeContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(197)
+=======
+		p.SetState(203)
+>>>>>>> a9dd69d (Initial Commit)
 		p.DeclType()
 	}
 
@@ -3386,7 +3967,11 @@ func (p *MinigoParser) ArrayDeclType() (localctx IArrayDeclTypeContext) {
 	p.EnterRule(localctx, 28, MinigoParserRULE_arrayDeclType)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(199)
+=======
+		p.SetState(205)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTBRACKET)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3394,7 +3979,11 @@ func (p *MinigoParser) ArrayDeclType() (localctx IArrayDeclTypeContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(200)
+=======
+		p.SetState(206)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserINTLITERAL)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3402,7 +3991,11 @@ func (p *MinigoParser) ArrayDeclType() (localctx IArrayDeclTypeContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(201)
+=======
+		p.SetState(207)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTBRACKET)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3410,7 +4003,11 @@ func (p *MinigoParser) ArrayDeclType() (localctx IArrayDeclTypeContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(202)
+=======
+		p.SetState(208)
+>>>>>>> a9dd69d (Initial Commit)
 		p.DeclType()
 	}
 
@@ -3567,7 +4164,11 @@ func (p *MinigoParser) StructDeclType() (localctx IStructDeclTypeContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(204)
+=======
+		p.SetState(210)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserSTRUCT)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3575,14 +4176,22 @@ func (p *MinigoParser) StructDeclType() (localctx IStructDeclTypeContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(205)
+=======
+		p.SetState(211)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTCURLYBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
+<<<<<<< HEAD
 	p.SetState(209)
+=======
+	p.SetState(215)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3591,11 +4200,19 @@ func (p *MinigoParser) StructDeclType() (localctx IStructDeclTypeContext) {
 
 	for _la == MinigoParserIDENTIFIER {
 		{
+<<<<<<< HEAD
 			p.SetState(206)
 			p.StructMemDecls()
 		}
 
 		p.SetState(211)
+=======
+			p.SetState(212)
+			p.StructMemDecls()
+		}
+
+		p.SetState(217)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -3603,7 +4220,11 @@ func (p *MinigoParser) StructDeclType() (localctx IStructDeclTypeContext) {
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(212)
+=======
+		p.SetState(218)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTCURLYBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -3759,18 +4380,30 @@ func (p *MinigoParser) StructMemDecls() (localctx IStructMemDeclsContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(214)
 		p.SingleVarDeclNoExps()
 	}
 	{
 		p.SetState(215)
+=======
+		p.SetState(220)
+		p.SingleVarDeclNoExps()
+	}
+	{
+		p.SetState(221)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserSEMICOLON)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
+<<<<<<< HEAD
 	p.SetState(221)
+=======
+	p.SetState(227)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3782,11 +4415,19 @@ func (p *MinigoParser) StructMemDecls() (localctx IStructMemDeclsContext) {
 	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		if _alt == 1 {
 			{
+<<<<<<< HEAD
 				p.SetState(216)
 				p.SingleVarDeclNoExps()
 			}
 			{
 				p.SetState(217)
+=======
+				p.SetState(222)
+				p.SingleVarDeclNoExps()
+			}
+			{
+				p.SetState(223)
+>>>>>>> a9dd69d (Initial Commit)
 				p.Match(MinigoParserSEMICOLON)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -3795,7 +4436,11 @@ func (p *MinigoParser) StructMemDecls() (localctx IStructMemDeclsContext) {
 			}
 
 		}
+<<<<<<< HEAD
 		p.SetState(223)
+=======
+		p.SetState(229)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -3921,14 +4566,22 @@ func (p *MinigoParser) IdentifierList() (localctx IIdentifierListContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(224)
+=======
+		p.SetState(230)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserIDENTIFIER)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
+<<<<<<< HEAD
 	p.SetState(229)
+=======
+	p.SetState(235)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -3937,7 +4590,11 @@ func (p *MinigoParser) IdentifierList() (localctx IIdentifierListContext) {
 
 	for _la == MinigoParserCOMMA {
 		{
+<<<<<<< HEAD
 			p.SetState(225)
+=======
+			p.SetState(231)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserCOMMA)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -3945,7 +4602,11 @@ func (p *MinigoParser) IdentifierList() (localctx IIdentifierListContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(226)
+=======
+			p.SetState(232)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIDENTIFIER)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -3953,7 +4614,11 @@ func (p *MinigoParser) IdentifierList() (localctx IIdentifierListContext) {
 			}
 		}
 
+<<<<<<< HEAD
 		p.SetState(231)
+=======
+		p.SetState(237)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -4227,7 +4892,11 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
+<<<<<<< HEAD
 	p.SetState(242)
+=======
+	p.SetState(248)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4236,13 +4905,21 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 	switch p.GetTokenStream().LA(1) {
 	case MinigoParserLEFTPARENTHESIS, MinigoParserCAP, MinigoParserLEN, MinigoParserAPPEND, MinigoParserINTERPRETEDSTRINGLITERAL, MinigoParserRAWSTRINGLITERAL, MinigoParserRUNELITERAL, MinigoParserFLOATLITERAL, MinigoParserINTLITERAL, MinigoParserIDENTIFIER:
 		{
+<<<<<<< HEAD
 			p.SetState(233)
+=======
+			p.SetState(239)
+>>>>>>> a9dd69d (Initial Commit)
 			p.primaryExpression(0)
 		}
 
 	case MinigoParserPLUS:
 		{
+<<<<<<< HEAD
 			p.SetState(234)
+=======
+			p.SetState(240)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserPLUS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4250,13 +4927,21 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(235)
+=======
+			p.SetState(241)
+>>>>>>> a9dd69d (Initial Commit)
 			p.expression(4)
 		}
 
 	case MinigoParserMINUS:
 		{
+<<<<<<< HEAD
 			p.SetState(236)
+=======
+			p.SetState(242)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserMINUS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4264,13 +4949,21 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(237)
+=======
+			p.SetState(243)
+>>>>>>> a9dd69d (Initial Commit)
 			p.expression(3)
 		}
 
 	case MinigoParserNOT:
 		{
+<<<<<<< HEAD
 			p.SetState(238)
+=======
+			p.SetState(244)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserNOT)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4278,13 +4971,21 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(239)
+=======
+			p.SetState(245)
+>>>>>>> a9dd69d (Initial Commit)
 			p.expression(2)
 		}
 
 	case MinigoParserCARET:
 		{
+<<<<<<< HEAD
 			p.SetState(240)
+=======
+			p.SetState(246)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserCARET)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4292,7 +4993,11 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(241)
+=======
+			p.SetState(247)
+>>>>>>> a9dd69d (Initial Commit)
 			p.expression(1)
 		}
 
@@ -4301,7 +5006,11 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
+<<<<<<< HEAD
 	p.SetState(249)
+=======
+	p.SetState(255)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4318,17 +5027,28 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 			_prevctx = localctx
 			localctx = NewExpressionContext(p, _parentctx, _parentState)
 			p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_expression)
+<<<<<<< HEAD
 			p.SetState(244)
+=======
+			p.SetState(250)
+>>>>>>> a9dd69d (Initial Commit)
 
 			if !(p.Precpred(p.GetParserRuleContext(), 5)) {
 				p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 5)", ""))
 				goto errorExit
 			}
 			{
+<<<<<<< HEAD
 				p.SetState(245)
 				_la = p.GetTokenStream().LA(1)
 
 				if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4611677222334365696) != 0) {
+=======
+				p.SetState(251)
+				_la = p.GetTokenStream().LA(1)
+
+				if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&1152919305583591424) != 0) {
+>>>>>>> a9dd69d (Initial Commit)
 					p.GetErrorHandler().RecoverInline(p)
 				} else {
 					p.GetErrorHandler().ReportMatch(p)
@@ -4336,12 +5056,20 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 				}
 			}
 			{
+<<<<<<< HEAD
 				p.SetState(246)
+=======
+				p.SetState(252)
+>>>>>>> a9dd69d (Initial Commit)
 				p.expression(6)
 			}
 
 		}
+<<<<<<< HEAD
 		p.SetState(251)
+=======
+		p.SetState(257)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -4500,10 +5228,17 @@ func (p *MinigoParser) ExpressionList() (localctx IExpressionListContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(252)
 		p.expression(0)
 	}
 	p.SetState(257)
+=======
+		p.SetState(258)
+		p.expression(0)
+	}
+	p.SetState(263)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4512,7 +5247,11 @@ func (p *MinigoParser) ExpressionList() (localctx IExpressionListContext) {
 
 	for _la == MinigoParserCOMMA {
 		{
+<<<<<<< HEAD
 			p.SetState(253)
+=======
+			p.SetState(259)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserCOMMA)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4520,11 +5259,19 @@ func (p *MinigoParser) ExpressionList() (localctx IExpressionListContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(254)
 			p.expression(0)
 		}
 
 		p.SetState(259)
+=======
+			p.SetState(260)
+			p.expression(0)
+		}
+
+		p.SetState(265)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -4772,7 +5519,11 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
+<<<<<<< HEAD
 	p.SetState(265)
+=======
+	p.SetState(271)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4781,25 +5532,41 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 	switch p.GetTokenStream().LA(1) {
 	case MinigoParserLEFTPARENTHESIS, MinigoParserINTERPRETEDSTRINGLITERAL, MinigoParserRAWSTRINGLITERAL, MinigoParserRUNELITERAL, MinigoParserFLOATLITERAL, MinigoParserINTLITERAL, MinigoParserIDENTIFIER:
 		{
+<<<<<<< HEAD
 			p.SetState(261)
+=======
+			p.SetState(267)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Operand()
 		}
 
 	case MinigoParserAPPEND:
 		{
+<<<<<<< HEAD
 			p.SetState(262)
+=======
+			p.SetState(268)
+>>>>>>> a9dd69d (Initial Commit)
 			p.AppendExpression()
 		}
 
 	case MinigoParserLEN:
 		{
+<<<<<<< HEAD
 			p.SetState(263)
+=======
+			p.SetState(269)
+>>>>>>> a9dd69d (Initial Commit)
 			p.LengthExpression()
 		}
 
 	case MinigoParserCAP:
 		{
+<<<<<<< HEAD
 			p.SetState(264)
+=======
+			p.SetState(270)
+>>>>>>> a9dd69d (Initial Commit)
 			p.CapExpression()
 		}
 
@@ -4808,7 +5575,11 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
+<<<<<<< HEAD
 	p.SetState(275)
+=======
+	p.SetState(281)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4823,7 +5594,11 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
+<<<<<<< HEAD
 			p.SetState(273)
+=======
+			p.SetState(279)
+>>>>>>> a9dd69d (Initial Commit)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -4833,42 +5608,66 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 			case 1:
 				localctx = NewPrimaryExpressionContext(p, _parentctx, _parentState)
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_primaryExpression)
+<<<<<<< HEAD
 				p.SetState(267)
+=======
+				p.SetState(273)
+>>>>>>> a9dd69d (Initial Commit)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 6)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 6)", ""))
 					goto errorExit
 				}
 				{
+<<<<<<< HEAD
 					p.SetState(268)
+=======
+					p.SetState(274)
+>>>>>>> a9dd69d (Initial Commit)
 					p.Selector()
 				}
 
 			case 2:
 				localctx = NewPrimaryExpressionContext(p, _parentctx, _parentState)
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_primaryExpression)
+<<<<<<< HEAD
 				p.SetState(269)
+=======
+				p.SetState(275)
+>>>>>>> a9dd69d (Initial Commit)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 5)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 5)", ""))
 					goto errorExit
 				}
 				{
+<<<<<<< HEAD
 					p.SetState(270)
+=======
+					p.SetState(276)
+>>>>>>> a9dd69d (Initial Commit)
 					p.Index()
 				}
 
 			case 3:
 				localctx = NewPrimaryExpressionContext(p, _parentctx, _parentState)
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_primaryExpression)
+<<<<<<< HEAD
 				p.SetState(271)
+=======
+				p.SetState(277)
+>>>>>>> a9dd69d (Initial Commit)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 4)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 4)", ""))
 					goto errorExit
 				}
 				{
+<<<<<<< HEAD
 					p.SetState(272)
+=======
+					p.SetState(278)
+>>>>>>> a9dd69d (Initial Commit)
 					p.Arguments()
 				}
 
@@ -4877,7 +5676,11 @@ func (p *MinigoParser) primaryExpression(_p int) (localctx IPrimaryExpressionCon
 			}
 
 		}
+<<<<<<< HEAD
 		p.SetState(277)
+=======
+		p.SetState(283)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -5028,7 +5831,11 @@ func (s *OperandContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 func (p *MinigoParser) Operand() (localctx IOperandContext) {
 	localctx = NewOperandContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 42, MinigoParserRULE_operand)
+<<<<<<< HEAD
 	p.SetState(284)
+=======
+	p.SetState(290)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -5038,14 +5845,22 @@ func (p *MinigoParser) Operand() (localctx IOperandContext) {
 	case MinigoParserINTERPRETEDSTRINGLITERAL, MinigoParserRAWSTRINGLITERAL, MinigoParserRUNELITERAL, MinigoParserFLOATLITERAL, MinigoParserINTLITERAL:
 		p.EnterOuterAlt(localctx, 1)
 		{
+<<<<<<< HEAD
 			p.SetState(278)
+=======
+			p.SetState(284)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Literal()
 		}
 
 	case MinigoParserIDENTIFIER:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(279)
+=======
+			p.SetState(285)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIDENTIFIER)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5056,7 +5871,11 @@ func (p *MinigoParser) Operand() (localctx IOperandContext) {
 	case MinigoParserLEFTPARENTHESIS:
 		p.EnterOuterAlt(localctx, 3)
 		{
+<<<<<<< HEAD
 			p.SetState(280)
+=======
+			p.SetState(286)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5064,11 +5883,19 @@ func (p *MinigoParser) Operand() (localctx IOperandContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(281)
 			p.expression(0)
 		}
 		{
 			p.SetState(282)
+=======
+			p.SetState(287)
+			p.expression(0)
+		}
+		{
+			p.SetState(288)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5201,10 +6028,17 @@ func (p *MinigoParser) Literal() (localctx ILiteralContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(286)
 		_la = p.GetTokenStream().LA(1)
 
 		if !((int64((_la-37)) & ^0x3f) == 0 && ((int64(1)<<(_la-37))&268435483) != 0) {
+=======
+		p.SetState(292)
+		_la = p.GetTokenStream().LA(1)
+
+		if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&-9223371006062624768) != 0) {
+>>>>>>> a9dd69d (Initial Commit)
 			p.GetErrorHandler().RecoverInline(p)
 		} else {
 			p.GetErrorHandler().ReportMatch(p)
@@ -5332,7 +6166,11 @@ func (p *MinigoParser) Index() (localctx IIndexContext) {
 	p.EnterRule(localctx, 46, MinigoParserRULE_index)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(288)
+=======
+		p.SetState(294)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTBRACKET)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5340,11 +6178,19 @@ func (p *MinigoParser) Index() (localctx IIndexContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(289)
 		p.expression(0)
 	}
 	{
 		p.SetState(290)
+=======
+		p.SetState(295)
+		p.expression(0)
+	}
+	{
+		p.SetState(296)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTBRACKET)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5500,20 +6346,29 @@ func (p *MinigoParser) Arguments() (localctx IArgumentsContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(292)
+=======
+		p.SetState(298)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
+<<<<<<< HEAD
 	p.SetState(296)
+=======
+	p.SetState(302)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 	for ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&29281521508548616) != 0) || _la == MinigoParserINTLITERAL || _la == MinigoParserIDENTIFIER {
 		{
 			p.SetState(293)
@@ -5521,6 +6376,15 @@ func (p *MinigoParser) Arguments() (localctx IArgumentsContext) {
 		}
 
 		p.SetState(298)
+=======
+	for ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&-9216051549640327164) != 0) || _la == MinigoParserIDENTIFIER {
+		{
+			p.SetState(299)
+			p.ExpressionList()
+		}
+
+		p.SetState(304)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -5528,7 +6392,11 @@ func (p *MinigoParser) Arguments() (localctx IArgumentsContext) {
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(299)
+=======
+		p.SetState(305)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5639,7 +6507,11 @@ func (p *MinigoParser) Selector() (localctx ISelectorContext) {
 	p.EnterRule(localctx, 50, MinigoParserRULE_selector)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(301)
+=======
+		p.SetState(307)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserDOT)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5647,7 +6519,11 @@ func (p *MinigoParser) Selector() (localctx ISelectorContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(302)
+=======
+		p.SetState(308)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserIDENTIFIER)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5811,7 +6687,11 @@ func (p *MinigoParser) AppendExpression() (localctx IAppendExpressionContext) {
 	p.EnterRule(localctx, 52, MinigoParserRULE_appendExpression)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(304)
+=======
+		p.SetState(310)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserAPPEND)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5819,7 +6699,11 @@ func (p *MinigoParser) AppendExpression() (localctx IAppendExpressionContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(305)
+=======
+		p.SetState(311)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5827,11 +6711,19 @@ func (p *MinigoParser) AppendExpression() (localctx IAppendExpressionContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(306)
 		p.expression(0)
 	}
 	{
 		p.SetState(307)
+=======
+		p.SetState(312)
+		p.expression(0)
+	}
+	{
+		p.SetState(313)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserCOMMA)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5839,11 +6731,19 @@ func (p *MinigoParser) AppendExpression() (localctx IAppendExpressionContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(308)
 		p.expression(0)
 	}
 	{
 		p.SetState(309)
+=======
+		p.SetState(314)
+		p.expression(0)
+	}
+	{
+		p.SetState(315)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5976,7 +6876,11 @@ func (p *MinigoParser) LengthExpression() (localctx ILengthExpressionContext) {
 	p.EnterRule(localctx, 54, MinigoParserRULE_lengthExpression)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(311)
+=======
+		p.SetState(317)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5984,7 +6888,11 @@ func (p *MinigoParser) LengthExpression() (localctx ILengthExpressionContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(312)
+=======
+		p.SetState(318)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5992,11 +6900,19 @@ func (p *MinigoParser) LengthExpression() (localctx ILengthExpressionContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(313)
 		p.expression(0)
 	}
 	{
 		p.SetState(314)
+=======
+		p.SetState(319)
+		p.expression(0)
+	}
+	{
+		p.SetState(320)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -6129,7 +7045,11 @@ func (p *MinigoParser) CapExpression() (localctx ICapExpressionContext) {
 	p.EnterRule(localctx, 56, MinigoParserRULE_capExpression)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(316)
+=======
+		p.SetState(322)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserCAP)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -6137,7 +7057,11 @@ func (p *MinigoParser) CapExpression() (localctx ICapExpressionContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(317)
+=======
+		p.SetState(323)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -6145,11 +7069,19 @@ func (p *MinigoParser) CapExpression() (localctx ICapExpressionContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(318)
 		p.expression(0)
 	}
 	{
 		p.SetState(319)
+=======
+		p.SetState(324)
+		p.expression(0)
+	}
+	{
+		p.SetState(325)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTPARENTHESIS)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -6294,13 +7226,18 @@ func (p *MinigoParser) StatementList() (localctx IStatementListContext) {
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
+<<<<<<< HEAD
 	p.SetState(324)
+=======
+	p.SetState(330)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 	for ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4640967541982758664) != 0) || ((int64((_la-65)) & ^0x3f) == 0 && ((int64(1)<<(_la-65))&1185) != 0) {
 		{
 			p.SetState(321)
@@ -6308,6 +7245,15 @@ func (p *MinigoParser) StatementList() (localctx IStatementListContext) {
 		}
 
 		p.SetState(326)
+=======
+	for ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&-8063130044010069116) != 0) || ((int64((_la-68)) & ^0x3f) == 0 && ((int64(1)<<(_la-68))&37) != 0) {
+		{
+			p.SetState(327)
+			p.Statement()
+		}
+
+		p.SetState(332)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -6435,7 +7381,11 @@ func (p *MinigoParser) Block() (localctx IBlockContext) {
 	p.EnterRule(localctx, 60, MinigoParserRULE_block)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(327)
+=======
+		p.SetState(333)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserLEFTCURLYBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -6443,11 +7393,19 @@ func (p *MinigoParser) Block() (localctx IBlockContext) {
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(328)
 		p.StatementList()
 	}
 	{
 		p.SetState(329)
+=======
+		p.SetState(334)
+		p.StatementList()
+	}
+	{
+		p.SetState(335)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserRIGHTCURLYBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -6474,6 +7432,31 @@ type IStatementContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
+<<<<<<< HEAD
+=======
+
+	// Getter signatures
+	PRINT() antlr.TerminalNode
+	LEFTPARENTHESIS() antlr.TerminalNode
+	RIGHTPARENTHESIS() antlr.TerminalNode
+	SEMICOLON() antlr.TerminalNode
+	AllExpressionList() []IExpressionListContext
+	ExpressionList(i int) IExpressionListContext
+	PRINTLN() antlr.TerminalNode
+	RETURN() antlr.TerminalNode
+	AllExpression() []IExpressionContext
+	Expression(i int) IExpressionContext
+	BREAK() antlr.TerminalNode
+	CONTINUE() antlr.TerminalNode
+	SimpleStatement() ISimpleStatementContext
+	Block() IBlockContext
+	Switch_() ISwitchContext
+	IfStatement() IIfStatementContext
+	Loop() ILoopContext
+	TypeDecl() ITypeDeclContext
+	VariableDecl() IVariableDeclContext
+
+>>>>>>> a9dd69d (Initial Commit)
 	// IsStatementContext differentiates from other interfaces.
 	IsStatementContext()
 }
@@ -6510,6 +7493,7 @@ func NewStatementContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *StatementContext) GetParser() antlr.Parser { return s.parser }
 
+<<<<<<< HEAD
 func (s *StatementContext) CopyAll(ctx *StatementContext) {
 	s.CopyFrom(&ctx.BaseParserRuleContext)
 }
@@ -6562,6 +7546,55 @@ func (s *PrintStatementContext) ExpressionList() IExpressionListContext {
 		if _, ok := ctx.(IExpressionListContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
+=======
+func (s *StatementContext) PRINT() antlr.TerminalNode {
+	return s.GetToken(MinigoParserPRINT, 0)
+}
+
+func (s *StatementContext) LEFTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserLEFTPARENTHESIS, 0)
+}
+
+func (s *StatementContext) RIGHTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
+}
+
+func (s *StatementContext) SEMICOLON() antlr.TerminalNode {
+	return s.GetToken(MinigoParserSEMICOLON, 0)
+}
+
+func (s *StatementContext) AllExpressionList() []IExpressionListContext {
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IExpressionListContext); ok {
+			len++
+		}
+	}
+
+	tst := make([]IExpressionListContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IExpressionListContext); ok {
+			tst[i] = t.(IExpressionListContext)
+			i++
+		}
+	}
+
+	return tst
+}
+
+func (s *StatementContext) ExpressionList(i int) IExpressionListContext {
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExpressionListContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+>>>>>>> a9dd69d (Initial Commit)
 		}
 	}
 
@@ -6572,6 +7605,7 @@ func (s *PrintStatementContext) ExpressionList() IExpressionListContext {
 	return t.(IExpressionListContext)
 }
 
+<<<<<<< HEAD
 func (s *PrintStatementContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
 		listenerT.EnterPrintStatement(s)
@@ -6618,6 +7652,47 @@ func (s *VariableDeclStatementContext) VariableDecl() IVariableDeclContext {
 		if _, ok := ctx.(IVariableDeclContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
+=======
+func (s *StatementContext) PRINTLN() antlr.TerminalNode {
+	return s.GetToken(MinigoParserPRINTLN, 0)
+}
+
+func (s *StatementContext) RETURN() antlr.TerminalNode {
+	return s.GetToken(MinigoParserRETURN, 0)
+}
+
+func (s *StatementContext) AllExpression() []IExpressionContext {
+	children := s.GetChildren()
+	len := 0
+	for _, ctx := range children {
+		if _, ok := ctx.(IExpressionContext); ok {
+			len++
+		}
+	}
+
+	tst := make([]IExpressionContext, len)
+	i := 0
+	for _, ctx := range children {
+		if t, ok := ctx.(IExpressionContext); ok {
+			tst[i] = t.(IExpressionContext)
+			i++
+		}
+	}
+
+	return tst
+}
+
+func (s *StatementContext) Expression(i int) IExpressionContext {
+	var t antlr.RuleContext
+	j := 0
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IExpressionContext); ok {
+			if j == i {
+				t = ctx.(antlr.RuleContext)
+				break
+			}
+			j++
+>>>>>>> a9dd69d (Initial Commit)
 		}
 	}
 
@@ -6625,6 +7700,7 @@ func (s *VariableDeclStatementContext) VariableDecl() IVariableDeclContext {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return t.(IVariableDeclContext)
 }
 
@@ -6729,6 +7805,20 @@ func (s *SimpleStatementStatementContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *SimpleStatementStatementContext) SimpleStatement() ISimpleStatementContext {
+=======
+	return t.(IExpressionContext)
+}
+
+func (s *StatementContext) BREAK() antlr.TerminalNode {
+	return s.GetToken(MinigoParserBREAK, 0)
+}
+
+func (s *StatementContext) CONTINUE() antlr.TerminalNode {
+	return s.GetToken(MinigoParserCONTINUE, 0)
+}
+
+func (s *StatementContext) SimpleStatement() ISimpleStatementContext {
+>>>>>>> a9dd69d (Initial Commit)
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(ISimpleStatementContext); ok {
@@ -6744,6 +7834,7 @@ func (s *SimpleStatementStatementContext) SimpleStatement() ISimpleStatementCont
 	return t.(ISimpleStatementContext)
 }
 
+<<<<<<< HEAD
 func (s *SimpleStatementStatementContext) SEMICOLON() antlr.TerminalNode {
 	return s.GetToken(MinigoParserSEMICOLON, 0)
 }
@@ -6789,6 +7880,9 @@ func (s *BlockStatementContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *BlockStatementContext) Block() IBlockContext {
+=======
+func (s *StatementContext) Block() IBlockContext {
+>>>>>>> a9dd69d (Initial Commit)
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IBlockContext); ok {
@@ -6804,6 +7898,7 @@ func (s *BlockStatementContext) Block() IBlockContext {
 	return t.(IBlockContext)
 }
 
+<<<<<<< HEAD
 func (s *BlockStatementContext) SEMICOLON() antlr.TerminalNode {
 	return s.GetToken(MinigoParserSEMICOLON, 0)
 }
@@ -7197,6 +8292,9 @@ func (s *SwitchStatementContext) GetRuleContext() antlr.RuleContext {
 }
 
 func (s *SwitchStatementContext) Switch_() ISwitchContext {
+=======
+func (s *StatementContext) Switch_() ISwitchContext {
+>>>>>>> a9dd69d (Initial Commit)
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(ISwitchContext); ok {
@@ -7212,6 +8310,7 @@ func (s *SwitchStatementContext) Switch_() ISwitchContext {
 	return t.(ISwitchContext)
 }
 
+<<<<<<< HEAD
 func (s *SwitchStatementContext) SEMICOLON() antlr.TerminalNode {
 	return s.GetToken(MinigoParserSEMICOLON, 0)
 }
@@ -7232,6 +8331,96 @@ func (s *SwitchStatementContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 	switch t := visitor.(type) {
 	case MinigoVisitor:
 		return t.VisitSwitchStatement(s)
+=======
+func (s *StatementContext) IfStatement() IIfStatementContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IIfStatementContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IIfStatementContext)
+}
+
+func (s *StatementContext) Loop() ILoopContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ILoopContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ILoopContext)
+}
+
+func (s *StatementContext) TypeDecl() ITypeDeclContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ITypeDeclContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ITypeDeclContext)
+}
+
+func (s *StatementContext) VariableDecl() IVariableDeclContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IVariableDeclContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IVariableDeclContext)
+}
+
+func (s *StatementContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *StatementContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *StatementContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterStatement(s)
+	}
+}
+
+func (s *StatementContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitStatement(s)
+	}
+}
+
+func (s *StatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitStatement(s)
+>>>>>>> a9dd69d (Initial Commit)
 
 	default:
 		return t.VisitChildren(s)
@@ -7243,7 +8432,11 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 	p.EnterRule(localctx, 62, MinigoParserRULE_statement)
 	var _la int
 
+<<<<<<< HEAD
 	p.SetState(371)
+=======
+	p.SetState(386)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -7251,10 +8444,16 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 
 	switch p.GetTokenStream().LA(1) {
 	case MinigoParserPRINT:
+<<<<<<< HEAD
 		localctx = NewPrintStatementContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(331)
+=======
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(337)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserPRINT)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7262,20 +8461,29 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(332)
+=======
+			p.SetState(338)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
+<<<<<<< HEAD
 		p.SetState(334)
+=======
+		p.SetState(342)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 		if ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&29281521508548616) != 0) || _la == MinigoParserINTLITERAL || _la == MinigoParserIDENTIFIER {
 			{
 				p.SetState(333)
@@ -7285,6 +8493,23 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 		}
 		{
 			p.SetState(336)
+=======
+		for ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&-9216051549640327164) != 0) || _la == MinigoParserIDENTIFIER {
+			{
+				p.SetState(339)
+				p.ExpressionList()
+			}
+
+			p.SetState(344)
+			p.GetErrorHandler().Sync(p)
+			if p.HasError() {
+				goto errorExit
+			}
+			_la = p.GetTokenStream().LA(1)
+		}
+		{
+			p.SetState(345)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7292,7 +8517,11 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(337)
+=======
+			p.SetState(346)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7301,10 +8530,16 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 		}
 
 	case MinigoParserPRINTLN:
+<<<<<<< HEAD
 		localctx = NewPrintlnStatementContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(338)
+=======
+		p.EnterOuterAlt(localctx, 2)
+		{
+			p.SetState(347)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserPRINTLN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7312,20 +8547,29 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(339)
+=======
+			p.SetState(348)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
+<<<<<<< HEAD
 		p.SetState(341)
+=======
+		p.SetState(352)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 		if ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&29281521508548616) != 0) || _la == MinigoParserINTLITERAL || _la == MinigoParserIDENTIFIER {
 			{
 				p.SetState(340)
@@ -7335,6 +8579,23 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 		}
 		{
 			p.SetState(343)
+=======
+		for ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&-9216051549640327164) != 0) || _la == MinigoParserIDENTIFIER {
+			{
+				p.SetState(349)
+				p.ExpressionList()
+			}
+
+			p.SetState(354)
+			p.GetErrorHandler().Sync(p)
+			if p.HasError() {
+				goto errorExit
+			}
+			_la = p.GetTokenStream().LA(1)
+		}
+		{
+			p.SetState(355)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTPARENTHESIS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7342,7 +8603,11 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(344)
+=======
+			p.SetState(356)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7351,23 +8616,34 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 		}
 
 	case MinigoParserRETURN:
+<<<<<<< HEAD
 		localctx = NewReturnStatementContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(345)
+=======
+		p.EnterOuterAlt(localctx, 3)
+		{
+			p.SetState(357)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRETURN)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
+<<<<<<< HEAD
 		p.SetState(347)
+=======
+		p.SetState(361)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
 
+<<<<<<< HEAD
 		if ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&29281521508548616) != 0) || _la == MinigoParserINTLITERAL || _la == MinigoParserIDENTIFIER {
 			{
 				p.SetState(346)
@@ -7478,6 +8754,20 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 		{
 			p.SetState(363)
 			p.IfStatement()
+=======
+		for ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&-9216051549640327164) != 0) || _la == MinigoParserIDENTIFIER {
+			{
+				p.SetState(358)
+				p.expression(0)
+			}
+
+			p.SetState(363)
+			p.GetErrorHandler().Sync(p)
+			if p.HasError() {
+				goto errorExit
+			}
+			_la = p.GetTokenStream().LA(1)
+>>>>>>> a9dd69d (Initial Commit)
 		}
 		{
 			p.SetState(364)
@@ -7488,6 +8778,7 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 			}
 		}
 
+<<<<<<< HEAD
 	case MinigoParserFOR:
 		localctx = NewLoopStatementContext(p, localctx)
 		p.EnterOuterAlt(localctx, 10)
@@ -7497,6 +8788,114 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 		}
 		{
 			p.SetState(367)
+=======
+	case MinigoParserBREAK:
+		p.EnterOuterAlt(localctx, 4)
+		{
+			p.SetState(365)
+			p.Match(MinigoParserBREAK)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(366)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case MinigoParserCONTINUE:
+		p.EnterOuterAlt(localctx, 5)
+		{
+			p.SetState(367)
+			p.Match(MinigoParserCONTINUE)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(368)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case MinigoParserLEFTPARENTHESIS, MinigoParserCAP, MinigoParserLEN, MinigoParserAPPEND, MinigoParserINTERPRETEDSTRINGLITERAL, MinigoParserRAWSTRINGLITERAL, MinigoParserRUNELITERAL, MinigoParserFLOATLITERAL, MinigoParserNOT, MinigoParserCARET, MinigoParserMINUS, MinigoParserPLUS, MinigoParserINTLITERAL, MinigoParserIDENTIFIER:
+		p.EnterOuterAlt(localctx, 6)
+		{
+			p.SetState(369)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(370)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case MinigoParserLEFTCURLYBRACE:
+		p.EnterOuterAlt(localctx, 7)
+		{
+			p.SetState(372)
+			p.Block()
+		}
+		{
+			p.SetState(373)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case MinigoParserSWITCH:
+		p.EnterOuterAlt(localctx, 8)
+		{
+			p.SetState(375)
+			p.Switch_()
+		}
+		{
+			p.SetState(376)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case MinigoParserIF:
+		p.EnterOuterAlt(localctx, 9)
+		{
+			p.SetState(378)
+			p.IfStatement()
+		}
+		{
+			p.SetState(379)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+
+	case MinigoParserFOR:
+		p.EnterOuterAlt(localctx, 10)
+		{
+			p.SetState(381)
+			p.Loop()
+		}
+		{
+			p.SetState(382)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7505,18 +8904,30 @@ func (p *MinigoParser) Statement() (localctx IStatementContext) {
 		}
 
 	case MinigoParserTYPE:
+<<<<<<< HEAD
 		localctx = NewTypeDeclStatementContext(p, localctx)
 		p.EnterOuterAlt(localctx, 11)
 		{
 			p.SetState(369)
+=======
+		p.EnterOuterAlt(localctx, 11)
+		{
+			p.SetState(384)
+>>>>>>> a9dd69d (Initial Commit)
 			p.TypeDecl()
 		}
 
 	case MinigoParserVAR:
+<<<<<<< HEAD
 		localctx = NewVariableDeclStatementContext(p, localctx)
 		p.EnterOuterAlt(localctx, 12)
 		{
 			p.SetState(370)
+=======
+		p.EnterOuterAlt(localctx, 12)
+		{
+			p.SetState(385)
+>>>>>>> a9dd69d (Initial Commit)
 			p.VariableDecl()
 		}
 
@@ -7708,9 +9119,13 @@ func (s *SimpleStatementContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 func (p *MinigoParser) SimpleStatement() (localctx ISimpleStatementContext) {
 	localctx = NewSimpleStatementContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 64, MinigoParserRULE_simpleStatement)
+<<<<<<< HEAD
 	var _la int
 
 	p.SetState(382)
+=======
+	p.SetState(399)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -7720,14 +9135,22 @@ func (p *MinigoParser) SimpleStatement() (localctx ISimpleStatementContext) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
+<<<<<<< HEAD
 			p.SetState(373)
 			p.expression(0)
 		}
 		p.SetState(375)
+=======
+			p.SetState(388)
+			p.expression(0)
+		}
+		p.SetState(392)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
+<<<<<<< HEAD
 		_la = p.GetTokenStream().LA(1)
 
 		if _la == MinigoParserPOSTINC || _la == MinigoParserPOSTDEC {
@@ -7743,23 +9166,64 @@ func (p *MinigoParser) SimpleStatement() (localctx ISimpleStatementContext) {
 				}
 			}
 
+=======
+
+		switch p.GetTokenStream().LA(1) {
+		case MinigoParserPOSTINC:
+			{
+				p.SetState(389)
+				p.Match(MinigoParserPOSTINC)
+				if p.HasError() {
+					// Recognition error - abort rule
+					goto errorExit
+				}
+			}
+
+		case MinigoParserPOSTDEC:
+			{
+				p.SetState(390)
+				p.Match(MinigoParserPOSTDEC)
+				if p.HasError() {
+					// Recognition error - abort rule
+					goto errorExit
+				}
+			}
+
+		case MinigoParserLEFTCURLYBRACE, MinigoParserSEMICOLON:
+
+		default:
+			p.SetError(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
+			goto errorExit
+>>>>>>> a9dd69d (Initial Commit)
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(377)
+=======
+			p.SetState(394)
+>>>>>>> a9dd69d (Initial Commit)
 			p.AssignmentStatement()
 		}
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
+<<<<<<< HEAD
 			p.SetState(378)
 			p.ExpressionList()
 		}
 		{
 			p.SetState(379)
+=======
+			p.SetState(395)
+			p.ExpressionList()
+		}
+		{
+			p.SetState(396)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserWALRUS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -7767,7 +9231,11 @@ func (p *MinigoParser) SimpleStatement() (localctx ISimpleStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(380)
+=======
+			p.SetState(397)
+>>>>>>> a9dd69d (Initial Commit)
 			p.ExpressionList()
 		}
 
@@ -8014,7 +9482,11 @@ func (p *MinigoParser) AssignmentStatement() (localctx IAssignmentStatementConte
 	p.EnterRule(localctx, 66, MinigoParserRULE_assignmentStatement)
 	var _la int
 
+<<<<<<< HEAD
 	p.SetState(392)
+=======
+	p.SetState(409)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -8024,11 +9496,19 @@ func (p *MinigoParser) AssignmentStatement() (localctx IAssignmentStatementConte
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
+<<<<<<< HEAD
 			p.SetState(384)
 			p.ExpressionList()
 		}
 		{
 			p.SetState(385)
+=======
+			p.SetState(401)
+			p.ExpressionList()
+		}
+		{
+			p.SetState(402)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserEQUALS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8036,13 +9516,18 @@ func (p *MinigoParser) AssignmentStatement() (localctx IAssignmentStatementConte
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(386)
+=======
+			p.SetState(403)
+>>>>>>> a9dd69d (Initial Commit)
 			p.ExpressionList()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(388)
 			p.expression(0)
 		}
@@ -8051,6 +9536,16 @@ func (p *MinigoParser) AssignmentStatement() (localctx IAssignmentStatementConte
 			_la = p.GetTokenStream().LA(1)
 
 			if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&8384512) != 0) {
+=======
+			p.SetState(405)
+			p.expression(0)
+		}
+		{
+			p.SetState(406)
+			_la = p.GetTokenStream().LA(1)
+
+			if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4192256) != 0) {
+>>>>>>> a9dd69d (Initial Commit)
 				p.GetErrorHandler().RecoverInline(p)
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
@@ -8058,7 +9553,11 @@ func (p *MinigoParser) AssignmentStatement() (localctx IAssignmentStatementConte
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(390)
+=======
+			p.SetState(407)
+>>>>>>> a9dd69d (Initial Commit)
 			p.expression(0)
 		}
 
@@ -8266,17 +9765,29 @@ func (s *IfStatementContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 	localctx = NewIfStatementContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 68, MinigoParserRULE_ifStatement)
+<<<<<<< HEAD
 	p.SetState(428)
+=======
+	p.SetState(443)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
+<<<<<<< HEAD
 	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 31, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(394)
+=======
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 30, p.GetParserRuleContext()) {
+	case 1:
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(411)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIF)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8284,18 +9795,30 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(395)
 			p.expression(0)
 		}
 		{
 			p.SetState(396)
+=======
+			p.SetState(412)
+			p.expression(0)
+		}
+		{
+			p.SetState(413)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Block()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(398)
+=======
+			p.SetState(415)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIF)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8303,6 +9826,7 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(399)
 			p.expression(0)
 		}
@@ -8312,12 +9836,24 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		}
 		{
 			p.SetState(401)
+=======
+			p.SetState(416)
+			p.expression(0)
+		}
+		{
+			p.SetState(417)
+			p.Block()
+		}
+		{
+			p.SetState(418)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserELSE)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
+<<<<<<< HEAD
 		p.SetState(404)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
@@ -8340,12 +9876,21 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		default:
 			p.SetError(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 			goto errorExit
+=======
+		{
+			p.SetState(419)
+			p.IfStatement()
+>>>>>>> a9dd69d (Initial Commit)
 		}
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
+<<<<<<< HEAD
 			p.SetState(406)
+=======
+			p.SetState(421)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIF)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8353,11 +9898,19 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(407)
 			p.SimpleStatement()
 		}
 		{
 			p.SetState(408)
+=======
+			p.SetState(422)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(423)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8365,18 +9918,30 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(409)
 			p.expression(0)
 		}
 		{
 			p.SetState(410)
+=======
+			p.SetState(424)
+			p.expression(0)
+		}
+		{
+			p.SetState(425)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Block()
 		}
 
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
+<<<<<<< HEAD
 			p.SetState(412)
+=======
+			p.SetState(427)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIF)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8384,11 +9949,19 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(413)
 			p.SimpleStatement()
 		}
 		{
 			p.SetState(414)
+=======
+			p.SetState(428)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(429)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8396,6 +9969,7 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(415)
 			p.expression(0)
 		}
@@ -8405,6 +9979,17 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		}
 		{
 			p.SetState(417)
+=======
+			p.SetState(430)
+			p.expression(0)
+		}
+		{
+			p.SetState(431)
+			p.Block()
+		}
+		{
+			p.SetState(432)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserELSE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8412,14 +9997,22 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(418)
+=======
+			p.SetState(433)
+>>>>>>> a9dd69d (Initial Commit)
 			p.IfStatement()
 		}
 
 	case 5:
 		p.EnterOuterAlt(localctx, 5)
 		{
+<<<<<<< HEAD
 			p.SetState(420)
+=======
+			p.SetState(435)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserIF)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8427,11 +10020,19 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(421)
 			p.SimpleStatement()
 		}
 		{
 			p.SetState(422)
+=======
+			p.SetState(436)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(437)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8439,6 +10040,7 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(423)
 			p.expression(0)
 		}
@@ -8448,6 +10050,17 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		}
 		{
 			p.SetState(425)
+=======
+			p.SetState(438)
+			p.expression(0)
+		}
+		{
+			p.SetState(439)
+			p.Block()
+		}
+		{
+			p.SetState(440)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserELSE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8455,7 +10068,11 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(426)
+=======
+			p.SetState(441)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Block()
 		}
 
@@ -8646,17 +10263,29 @@ func (s *LoopContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 func (p *MinigoParser) Loop() (localctx ILoopContext) {
 	localctx = NewLoopContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 70, MinigoParserRULE_loop)
+<<<<<<< HEAD
 	p.SetState(451)
+=======
+	p.SetState(466)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
+<<<<<<< HEAD
 	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 32, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(430)
+=======
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 31, p.GetParserRuleContext()) {
+	case 1:
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(445)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserFOR)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8664,13 +10293,18 @@ func (p *MinigoParser) Loop() (localctx ILoopContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(431)
+=======
+			p.SetState(446)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Block()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(432)
 			p.Match(MinigoParserFOR)
 			if p.HasError() {
@@ -8755,6 +10389,10 @@ func (p *MinigoParser) Loop() (localctx ILoopContext) {
 		{
 			p.SetState(447)
 			p.Match(MinigoParserSEMICOLON)
+=======
+			p.SetState(447)
+			p.Match(MinigoParserFOR)
+>>>>>>> a9dd69d (Initial Commit)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
@@ -8762,13 +10400,102 @@ func (p *MinigoParser) Loop() (localctx ILoopContext) {
 		}
 		{
 			p.SetState(448)
+<<<<<<< HEAD
 			p.SimpleStatement()
+=======
+			p.expression(0)
+>>>>>>> a9dd69d (Initial Commit)
 		}
 		{
 			p.SetState(449)
 			p.Block()
 		}
 
+<<<<<<< HEAD
+=======
+	case 3:
+		p.EnterOuterAlt(localctx, 3)
+		{
+			p.SetState(451)
+			p.Match(MinigoParserFOR)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(452)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(453)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(454)
+			p.expression(0)
+		}
+		{
+			p.SetState(455)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(456)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(457)
+			p.Block()
+		}
+
+	case 4:
+		p.EnterOuterAlt(localctx, 4)
+		{
+			p.SetState(459)
+			p.Match(MinigoParserFOR)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(460)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(461)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(462)
+			p.Match(MinigoParserSEMICOLON)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(463)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(464)
+			p.Block()
+		}
+
+>>>>>>> a9dd69d (Initial Commit)
 	case antlr.ATNInvalidAltNumber:
 		goto errorExit
 	}
@@ -8935,17 +10662,29 @@ func (s *SwitchContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 	localctx = NewSwitchContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 72, MinigoParserRULE_switch)
+<<<<<<< HEAD
 	p.SetState(479)
+=======
+	p.SetState(494)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
+<<<<<<< HEAD
 	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 33, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(453)
+=======
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 32, p.GetParserRuleContext()) {
+	case 1:
+		p.EnterOuterAlt(localctx, 1)
+		{
+			p.SetState(468)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSWITCH)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8953,11 +10692,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(454)
 			p.SimpleStatement()
 		}
 		{
 			p.SetState(455)
+=======
+			p.SetState(469)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(470)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8965,11 +10712,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(456)
 			p.expression(0)
 		}
 		{
 			p.SetState(457)
+=======
+			p.SetState(471)
+			p.expression(0)
+		}
+		{
+			p.SetState(472)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8977,11 +10732,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(458)
 			p.ExpressionCaseClauseList()
 		}
 		{
 			p.SetState(459)
+=======
+			p.SetState(473)
+			p.ExpressionCaseClauseList()
+		}
+		{
+			p.SetState(474)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -8992,7 +10755,11 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(461)
+=======
+			p.SetState(476)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSWITCH)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9000,11 +10767,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(462)
 			p.expression(0)
 		}
 		{
 			p.SetState(463)
+=======
+			p.SetState(477)
+			p.expression(0)
+		}
+		{
+			p.SetState(478)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9012,11 +10787,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(464)
 			p.ExpressionCaseClauseList()
 		}
 		{
 			p.SetState(465)
+=======
+			p.SetState(479)
+			p.ExpressionCaseClauseList()
+		}
+		{
+			p.SetState(480)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9027,7 +10810,11 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
+<<<<<<< HEAD
 			p.SetState(467)
+=======
+			p.SetState(482)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSWITCH)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9035,11 +10822,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(468)
 			p.SimpleStatement()
 		}
 		{
 			p.SetState(469)
+=======
+			p.SetState(483)
+			p.SimpleStatement()
+		}
+		{
+			p.SetState(484)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSEMICOLON)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9047,7 +10842,11 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(470)
+=======
+			p.SetState(485)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9055,11 +10854,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(471)
 			p.ExpressionCaseClauseList()
 		}
 		{
 			p.SetState(472)
+=======
+			p.SetState(486)
+			p.ExpressionCaseClauseList()
+		}
+		{
+			p.SetState(487)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9070,7 +10877,11 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
+<<<<<<< HEAD
 			p.SetState(474)
+=======
+			p.SetState(489)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserSWITCH)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9078,7 +10889,11 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(475)
+=======
+			p.SetState(490)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserLEFTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9086,11 +10901,19 @@ func (p *MinigoParser) Switch_() (localctx ISwitchContext) {
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(476)
 			p.ExpressionCaseClauseList()
 		}
 		{
 			p.SetState(477)
+=======
+			p.SetState(491)
+			p.ExpressionCaseClauseList()
+		}
+		{
+			p.SetState(492)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserRIGHTCURLYBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9282,33 +11105,57 @@ func (p *MinigoParser) ExpressionCaseClauseList() (localctx IExpressionCaseClaus
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
+<<<<<<< HEAD
 	p.SetState(486)
+=======
+	p.SetState(501)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
+<<<<<<< HEAD
 	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 34, p.GetParserRuleContext())
+=======
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 33, p.GetParserRuleContext())
+>>>>>>> a9dd69d (Initial Commit)
 	if p.HasError() {
 		goto errorExit
 	}
 	for _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		if _alt == 1 {
 			{
+<<<<<<< HEAD
 				p.SetState(481)
 				p.ExpressionCaseClause()
 			}
 			{
 				p.SetState(482)
+=======
+				p.SetState(496)
+				p.ExpressionCaseClause()
+			}
+			{
+				p.SetState(497)
+>>>>>>> a9dd69d (Initial Commit)
 				p.ExpressionCaseClauseList()
 			}
 
 		}
+<<<<<<< HEAD
 		p.SetState(488)
+=======
+		p.SetState(503)
+>>>>>>> a9dd69d (Initial Commit)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
+<<<<<<< HEAD
 		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 34, p.GetParserRuleContext())
+=======
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 33, p.GetParserRuleContext())
+>>>>>>> a9dd69d (Initial Commit)
 		if p.HasError() {
 			goto errorExit
 		}
@@ -9446,11 +11293,19 @@ func (p *MinigoParser) ExpressionCaseClause() (localctx IExpressionCaseClauseCon
 	p.EnterRule(localctx, 76, MinigoParserRULE_expressionCaseClause)
 	p.EnterOuterAlt(localctx, 1)
 	{
+<<<<<<< HEAD
 		p.SetState(489)
 		p.ExpressionSwitchCase()
 	}
 	{
 		p.SetState(490)
+=======
+		p.SetState(504)
+		p.ExpressionSwitchCase()
+	}
+	{
+		p.SetState(505)
+>>>>>>> a9dd69d (Initial Commit)
 		p.Match(MinigoParserCOLON)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -9458,7 +11313,11 @@ func (p *MinigoParser) ExpressionCaseClause() (localctx IExpressionCaseClauseCon
 		}
 	}
 	{
+<<<<<<< HEAD
 		p.SetState(491)
+=======
+		p.SetState(506)
+>>>>>>> a9dd69d (Initial Commit)
 		p.StatementList()
 	}
 
@@ -9580,7 +11439,11 @@ func (s *ExpressionSwitchCaseContext) Accept(visitor antlr.ParseTreeVisitor) int
 func (p *MinigoParser) ExpressionSwitchCase() (localctx IExpressionSwitchCaseContext) {
 	localctx = NewExpressionSwitchCaseContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 78, MinigoParserRULE_expressionSwitchCase)
+<<<<<<< HEAD
 	p.SetState(496)
+=======
+	p.SetState(511)
+>>>>>>> a9dd69d (Initial Commit)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -9590,7 +11453,11 @@ func (p *MinigoParser) ExpressionSwitchCase() (localctx IExpressionSwitchCaseCon
 	case MinigoParserCASE:
 		p.EnterOuterAlt(localctx, 1)
 		{
+<<<<<<< HEAD
 			p.SetState(493)
+=======
+			p.SetState(508)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserCASE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -9598,14 +11465,22 @@ func (p *MinigoParser) ExpressionSwitchCase() (localctx IExpressionSwitchCaseCon
 			}
 		}
 		{
+<<<<<<< HEAD
 			p.SetState(494)
+=======
+			p.SetState(509)
+>>>>>>> a9dd69d (Initial Commit)
 			p.ExpressionList()
 		}
 
 	case MinigoParserDEFAULT:
 		p.EnterOuterAlt(localctx, 2)
 		{
+<<<<<<< HEAD
 			p.SetState(495)
+=======
+			p.SetState(510)
+>>>>>>> a9dd69d (Initial Commit)
 			p.Match(MinigoParserDEFAULT)
 			if p.HasError() {
 				// Recognition error - abort rule

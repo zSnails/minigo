@@ -1,6 +1,7 @@
 package main
 
 import (
+<<<<<<< HEAD
 	"flag"
 	"fmt"
 	"os"
@@ -36,10 +37,23 @@ func main() {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(InternalError)
+=======
+	"fmt"
+
+	"github.com/antlr4-go/antlr/v4"
+	"github.com/zSnails/minigo/grammar"
+)
+
+func main() {
+	fileStream, err := antlr.NewFileStream("tests/fuap.minigo")
+	if err != nil {
+		panic(err)
+>>>>>>> a9dd69d (Initial Commit)
 	}
 	lexer := grammar.NewMinigoLexer(fileStream)
 	cts := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	parser := grammar.NewMinigoParser(cts)
+<<<<<<< HEAD
 
 	var r reporter.Reporter
 	parser.RemoveErrorListeners()
@@ -56,6 +70,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		os.Exit(ParsingError)
 	}
+=======
+	ctx := parser.Root()
+>>>>>>> a9dd69d (Initial Commit)
 	s := ctx.ToStringTree(nil, parser)
 	fmt.Printf("s: %v\n", s)
 }

@@ -32,6 +32,7 @@ func (s *BaseMinigoListener) EnterTopDeclarationList(ctx *TopDeclarationListCont
 // ExitTopDeclarationList is called when production topDeclarationList is exited.
 func (s *BaseMinigoListener) ExitTopDeclarationList(ctx *TopDeclarationListContext) {}
 
+<<<<<<< HEAD
 // EnterVariableDeclaration is called when production variableDeclaration is entered.
 func (s *BaseMinigoListener) EnterVariableDeclaration(ctx *VariableDeclarationContext) {}
 
@@ -49,6 +50,13 @@ func (s *BaseMinigoListener) EnterEmptyVariableDeclaration(ctx *EmptyVariableDec
 
 // ExitEmptyVariableDeclaration is called when production emptyVariableDeclaration is exited.
 func (s *BaseMinigoListener) ExitEmptyVariableDeclaration(ctx *EmptyVariableDeclarationContext) {}
+=======
+// EnterVariableDecl is called when production variableDecl is entered.
+func (s *BaseMinigoListener) EnterVariableDecl(ctx *VariableDeclContext) {}
+
+// ExitVariableDecl is called when production variableDecl is exited.
+func (s *BaseMinigoListener) ExitVariableDecl(ctx *VariableDeclContext) {}
+>>>>>>> a9dd69d (Initial Commit)
 
 // EnterInnerVarDecls is called when production innerVarDecls is entered.
 func (s *BaseMinigoListener) EnterInnerVarDecls(ctx *InnerVarDeclsContext) {}
@@ -218,6 +226,7 @@ func (s *BaseMinigoListener) EnterBlock(ctx *BlockContext) {}
 // ExitBlock is called when production block is exited.
 func (s *BaseMinigoListener) ExitBlock(ctx *BlockContext) {}
 
+<<<<<<< HEAD
 // EnterPrintStatement is called when production printStatement is entered.
 func (s *BaseMinigoListener) EnterPrintStatement(ctx *PrintStatementContext) {}
 
@@ -289,6 +298,13 @@ func (s *BaseMinigoListener) EnterVariableDeclStatement(ctx *VariableDeclStateme
 
 // ExitVariableDeclStatement is called when production variableDeclStatement is exited.
 func (s *BaseMinigoListener) ExitVariableDeclStatement(ctx *VariableDeclStatementContext) {}
+=======
+// EnterStatement is called when production statement is entered.
+func (s *BaseMinigoListener) EnterStatement(ctx *StatementContext) {}
+
+// ExitStatement is called when production statement is exited.
+func (s *BaseMinigoListener) ExitStatement(ctx *StatementContext) {}
+>>>>>>> a9dd69d (Initial Commit)
 
 // EnterSimpleStatement is called when production simpleStatement is entered.
 func (s *BaseMinigoListener) EnterSimpleStatement(ctx *SimpleStatementContext) {}
