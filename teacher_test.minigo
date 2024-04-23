@@ -1,0 +1,71 @@
+package main;
+
+var (MAX = 10; caracter rune = '\n';);
+
+func ComputeFac(num (int)) int {
+	var numaux int;
+	if (num < 1){	
+		numaux = 1;
+	}
+	else {
+		numaux = num * (ComputeFac(num-1));
+	};
+	return numaux;
+};
+
+
+type arregloT []int;
+
+var arrreglo arregloT;
+
+func imprimir() int {
+	print("Este es el resultado: " + operaciones(arreglo[2],10.10)); 
+	x := cap(arreglo);
+	println(`Valor de variable` + x);
+	return arreglo[len(arreglo)];  
+};
+
+type coordenada struct {x int; y int;};
+
+type hola struct{
+	b boolean;
+    x int;
+    a [2]coordenada;
+};
+
+func operaciones(op1,op2 int) int{
+	var i int;
+	var result int;
+   
+	i = 10;
+
+	for !(i < 0) {
+        arreglo[i] *= i;
+	};
+
+	if (op1 < 1) && (op2 < 0){
+		result = (op1 + arreglo[0]) * (op2 - arreglo[1]);
+	} else {
+		result = 1;
+	};
+   	
+	var registro hola;
+	registro.b = true; 
+	registro.x = 30;
+	var c1 coordenada = 10;
+ 	var c2 coordenada = 100;
+	registro.a[0] = c1;
+	registro.a[0] =	c2;	
+	
+	i := 2;
+	switch i {
+    	case 1:
+		result++;
+		return result;
+	case 2:
+		return ^result >> 2;
+	case 3:
+		return result + 3;
+	};
+	
+};
