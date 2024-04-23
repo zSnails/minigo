@@ -51,6 +51,7 @@ func main() {
 >>>>>>> a9dd69d (Initial Commit)
 	}
 	lexer := grammar.NewMinigoLexer(fileStream)
+    lexer.RemoveErrorListeners()
 	cts := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	parser := grammar.NewMinigoParser(cts)
 <<<<<<< HEAD
@@ -64,6 +65,7 @@ func main() {
 		r = reporter.NewReporter(fileStream.GetSourceName())
 	}
 
+    lexer.AddErrorListener(r.(antlr.ErrorListener))
 	parser.AddErrorListener(r.(antlr.ErrorListener))
 	ctx := parser.Root()
 	if r.HasErrors() {

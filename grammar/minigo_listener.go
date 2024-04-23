@@ -13,7 +13,6 @@ type MinigoListener interface {
 	// EnterTopDeclarationList is called when entering the topDeclarationList production.
 	EnterTopDeclarationList(c *TopDeclarationListContext)
 
-<<<<<<< HEAD
 	// EnterVariableDeclaration is called when entering the variableDeclaration production.
 	EnterVariableDeclaration(c *VariableDeclarationContext)
 
@@ -22,10 +21,6 @@ type MinigoListener interface {
 
 	// EnterEmptyVariableDeclaration is called when entering the emptyVariableDeclaration production.
 	EnterEmptyVariableDeclaration(c *EmptyVariableDeclarationContext)
-=======
-	// EnterVariableDecl is called when entering the variableDecl production.
-	EnterVariableDecl(c *VariableDeclContext)
->>>>>>> a9dd69d (Initial Commit)
 
 	// EnterInnerVarDecls is called when entering the innerVarDecls production.
 	EnterInnerVarDecls(c *InnerVarDeclsContext)
@@ -111,7 +106,6 @@ type MinigoListener interface {
 	// EnterBlock is called when entering the block production.
 	EnterBlock(c *BlockContext)
 
-<<<<<<< HEAD
 	// EnterPrintStatement is called when entering the printStatement production.
 	EnterPrintStatement(c *PrintStatementContext)
 
@@ -147,10 +141,6 @@ type MinigoListener interface {
 
 	// EnterVariableDeclStatement is called when entering the variableDeclStatement production.
 	EnterVariableDeclStatement(c *VariableDeclStatementContext)
-=======
-	// EnterStatement is called when entering the statement production.
-	EnterStatement(c *StatementContext)
->>>>>>> a9dd69d (Initial Commit)
 
 	// EnterSimpleStatement is called when entering the simpleStatement production.
 	EnterSimpleStatement(c *SimpleStatementContext)
@@ -182,7 +172,6 @@ type MinigoListener interface {
 	// ExitTopDeclarationList is called when exiting the topDeclarationList production.
 	ExitTopDeclarationList(c *TopDeclarationListContext)
 
-<<<<<<< HEAD
 	// ExitVariableDeclaration is called when exiting the variableDeclaration production.
 	ExitVariableDeclaration(c *VariableDeclarationContext)
 
@@ -191,10 +180,6 @@ type MinigoListener interface {
 
 	// ExitEmptyVariableDeclaration is called when exiting the emptyVariableDeclaration production.
 	ExitEmptyVariableDeclaration(c *EmptyVariableDeclarationContext)
-=======
-	// ExitVariableDecl is called when exiting the variableDecl production.
-	ExitVariableDecl(c *VariableDeclContext)
->>>>>>> a9dd69d (Initial Commit)
 
 	// ExitInnerVarDecls is called when exiting the innerVarDecls production.
 	ExitInnerVarDecls(c *InnerVarDeclsContext)
@@ -280,7 +265,6 @@ type MinigoListener interface {
 	// ExitBlock is called when exiting the block production.
 	ExitBlock(c *BlockContext)
 
-<<<<<<< HEAD
 	// ExitPrintStatement is called when exiting the printStatement production.
 	ExitPrintStatement(c *PrintStatementContext)
 
@@ -316,10 +300,6 @@ type MinigoListener interface {
 
 	// ExitVariableDeclStatement is called when exiting the variableDeclStatement production.
 	ExitVariableDeclStatement(c *VariableDeclStatementContext)
-=======
-	// ExitStatement is called when exiting the statement production.
-	ExitStatement(c *StatementContext)
->>>>>>> a9dd69d (Initial Commit)
 
 	// ExitSimpleStatement is called when exiting the simpleStatement production.
 	ExitSimpleStatement(c *SimpleStatementContext)

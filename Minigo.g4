@@ -4,15 +4,9 @@ root: PACKAGE IDENTIFIER SEMICOLON topDeclarationList;
 
 topDeclarationList: (variableDecl | typeDecl | funcDecl)*;
 
-<<<<<<< HEAD
 variableDecl: VAR singleVarDecl SEMICOLON                                   #variableDeclaration
             | VAR LEFTPARENTHESIS innerVarDecls RIGHTPARENTHESIS SEMICOLON  #multiVariableDeclaration
             | VAR LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON                #emptyVariableDeclaration
-=======
-variableDecl: VAR singleVarDecl SEMICOLON
-            | VAR LEFTPARENTHESIS innerVarDecls RIGHTPARENTHESIS SEMICOLON
-            | VAR LEFTPARENTHESIS RIGHTPARENTHESIS SEMICOLON
->>>>>>> a9dd69d (Initial Commit)
             ;
 innerVarDecls: singleVarDecl SEMICOLON (singleVarDecl SEMICOLON)*;
 
@@ -38,11 +32,7 @@ singleTypeDecl: IDENTIFIER declType
 funcDecl: funcFrontDecl block SEMICOLON
         ;
 
-<<<<<<< HEAD
 funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls? RIGHTPARENTHESIS declType?
-=======
-funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls* RIGHTPARENTHESIS declType*
->>>>>>> a9dd69d (Initial Commit)
              ;
 
 funcArgsDecls: singleVarDeclNoExps (COMMA singleVarDeclNoExps)*
@@ -125,7 +115,6 @@ statementList: statement*
 block: LEFTCURLYBRACE statementList RIGHTCURLYBRACE
      ;
 
-<<<<<<< HEAD
 statement: PRINT LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #printStatement
          | PRINTLN LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #printlnStatement
          | RETURN expression? SEMICOLON #returnStatement
@@ -141,23 +130,6 @@ statement: PRINT LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #pri
          ;
 
 simpleStatement: expression (POSTINC | POSTDEC)?
-=======
-statement: PRINT LEFTPARENTHESIS expressionList* RIGHTPARENTHESIS SEMICOLON
-         | PRINTLN LEFTPARENTHESIS expressionList* RIGHTPARENTHESIS SEMICOLON
-         | RETURN expression* SEMICOLON
-         | BREAK SEMICOLON
-         | CONTINUE SEMICOLON
-         | simpleStatement SEMICOLON
-         | block SEMICOLON
-         | switch SEMICOLON
-         | ifStatement SEMICOLON
-         | loop SEMICOLON
-         | typeDecl
-         | variableDecl
-         ;
-
-simpleStatement: expression (POSTINC | POSTDEC |)
->>>>>>> a9dd69d (Initial Commit)
                | assignmentStatement
                | expressionList WALRUS expressionList
                ;
@@ -167,11 +139,7 @@ assignmentStatement: expressionList EQUALS expressionList
                    ;
 
 ifStatement: IF expression block
-<<<<<<< HEAD
            | IF expression block ELSE (block|ifStatement)
-=======
-           | IF expression block ELSE ifStatement
->>>>>>> a9dd69d (Initial Commit)
            | IF simpleStatement SEMICOLON expression block
            | IF simpleStatement SEMICOLON expression block ELSE ifStatement
            | IF simpleStatement SEMICOLON expression block ELSE block
@@ -203,10 +171,7 @@ expressionSwitchCase: CASE expressionList
 // interpreted_string_lit = `"` { unicode_value | byte_value } `"` .
 
 COMMENT: '//' ~('\n'|'\r')* '\r'? '\n' -> skip;
-<<<<<<< HEAD
 MULTILINE_COMMENT: '/*'.*?'*/' -> skip;
-=======
->>>>>>> a9dd69d (Initial Commit)
 LEFTPARENTHESIS: '(';
 RIGHTPARENTHESIS: ')';
 DEFAULT: 'default';

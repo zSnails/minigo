@@ -15,7 +15,6 @@ func (v *BaseMinigoVisitor) VisitTopDeclarationList(ctx *TopDeclarationListConte
 	return v.VisitChildren(ctx)
 }
 
-<<<<<<< HEAD
 func (v *BaseMinigoVisitor) VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -25,9 +24,6 @@ func (v *BaseMinigoVisitor) VisitMultiVariableDeclaration(ctx *MultiVariableDecl
 }
 
 func (v *BaseMinigoVisitor) VisitEmptyVariableDeclaration(ctx *EmptyVariableDeclarationContext) interface{} {
-=======
-func (v *BaseMinigoVisitor) VisitVariableDecl(ctx *VariableDeclContext) interface{} {
->>>>>>> a9dd69d (Initial Commit)
 	return v.VisitChildren(ctx)
 }
 
@@ -143,7 +139,6 @@ func (v *BaseMinigoVisitor) VisitBlock(ctx *BlockContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-<<<<<<< HEAD
 func (v *BaseMinigoVisitor) VisitPrintStatement(ctx *PrintStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -189,9 +184,6 @@ func (v *BaseMinigoVisitor) VisitTypeDeclStatement(ctx *TypeDeclStatementContext
 }
 
 func (v *BaseMinigoVisitor) VisitVariableDeclStatement(ctx *VariableDeclStatementContext) interface{} {
-=======
-func (v *BaseMinigoVisitor) VisitStatement(ctx *StatementContext) interface{} {
->>>>>>> a9dd69d (Initial Commit)
 	return v.VisitChildren(ctx)
 }
 

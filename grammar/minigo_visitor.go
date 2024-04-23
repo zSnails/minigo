@@ -13,7 +13,6 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#topDeclarationList.
 	VisitTopDeclarationList(ctx *TopDeclarationListContext) interface{}
 
-<<<<<<< HEAD
 	// Visit a parse tree produced by MinigoParser#variableDeclaration.
 	VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{}
 
@@ -22,10 +21,6 @@ type MinigoVisitor interface {
 
 	// Visit a parse tree produced by MinigoParser#emptyVariableDeclaration.
 	VisitEmptyVariableDeclaration(ctx *EmptyVariableDeclarationContext) interface{}
-=======
-	// Visit a parse tree produced by MinigoParser#variableDecl.
-	VisitVariableDecl(ctx *VariableDeclContext) interface{}
->>>>>>> a9dd69d (Initial Commit)
 
 	// Visit a parse tree produced by MinigoParser#innerVarDecls.
 	VisitInnerVarDecls(ctx *InnerVarDeclsContext) interface{}
@@ -111,7 +106,6 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#block.
 	VisitBlock(ctx *BlockContext) interface{}
 
-<<<<<<< HEAD
 	// Visit a parse tree produced by MinigoParser#printStatement.
 	VisitPrintStatement(ctx *PrintStatementContext) interface{}
 
@@ -147,10 +141,6 @@ type MinigoVisitor interface {
 
 	// Visit a parse tree produced by MinigoParser#variableDeclStatement.
 	VisitVariableDeclStatement(ctx *VariableDeclStatementContext) interface{}
-=======
-	// Visit a parse tree produced by MinigoParser#statement.
-	VisitStatement(ctx *StatementContext) interface{}
->>>>>>> a9dd69d (Initial Commit)
 
 	// Visit a parse tree produced by MinigoParser#simpleStatement.
 	VisitSimpleStatement(ctx *SimpleStatementContext) interface{}
