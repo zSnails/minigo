@@ -64,10 +64,10 @@ func main() {
 	}
 	fmt.Printf("ctx.ToStringTree(): %v\n", ctx.ToStringTree(nil, parser))
 
-	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName())
+	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName(), r.(antlr.ErrorListener))
 	typeChecker.Visit(ctx)
-	if typeChecker.HasErrors() {
-		fmt.Fprintf(os.Stderr, "%s", typeChecker)
+	if r.HasErrors() {
+		fmt.Fprintf(os.Stderr, "%s", r.String())
 		os.Exit(CompilerError)
 	}
 	fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
