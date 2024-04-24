@@ -268,10 +268,10 @@ func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext) interface{} {
 	rhs := ctx.GetRight().AllExpression()
 	lhs := ctx.GetLeft().AllExpression()
-    lhsLen := len(lhs)
-    rhsLen := len(rhs)
+	lhsLen := len(lhs)
+	rhsLen := len(rhs)
 	if rhsLen != lhsLen {
-        t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", lhsLen, rhsLen))
+		t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", lhsLen, rhsLen))
 		return nil //
 	}
 	for idx, ident := range lhs {
