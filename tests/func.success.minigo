@@ -12,6 +12,8 @@ func div(numerator, denominator int) int {
     return numerator / denominator;
 };
 
+func panic(a string){};
+
 func main() {
     result := div(3, 0);
     if err != "" {
