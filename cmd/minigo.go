@@ -62,7 +62,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		os.Exit(CompilerError)
 	}
-	fmt.Printf("ctx.ToStringTree(): %v\n", ctx.ToStringTree(nil, parser))
+	// fmt.Printf("ctx.ToStringTree(): %v\n", ctx.ToStringTree(nil, parser))
 
 	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName(), r.(antlr.ErrorListener))
 	typeChecker.Visit(ctx)
@@ -70,6 +70,5 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		os.Exit(CompilerError)
 	}
-	fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
-
+	// fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
 }
