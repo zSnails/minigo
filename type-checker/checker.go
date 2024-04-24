@@ -290,6 +290,8 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		symbolType := getType(symbol)
 		if !symbolType.Equals(right) {
 			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", right, symbolType))
+			return nil // unrecoverable
+
 		}
 	}
 
