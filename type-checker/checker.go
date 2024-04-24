@@ -225,8 +225,18 @@ func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 	}
 	if !(accessee.IsSlice || accessee.IsArray) {
 		t.MakeError(accessee.Token, fmt.Errorf("symbol '%s' is not a slice or array type", accessee.Name))
+		return nil // unrecoverable
 	}
-	t.Visit(ctx.Index())
+
+	index, ok := t.Visit(ctx.Index()).(*symboltable.Symbol)
+	if !ok {
+		return nil // unreachable
+	}
+
+	if getType(index) != symboltable.Int {
+		t.MakeError(accessee.Token, fmt.Errorf("cannot use value of type '%s' as index selector", getType(index)))
+		return nil // unrecoverable
+	}
 	return accessee
 }
 
