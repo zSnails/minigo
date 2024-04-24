@@ -258,10 +258,19 @@ func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 // VisitNormalAssignment implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext) interface{} {
 	rhs := ctx.GetRight().AllExpression()
-	for idx, ident := range ctx.GetLeft().AllExpression() {
+	lhs := ctx.GetLeft().AllExpression()
+    lhsLen := len(lhs)
+    rhsLen := len(rhs)
+	if rhsLen != lhsLen {
+        t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", lhsLen, rhsLen))
+		return nil //
+	}
+	for idx, ident := range lhs {
 		expression := rhs[idx]
-		fmt.Printf("t.Visit(ident): %v\n", t.Visit(ident))
-		symbol := t.Visit(ident).(*symboltable.Symbol)
+		symbol, ok := t.Visit(ident).(*symboltable.Symbol)
+		if !ok {
+			return nil // unrecoverable
+		}
 
 		right, ok := t.Visit(expression).(*symboltable.Symbol)
 		if !ok {
