@@ -753,7 +753,8 @@ func (t *TypeChecker) VisitIfStatementStatement(ctx *grammar.IfStatementStatemen
 
 // VisitIndex implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIndex(ctx *grammar.IndexContext) interface{} {
-	return t.VisitChildren(ctx)
+	// return t.VisitChildren(ctx)
+	return t.Visit(ctx.GetChild(1).(*grammar.ExpressionPrimaryExpressionContext))
 }
 
 // VisitInnerTypeDecls implements grammar.MinigoVisitor.
