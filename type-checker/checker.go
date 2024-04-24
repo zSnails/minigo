@@ -53,7 +53,7 @@ func (t *TypeChecker) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionCon
 
 // VisitInfiniteFor implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitThreePartFor implements grammar.MinigoVisitor.
