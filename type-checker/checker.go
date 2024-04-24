@@ -69,12 +69,11 @@ func (t *TypeChecker) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 	}
 
 	_type := getType(expressionType)
-	fmt.Printf("_type: %v\n", _type)
 
 	if _type != symboltable.Bool {
 		t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use expression of type '%s' in for condition", _type))
 	}
-	return t.VisitChildren(ctx)
+	return t.Visit(ctx.Block())
 }
 
 var _ grammar.MinigoVisitor = &TypeChecker{}
