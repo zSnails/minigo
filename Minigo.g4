@@ -248,4 +248,5 @@ SEMICOLON: ';';
 VAR: 'var';
 EQUALS: '=';
 PACKAGE: 'package';
-IDENTIFIER: [a-zA-Z][a-zA-Z0-9]*;
+IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]*;
+//IDENTIFIER: '_'*?[a-zA-Z]('_'|[a-zA-Z0-9])*;
