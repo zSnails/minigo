@@ -14,11 +14,11 @@ import (
 )
 
 type TypeChecker struct {
-	listener        antlr.ErrorListener
-	filename        string
-	currentFunction *symboltable.Symbol
-	symbolStack     *stack.Stack[*symboltable.Symbol]
-	SymbolTable     *symboltable.SymbolTable
+	listener antlr.ErrorListener
+	filename string
+	// currentFunction *symboltable.Symbol
+	symbolStack *stack.Stack[*symboltable.Symbol]
+	SymbolTable *symboltable.SymbolTable
 }
 
 // VisitIfElseBlock implements grammar.MinigoVisitor.
@@ -710,9 +710,11 @@ func (t *TypeChecker) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 	if !found {
 		panic("TODO: proper error message here")
 	}
-	t.currentFunction = val
+	// t.currentFunction = val
+	t.symbolStack.Push(val)
 	res := t.VisitChildren(ctx)
-	t.currentFunction = nil
+	_, _ = t.symbolStack.Pop()
+	// t.currentFunction = nil
 	return res
 }
 
@@ -813,8 +815,10 @@ func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	}
 
 	valType := getType(val)
-	if !valType.Equals(t.currentFunction.Type) {
-		t.MakeError(expr.GetStart(), fmt.Errorf("cannot return value of type '%s' in function with return type of '%s'", valType, t.currentFunction.Type))
+	// if !valType.Equals(t.currentFunction.Type) {
+	currentFunction, _ := t.symbolStack.Peek()
+	if !valType.Equals(getType(currentFunction)) {
+		t.MakeError(expr.GetStart(), fmt.Errorf("cannot return value of type '%s' in function with return type of '%s'", valType, getType(currentFunction)))
 	}
 	return nil
 }
@@ -1019,19 +1023,21 @@ func (t *TypeChecker) VisitVariableDeclaration(ctx *grammar.VariableDeclarationC
 func (v *TypeChecker) VisitChildren(node antlr.RuleNode) interface{} {
 	var result any = nil
 	for _, child := range node.GetChildren() {
-		cpt := child.(antlr.ParseTree)
-		childResult := cpt.Accept(v)
-		result = childResult
+		cpt, ok := child.(antlr.ParseTree)
+		if !ok {
+			panic("unreachable")
+		}
+		result = cpt.Accept(v)
 	}
 	return result
 }
 
 func NewTypeChecker(filename string, listener antlr.ErrorListener) *TypeChecker {
 	return &TypeChecker{
-		filename:        filename,
-		listener:        listener,
-		currentFunction: &symboltable.Symbol{},
-		symbolStack:     stack.NewStack[*symboltable.Symbol](100),
-		SymbolTable:     symboltable.NewSymbolTable(),
+		filename: filename,
+		listener: listener,
+		// currentFunction: &symboltable.Symbol{},
+		symbolStack: stack.NewStack[*symboltable.Symbol](100),
+		SymbolTable: symboltable.NewSymbolTable(),
 	}
 }
