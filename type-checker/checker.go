@@ -290,7 +290,7 @@ func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 		return nil
 	}
 	if !(accessee.IsSlice || accessee.IsArray) {
-		t.MakeError(accessee.Token, fmt.Errorf("symbol '%s' is not a slice or array type", accessee.Name))
+		t.MakeError(ctx.GetStart(), fmt.Errorf("symbol '%s' is not a slice or array type", accessee.Name))
 		return nil // unrecoverable
 	}
 
