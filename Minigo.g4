@@ -131,7 +131,9 @@ statement: PRINT LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS SEMICOLON #pri
          | variableDecl #variableDeclStatement
          ;
 
-simpleStatement: expression (POSTINC | POSTDEC)? #expressionSimpleStatement
+simpleStatement: expression #expressionSimpleStatement
+               | expression POSTINC #expressionPostInc
+               | expression POSTDEC #expressionPostDec
                | assignmentStatement #assignmentSimpleStatement
                | left=expressionList WALRUS right=expressionList #walrusDeclaration
                ;
