@@ -781,7 +781,6 @@ func (t *TypeChecker) VisitExpressionList(ctx *grammar.ExpressionListContext) in
 	exprs := ctx.AllExpression()
 	out := []*symboltable.Symbol{}
 	for _, expr := range exprs {
-		fmt.Printf("expr: %+v\n", expr)
 		_type, ok := t.Visit(expr).(*symboltable.Symbol)
 		if !ok {
 			// panic("TODO: fix this piece of shit, this should never happen")
@@ -894,20 +893,19 @@ func (t *TypeChecker) VisitOperand(ctx *grammar.OperandContext) interface{} {
 
 // VisitPrintStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitPrintStatement(ctx *grammar.PrintStatementContext) interface{} {
-	log.Println("Implement this piece of shit (VisitPrintStatement)")
+	log.Println("TODO: Implement this piece of shit (VisitPrintStatement)")
 	return t.VisitChildren(ctx)
 }
 
 // VisitPrintlnStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext) interface{} {
-	log.Println("Implement this piece of shit (VisitPrintlnStatement)")
+	log.Println("TODO: Implement this piece of shit (VisitPrintlnStatement)")
 	return t.VisitChildren(ctx)
 }
 
 // VisitReturnStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) interface{} {
 	expr := ctx.Expression()
-	fmt.Printf("t.SymbolTable: %v\n", t.SymbolTable)
 	val, ok := t.Visit(expr).(*symboltable.Symbol)
 	if !ok {
 		return nil // unrecoverable
