@@ -217,8 +217,7 @@ func (t *TypeChecker) VisitAppendCall(ctx *grammar.AppendCallContext) interface{
 
 // VisitCapCall implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
-	log.Println("Implement this piece of shit (VisitCapCall)")
-	return symboltable.Int
+	return t.VisitChildren(ctx)
 }
 
 func (t *TypeChecker) FindGlobalSymbol(name string) (*symboltable.Symbol, bool) {
@@ -670,8 +669,13 @@ func (t *TypeChecker) VisitBreakStatement(ctx *grammar.BreakStatementContext) in
 
 // VisitCapExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitCapExpression(ctx *grammar.CapExpressionContext) interface{} {
-	log.Println("Implement this (VisitCapExpression)")
-	return t.VisitChildren(ctx)
+	expr := ctx.Expression()
+	_type := t.Visit(expr).(*symboltable.Symbol)
+	if _type.SymbolType&(symboltable.ArraySymbol|symboltable.SliceSymbol) == 0 {
+		t.MakeError(expr.GetStart(), fmt.Errorf("expression in cap call is not a slice or array type"))
+		return nil
+	}
+	return symboltable.Int
 }
 
 // VisitContinueStatement implements grammar.MinigoVisitor.
