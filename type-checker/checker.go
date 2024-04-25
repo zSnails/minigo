@@ -367,7 +367,15 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 
 // VisitCaretExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitCaretExpression(ctx *grammar.CaretExpressionContext) interface{} {
-	panic("unimplemented")
+	expr := ctx.Expression()
+	symbol, ok := t.Visit(expr).(*symboltable.Symbol)
+	if !ok {
+		return nil // unrecoverable
+	}
+	if getType(symbol) != symboltable.Int {
+		t.MakeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s'", getType(symbol)))
+	}
+	return nil
 }
 
 // VisitExpressionPrimaryExpression implements grammar.MinigoVisitor.
