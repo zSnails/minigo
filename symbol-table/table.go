@@ -247,6 +247,7 @@ func (t *SymbolTable) addPrimitives() {
 	_ = t.AddSymbol(Complex128)
 	_ = t.AddSymbol(String)
 	_ = t.AddSymbol(Rune)
+	_ = t.AddSymbol(Bool)
 	True = t.NewVariable(nil, "true", Bool)
 	False = t.NewVariable(nil, "false", Bool)
 	_ = t.AddSymbol(True)
