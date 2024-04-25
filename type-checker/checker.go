@@ -680,12 +680,13 @@ func (t *TypeChecker) VisitExpression(ctx *grammar.ExpressionContext) interface{
 
 // VisitExpressionCaseClause implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitExpressionCaseClause(ctx *grammar.ExpressionCaseClauseContext) interface{} {
-	panic("unimplemented")
+	t.Visit(ctx.ExpressionSwitchCase())
+	return t.Visit(ctx.StatementList())
 }
 
 // VisitExpressionCaseClauseList implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitExpressionCaseClauseList(ctx *grammar.ExpressionCaseClauseListContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitExpressionList implements grammar.MinigoVisitor.
