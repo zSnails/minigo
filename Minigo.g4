@@ -214,7 +214,7 @@ RAWSTRINGLITERAL: '`'(.)*?'`';
 ESCAPEDSEQUENCES: ('\\n'|'\\r'|'\\t'|'\\v');
 RUNELITERAL: '\'' ([a-zA-Z]|ESCAPEDSEQUENCES) '\'';
 
-FLOATLITERAL: [0-9]+ '.' [0-9]+;
+FLOATLITERAL: '-'?[0-9]+ '.' [0-9]+;
 NOT: '!';
 OR: '||';
 AND: '&&';
@@ -238,7 +238,7 @@ TIMES: '*';
 LEFTCURLYBRACE: '{';
 RIGHTCURLYBRACE: '}';
 STRUCT: 'struct';
-INTLITERAL: [0-9]+;
+INTLITERAL: '-'?[0-9]+;
 LEFTBRACKET: '[';
 RIGHTBRACKET: ']';
 COMMA: ',';
