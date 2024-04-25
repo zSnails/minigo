@@ -354,8 +354,9 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		}
 
 		symbolType := getType(symbol)
-		if !symbolType.Equals(right) {
-			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", right, symbolType))
+		rightType := getType(right)
+		if symbolType != rightType {
+			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
 			return nil // unrecoverable
 
 		}
@@ -596,7 +597,7 @@ func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			t.MakeError(ctx.GetStart(), fmt.Errorf("invalid type")) // This should be unreachable
 		}
 
-		if !expressionType.Equals(_type.symbol) {
+		if expressionType != _type.symbol {
 			t.MakeError(expression.GetStart(), fmt.Errorf("cannot use expression of type '%s' as '%s' value in assignment", expressionType, _type.symbol))
 			continue
 		}
@@ -901,7 +902,7 @@ func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	valType := getType(val)
 	// if !valType.Equals(t.currentFunction.Type) {
 	currentFunction, _ := t.symbolStack.Peek()
-	if !valType.Equals(getType(currentFunction)) {
+	if valType != getType(currentFunction) {
 		t.MakeError(expr.GetStart(), fmt.Errorf("cannot return value of type '%s' in function with return type of '%s'", valType, getType(currentFunction)))
 	}
 	return nil
