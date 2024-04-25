@@ -511,10 +511,14 @@ func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) inte
 }
 
 func getType(in *symboltable.Symbol) *symboltable.Symbol {
-	if in != nil && (in.SymbolType&symboltable.TypeSymbol == 0) {
-		return getType(in.Type)
-	}
-	return in
+    if in != nil && (in.SymbolType&symboltable.TypeSymbol != 0) {
+        if in.Type != nil {
+            return in.Type
+        }
+        return in
+    }
+
+    return getType(in.Type)
 }
 
 // VisitComparison implements grammar.MinigoVisitor.
