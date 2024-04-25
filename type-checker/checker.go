@@ -197,7 +197,7 @@ func (t *TypeChecker) VisitIfElseBlock(ctx *grammar.IfElseBlockContext) interfac
 
 // VisitIfElseIf implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfElseIf(ctx *grammar.IfElseIfContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitIfSimpleElseBlock implements grammar.MinigoVisitor.
@@ -212,7 +212,7 @@ func (t *TypeChecker) VisitIfSimpleElseIf(ctx *grammar.IfSimpleElseIfContext) in
 
 // VisitIfSimpleNoElse implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfSimpleNoElse(ctx *grammar.IfSimpleNoElseContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitIfSingleExpression implements grammar.MinigoVisitor.
@@ -1100,12 +1100,12 @@ func (t *TypeChecker) VisitStatementList(ctx *grammar.StatementListContext) inte
 
 // VisitStructDeclType implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitStructMemDecls implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitStructMemDecls(ctx *grammar.StructMemDeclsContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitSwitchStatement implements grammar.MinigoVisitor.
