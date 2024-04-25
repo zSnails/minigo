@@ -164,12 +164,6 @@ func (s *BaseMinigoListener) EnterIdentifierList(ctx *IdentifierListContext) {}
 // ExitIdentifierList is called when production identifierList is exited.
 func (s *BaseMinigoListener) ExitIdentifierList(ctx *IdentifierListContext) {}
 
-// EnterMinusExpression is called when production minusExpression is entered.
-func (s *BaseMinigoListener) EnterMinusExpression(ctx *MinusExpressionContext) {}
-
-// ExitMinusExpression is called when production minusExpression is exited.
-func (s *BaseMinigoListener) ExitMinusExpression(ctx *MinusExpressionContext) {}
-
 // EnterComparison is called when production comparison is entered.
 func (s *BaseMinigoListener) EnterComparison(ctx *ComparisonContext) {}
 
@@ -195,12 +189,6 @@ func (s *BaseMinigoListener) EnterCaretExpression(ctx *CaretExpressionContext) {
 
 // ExitCaretExpression is called when production caretExpression is exited.
 func (s *BaseMinigoListener) ExitCaretExpression(ctx *CaretExpressionContext) {}
-
-// EnterPlusExpression is called when production plusExpression is entered.
-func (s *BaseMinigoListener) EnterPlusExpression(ctx *PlusExpressionContext) {}
-
-// ExitPlusExpression is called when production plusExpression is exited.
-func (s *BaseMinigoListener) ExitPlusExpression(ctx *PlusExpressionContext) {}
 
 // EnterBooleanOperation is called when production booleanOperation is entered.
 func (s *BaseMinigoListener) EnterBooleanOperation(ctx *BooleanOperationContext) {}
@@ -514,11 +502,31 @@ func (s *BaseMinigoListener) EnterThreePartFor(ctx *ThreePartForContext) {}
 // ExitThreePartFor is called when production threePartFor is exited.
 func (s *BaseMinigoListener) ExitThreePartFor(ctx *ThreePartForContext) {}
 
-// EnterSwitch is called when production switch is entered.
-func (s *BaseMinigoListener) EnterSwitch(ctx *SwitchContext) {}
+// EnterSimpleStatementSwitchExpression is called when production simpleStatementSwitchExpression is entered.
+func (s *BaseMinigoListener) EnterSimpleStatementSwitchExpression(ctx *SimpleStatementSwitchExpressionContext) {
+}
 
-// ExitSwitch is called when production switch is exited.
-func (s *BaseMinigoListener) ExitSwitch(ctx *SwitchContext) {}
+// ExitSimpleStatementSwitchExpression is called when production simpleStatementSwitchExpression is exited.
+func (s *BaseMinigoListener) ExitSimpleStatementSwitchExpression(ctx *SimpleStatementSwitchExpressionContext) {
+}
+
+// EnterNormalSwitch is called when production normalSwitch is entered.
+func (s *BaseMinigoListener) EnterNormalSwitch(ctx *NormalSwitchContext) {}
+
+// ExitNormalSwitch is called when production normalSwitch is exited.
+func (s *BaseMinigoListener) ExitNormalSwitch(ctx *NormalSwitchContext) {}
+
+// EnterNormalSwitchExpression is called when production normalSwitchExpression is entered.
+func (s *BaseMinigoListener) EnterNormalSwitchExpression(ctx *NormalSwitchExpressionContext) {}
+
+// ExitNormalSwitchExpression is called when production normalSwitchExpression is exited.
+func (s *BaseMinigoListener) ExitNormalSwitchExpression(ctx *NormalSwitchExpressionContext) {}
+
+// EnterSimpleStatementSwitch is called when production simpleStatementSwitch is entered.
+func (s *BaseMinigoListener) EnterSimpleStatementSwitch(ctx *SimpleStatementSwitchContext) {}
+
+// ExitSimpleStatementSwitch is called when production simpleStatementSwitch is exited.
+func (s *BaseMinigoListener) ExitSimpleStatementSwitch(ctx *SimpleStatementSwitchContext) {}
 
 // EnterExpressionCaseClauseList is called when production expressionCaseClauseList is entered.
 func (s *BaseMinigoListener) EnterExpressionCaseClauseList(ctx *ExpressionCaseClauseListContext) {}
@@ -532,8 +540,14 @@ func (s *BaseMinigoListener) EnterExpressionCaseClause(ctx *ExpressionCaseClause
 // ExitExpressionCaseClause is called when production expressionCaseClause is exited.
 func (s *BaseMinigoListener) ExitExpressionCaseClause(ctx *ExpressionCaseClauseContext) {}
 
-// EnterExpressionSwitchCase is called when production expressionSwitchCase is entered.
-func (s *BaseMinigoListener) EnterExpressionSwitchCase(ctx *ExpressionSwitchCaseContext) {}
+// EnterSwitchCaseBranch is called when production switchCaseBranch is entered.
+func (s *BaseMinigoListener) EnterSwitchCaseBranch(ctx *SwitchCaseBranchContext) {}
 
-// ExitExpressionSwitchCase is called when production expressionSwitchCase is exited.
-func (s *BaseMinigoListener) ExitExpressionSwitchCase(ctx *ExpressionSwitchCaseContext) {}
+// ExitSwitchCaseBranch is called when production switchCaseBranch is exited.
+func (s *BaseMinigoListener) ExitSwitchCaseBranch(ctx *SwitchCaseBranchContext) {}
+
+// EnterSwitchDefaultBranch is called when production switchDefaultBranch is entered.
+func (s *BaseMinigoListener) EnterSwitchDefaultBranch(ctx *SwitchDefaultBranchContext) {}
+
+// ExitSwitchDefaultBranch is called when production switchDefaultBranch is exited.
+func (s *BaseMinigoListener) ExitSwitchDefaultBranch(ctx *SwitchDefaultBranchContext) {}

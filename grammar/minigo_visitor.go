@@ -79,9 +79,6 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#identifierList.
 	VisitIdentifierList(ctx *IdentifierListContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#minusExpression.
-	VisitMinusExpression(ctx *MinusExpressionContext) interface{}
-
 	// Visit a parse tree produced by MinigoParser#comparison.
 	VisitComparison(ctx *ComparisonContext) interface{}
 
@@ -93,9 +90,6 @@ type MinigoVisitor interface {
 
 	// Visit a parse tree produced by MinigoParser#caretExpression.
 	VisitCaretExpression(ctx *CaretExpressionContext) interface{}
-
-	// Visit a parse tree produced by MinigoParser#plusExpression.
-	VisitPlusExpression(ctx *PlusExpressionContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#booleanOperation.
 	VisitBooleanOperation(ctx *BooleanOperationContext) interface{}
@@ -253,8 +247,17 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#threePartFor.
 	VisitThreePartFor(ctx *ThreePartForContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#switch.
-	VisitSwitch(ctx *SwitchContext) interface{}
+	// Visit a parse tree produced by MinigoParser#simpleStatementSwitchExpression.
+	VisitSimpleStatementSwitchExpression(ctx *SimpleStatementSwitchExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#normalSwitch.
+	VisitNormalSwitch(ctx *NormalSwitchContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#normalSwitchExpression.
+	VisitNormalSwitchExpression(ctx *NormalSwitchExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#simpleStatementSwitch.
+	VisitSimpleStatementSwitch(ctx *SimpleStatementSwitchContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#expressionCaseClauseList.
 	VisitExpressionCaseClauseList(ctx *ExpressionCaseClauseListContext) interface{}
@@ -262,6 +265,9 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#expressionCaseClause.
 	VisitExpressionCaseClause(ctx *ExpressionCaseClauseContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#expressionSwitchCase.
-	VisitExpressionSwitchCase(ctx *ExpressionSwitchCaseContext) interface{}
+	// Visit a parse tree produced by MinigoParser#switchCaseBranch.
+	VisitSwitchCaseBranch(ctx *SwitchCaseBranchContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#switchDefaultBranch.
+	VisitSwitchDefaultBranch(ctx *SwitchDefaultBranchContext) interface{}
 }

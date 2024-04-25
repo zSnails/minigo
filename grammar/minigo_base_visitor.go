@@ -103,10 +103,6 @@ func (v *BaseMinigoVisitor) VisitIdentifierList(ctx *IdentifierListContext) inte
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitMinusExpression(ctx *MinusExpressionContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseMinigoVisitor) VisitComparison(ctx *ComparisonContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -120,10 +116,6 @@ func (v *BaseMinigoVisitor) VisitNotExpression(ctx *NotExpressionContext) interf
 }
 
 func (v *BaseMinigoVisitor) VisitCaretExpression(ctx *CaretExpressionContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMinigoVisitor) VisitPlusExpression(ctx *PlusExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -335,7 +327,19 @@ func (v *BaseMinigoVisitor) VisitThreePartFor(ctx *ThreePartForContext) interfac
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitSwitch(ctx *SwitchContext) interface{} {
+func (v *BaseMinigoVisitor) VisitSimpleStatementSwitchExpression(ctx *SimpleStatementSwitchExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitNormalSwitch(ctx *NormalSwitchContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitNormalSwitchExpression(ctx *NormalSwitchExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitSimpleStatementSwitch(ctx *SimpleStatementSwitchContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -347,6 +351,10 @@ func (v *BaseMinigoVisitor) VisitExpressionCaseClause(ctx *ExpressionCaseClauseC
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitExpressionSwitchCase(ctx *ExpressionSwitchCaseContext) interface{} {
+func (v *BaseMinigoVisitor) VisitSwitchCaseBranch(ctx *SwitchCaseBranchContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitSwitchDefaultBranch(ctx *SwitchDefaultBranchContext) interface{} {
 	return v.VisitChildren(ctx)
 }

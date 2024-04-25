@@ -79,9 +79,6 @@ type MinigoListener interface {
 	// EnterIdentifierList is called when entering the identifierList production.
 	EnterIdentifierList(c *IdentifierListContext)
 
-	// EnterMinusExpression is called when entering the minusExpression production.
-	EnterMinusExpression(c *MinusExpressionContext)
-
 	// EnterComparison is called when entering the comparison production.
 	EnterComparison(c *ComparisonContext)
 
@@ -93,9 +90,6 @@ type MinigoListener interface {
 
 	// EnterCaretExpression is called when entering the caretExpression production.
 	EnterCaretExpression(c *CaretExpressionContext)
-
-	// EnterPlusExpression is called when entering the plusExpression production.
-	EnterPlusExpression(c *PlusExpressionContext)
 
 	// EnterBooleanOperation is called when entering the booleanOperation production.
 	EnterBooleanOperation(c *BooleanOperationContext)
@@ -253,8 +247,17 @@ type MinigoListener interface {
 	// EnterThreePartFor is called when entering the threePartFor production.
 	EnterThreePartFor(c *ThreePartForContext)
 
-	// EnterSwitch is called when entering the switch production.
-	EnterSwitch(c *SwitchContext)
+	// EnterSimpleStatementSwitchExpression is called when entering the simpleStatementSwitchExpression production.
+	EnterSimpleStatementSwitchExpression(c *SimpleStatementSwitchExpressionContext)
+
+	// EnterNormalSwitch is called when entering the normalSwitch production.
+	EnterNormalSwitch(c *NormalSwitchContext)
+
+	// EnterNormalSwitchExpression is called when entering the normalSwitchExpression production.
+	EnterNormalSwitchExpression(c *NormalSwitchExpressionContext)
+
+	// EnterSimpleStatementSwitch is called when entering the simpleStatementSwitch production.
+	EnterSimpleStatementSwitch(c *SimpleStatementSwitchContext)
 
 	// EnterExpressionCaseClauseList is called when entering the expressionCaseClauseList production.
 	EnterExpressionCaseClauseList(c *ExpressionCaseClauseListContext)
@@ -262,8 +265,11 @@ type MinigoListener interface {
 	// EnterExpressionCaseClause is called when entering the expressionCaseClause production.
 	EnterExpressionCaseClause(c *ExpressionCaseClauseContext)
 
-	// EnterExpressionSwitchCase is called when entering the expressionSwitchCase production.
-	EnterExpressionSwitchCase(c *ExpressionSwitchCaseContext)
+	// EnterSwitchCaseBranch is called when entering the switchCaseBranch production.
+	EnterSwitchCaseBranch(c *SwitchCaseBranchContext)
+
+	// EnterSwitchDefaultBranch is called when entering the switchDefaultBranch production.
+	EnterSwitchDefaultBranch(c *SwitchDefaultBranchContext)
 
 	// ExitRoot is called when exiting the root production.
 	ExitRoot(c *RootContext)
@@ -337,9 +343,6 @@ type MinigoListener interface {
 	// ExitIdentifierList is called when exiting the identifierList production.
 	ExitIdentifierList(c *IdentifierListContext)
 
-	// ExitMinusExpression is called when exiting the minusExpression production.
-	ExitMinusExpression(c *MinusExpressionContext)
-
 	// ExitComparison is called when exiting the comparison production.
 	ExitComparison(c *ComparisonContext)
 
@@ -351,9 +354,6 @@ type MinigoListener interface {
 
 	// ExitCaretExpression is called when exiting the caretExpression production.
 	ExitCaretExpression(c *CaretExpressionContext)
-
-	// ExitPlusExpression is called when exiting the plusExpression production.
-	ExitPlusExpression(c *PlusExpressionContext)
 
 	// ExitBooleanOperation is called when exiting the booleanOperation production.
 	ExitBooleanOperation(c *BooleanOperationContext)
@@ -511,8 +511,17 @@ type MinigoListener interface {
 	// ExitThreePartFor is called when exiting the threePartFor production.
 	ExitThreePartFor(c *ThreePartForContext)
 
-	// ExitSwitch is called when exiting the switch production.
-	ExitSwitch(c *SwitchContext)
+	// ExitSimpleStatementSwitchExpression is called when exiting the simpleStatementSwitchExpression production.
+	ExitSimpleStatementSwitchExpression(c *SimpleStatementSwitchExpressionContext)
+
+	// ExitNormalSwitch is called when exiting the normalSwitch production.
+	ExitNormalSwitch(c *NormalSwitchContext)
+
+	// ExitNormalSwitchExpression is called when exiting the normalSwitchExpression production.
+	ExitNormalSwitchExpression(c *NormalSwitchExpressionContext)
+
+	// ExitSimpleStatementSwitch is called when exiting the simpleStatementSwitch production.
+	ExitSimpleStatementSwitch(c *SimpleStatementSwitchContext)
 
 	// ExitExpressionCaseClauseList is called when exiting the expressionCaseClauseList production.
 	ExitExpressionCaseClauseList(c *ExpressionCaseClauseListContext)
@@ -520,6 +529,9 @@ type MinigoListener interface {
 	// ExitExpressionCaseClause is called when exiting the expressionCaseClause production.
 	ExitExpressionCaseClause(c *ExpressionCaseClauseContext)
 
-	// ExitExpressionSwitchCase is called when exiting the expressionSwitchCase production.
-	ExitExpressionSwitchCase(c *ExpressionSwitchCaseContext)
+	// ExitSwitchCaseBranch is called when exiting the switchCaseBranch production.
+	ExitSwitchCaseBranch(c *SwitchCaseBranchContext)
+
+	// ExitSwitchDefaultBranch is called when exiting the switchDefaultBranch production.
+	ExitSwitchDefaultBranch(c *SwitchDefaultBranchContext)
 }
