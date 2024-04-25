@@ -165,8 +165,8 @@ expressionCaseClauseList: (expressionCaseClause expressionCaseClauseList)*
 expressionCaseClause: expressionSwitchCase COLON statementList
                     ;
 
-expressionSwitchCase: CASE expressionList
-                    | DEFAULT
+expressionSwitchCase: CASE expressionList #switchCaseBranch
+                    | DEFAULT #switchDefaultBranch
                     ;
 // string_lit             = raw_string_lit | interpreted_string_lit .
 // raw_string_lit         = "`" { unicode_char | newline } "`" .
