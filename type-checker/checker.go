@@ -415,20 +415,15 @@ func (t *TypeChecker) VisitComparison(ctx *grammar.ComparisonContext) interface{
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(*symboltable.Symbol)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(*symboltable.Symbol)
 
-	if leftOk {
-		leftType = getType(leftType)
-	}
-
-	if rightOk {
-		rightType = getType(rightType)
-	}
+	leftType = getType(leftType)
+	rightType = getType(rightType)
 
 	if !(rightOk && leftOk) {
 		return nil // unrecoverable
 	}
 
 	if (leftOk && rightOk) && (leftType != rightType) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: %s and %s", leftType, rightType))
+		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
 	}
 
 	return symboltable.Bool
@@ -438,18 +433,15 @@ func (t *TypeChecker) VisitComparison(ctx *grammar.ComparisonContext) interface{
 func (t *TypeChecker) VisitBooleanOperation(ctx *grammar.BooleanOperationContext) interface{} {
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(*symboltable.Symbol)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(*symboltable.Symbol)
-	if leftOk {
-		leftType = getType(leftType)
-	}
+	leftType = getType(leftType)
+	rightType = getType(rightType)
 
-	if rightOk {
-		rightType = getType(rightType)
-	}
 	if !(leftOk && rightOk) {
 		return nil // BUG: this could cause a potential bug unrecoverable
 	}
+
 	if (leftOk && rightOk) && (leftType != rightType) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: %s and %s", leftType, rightType))
+		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
 	}
 
 	return symboltable.Bool
@@ -460,16 +452,11 @@ func (t *TypeChecker) VisitOperation(ctx *grammar.OperationContext) interface{} 
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(*symboltable.Symbol)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(*symboltable.Symbol)
 
-	if leftOk {
-		leftType = getType(leftType)
-	}
-
-	if rightOk {
-		rightType = getType(rightType)
-	}
+	leftType = getType(leftType)
+	rightType = getType(rightType)
 
 	if (leftOk && rightOk) && (leftType != rightType) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: %s and %s", leftType, rightType))
+		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
 	}
 
 	if leftType == nil {
