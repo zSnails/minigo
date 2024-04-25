@@ -383,14 +383,24 @@ func (t *TypeChecker) VisitExpressionPrimaryExpression(ctx *grammar.ExpressionPr
 	return t.VisitChildren(ctx)
 }
 
-// VisitMinusExpression implements grammar.MinigoVisitor.
-func (t *TypeChecker) VisitMinusExpression(ctx *grammar.MinusExpressionContext) interface{} {
-	panic("unimplemented")
-}
+// // VisitMinusExpression implements grammar.MinigoVisitor.
+// func (t *TypeChecker) VisitMinusExpression(ctx *grammar.MinusExpressionContext) interface{} {
+// 	panic("unimplemented")
+// }
 
 // VisitNotExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) interface{} {
-	panic("unimplemented")
+	expr := ctx.Expression()
+	symbol, ok := t.Visit(expr).(*symboltable.Symbol)
+	if !ok {
+		return nil // unrecoverable
+	}
+	symbolType := getType(symbol)
+	if symbolType != symboltable.Bool {
+		t.MakeError(expr.GetStart(), fmt.Errorf("expression of type '%s' is not boolean", symbolType))
+	}
+
+	return nil // unrecoverable
 }
 
 func getType(in *symboltable.Symbol) *symboltable.Symbol {
