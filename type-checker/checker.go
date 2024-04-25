@@ -494,7 +494,6 @@ func (t *TypeChecker) VisitExpressionPrimaryExpression(ctx *grammar.ExpressionPr
 	return t.VisitChildren(ctx)
 }
 
-
 // VisitNotExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) interface{} {
 	expr := ctx.Expression()
