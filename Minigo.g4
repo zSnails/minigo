@@ -150,13 +150,13 @@ ifStatement: IF expression block #ifSingleExpression
 
 loop: FOR block #infiniteFor
     | FOR expression block #whileFor
-    | FOR simpleStatement SEMICOLON expression? SEMICOLON simpleStatement block #threePartFor
+    | FOR first=simpleStatement SEMICOLON expression? SEMICOLON last=simpleStatement block #threePartFor
     ;
 
-switch: SWITCH simpleStatement SEMICOLON expression LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE
-      | SWITCH expression LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE
-      | SWITCH simpleStatement SEMICOLON LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE
-      | SWITCH LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE
+switch: SWITCH simpleStatement SEMICOLON expression LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE #simpleStatementSwitchExpression
+      | SWITCH LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE #normalSwitch
+      | SWITCH expression LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE #normalSwitchExpression
+      | SWITCH simpleStatement SEMICOLON LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE #simpleStatementSwitch
       ;
 
 expressionCaseClauseList: (expressionCaseClause expressionCaseClauseList)*
