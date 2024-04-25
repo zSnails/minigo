@@ -736,6 +736,16 @@ func (t *TypeChecker) VisitDeclType(ctx *grammar.DeclTypeContext) interface{} {
 		t.MakeError(ctx.GetStart(), fmt.Errorf("typename '%s' not found", name))
 		return nil
 	}
+
+	// BUG: this shouldn't work like this, this is probably the worst code I've ever written, there are no standards in this piece of shit
+	if _type.SymbolType&symboltable.SliceSymbol != 0 {
+		out.IsSlice = true
+	}
+
+	if _type.SymbolType&symboltable.ArraySymbol != 0 {
+		out.IsArray = true
+	}
+
 	out.symbol = _type
 	return out
 }
