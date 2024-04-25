@@ -383,10 +383,6 @@ func (t *TypeChecker) VisitExpressionPrimaryExpression(ctx *grammar.ExpressionPr
 	return t.VisitChildren(ctx)
 }
 
-// // VisitMinusExpression implements grammar.MinigoVisitor.
-// func (t *TypeChecker) VisitMinusExpression(ctx *grammar.MinusExpressionContext) interface{} {
-// 	panic("unimplemented")
-// }
 
 // VisitNotExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) interface{} {
@@ -465,10 +461,6 @@ func (t *TypeChecker) VisitOperation(ctx *grammar.OperationContext) interface{} 
 	return leftType
 }
 
-// // VisitPlusExpression implements grammar.MinigoVisitor.
-// func (t *TypeChecker) VisitPlusExpression(ctx *grammar.PlusExpressionContext) interface{} {
-// 	panic("unimplemented")
-// }
 
 // VisitFloatLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFloatLiteral(ctx *grammar.FloatLiteralContext) interface{} {
