@@ -1,9 +1,11 @@
 // The following code must not produce an error when ran.
 package main;
 
+
+type Age int;
 var name string;
-var age, exs int = 0;
-var yearBorn, currentYear = 2024;
+var age, exs Age = 0, 0;
+var yearBorn, currentYear = 2024, 2024;
 
 var (
     mine = true;

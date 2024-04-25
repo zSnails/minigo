@@ -1,7 +1,16 @@
 package main;
 
-
-func hola(nombre, semen string) string {
-    nombre += 22; 
-    nombre++;
+type Persona struct{
+    Nombre string;
+    Edad int;
+    Amigos []Persona;
 };
+
+type Nombre string;
+type Apellido Nombre;
+
+type (
+    Hijo Persona;
+    Hijos []Hijo;
+);
+

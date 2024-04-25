@@ -3,13 +3,13 @@ package main;
 
 type Person struct {
     Name string;
-    Age uint8;
-    YearBorn uint16;
+    Age int;
+    YearBorn int;
 };
 
 type Animal struct {
     Hungry bool;
-    Health uint8;
+    Health int;
 };
 
 // In MiniGo there is no struct embedding.
