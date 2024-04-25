@@ -44,7 +44,7 @@ func (t *TypeChecker) VisitSwitchCaseBranch(ctx *grammar.SwitchCaseBranchContext
 
 // VisitSwitchDefaultBranch implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSwitchDefaultBranch(ctx *grammar.SwitchDefaultBranchContext) interface{} {
-    return t.VisitChildren(ctx)
+	return t.VisitChildren(ctx)
 }
 
 // VisitNormalSwitch implements grammar.MinigoVisitor.
