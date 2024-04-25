@@ -107,7 +107,15 @@ func (v *BaseMinigoVisitor) VisitComparison(ctx *ComparisonContext) interface{} 
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseMinigoVisitor) VisitOperationPrecedence1(ctx *OperationPrecedence1Context) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseMinigoVisitor) VisitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitOperationPrecedence2(ctx *OperationPrecedence2Context) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -120,10 +128,6 @@ func (v *BaseMinigoVisitor) VisitCaretExpression(ctx *CaretExpressionContext) in
 }
 
 func (v *BaseMinigoVisitor) VisitBooleanOperation(ctx *BooleanOperationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMinigoVisitor) VisitOperation(ctx *OperationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -272,6 +276,14 @@ func (v *BaseMinigoVisitor) VisitVariableDeclStatement(ctx *VariableDeclStatemen
 }
 
 func (v *BaseMinigoVisitor) VisitExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitExpressionPostInc(ctx *ExpressionPostIncContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitExpressionPostDec(ctx *ExpressionPostDecContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -82,8 +82,14 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#comparison.
 	VisitComparison(ctx *ComparisonContext) interface{}
 
+	// Visit a parse tree produced by MinigoParser#operationPrecedence1.
+	VisitOperationPrecedence1(ctx *OperationPrecedence1Context) interface{}
+
 	// Visit a parse tree produced by MinigoParser#expressionPrimaryExpression.
 	VisitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#operationPrecedence2.
+	VisitOperationPrecedence2(ctx *OperationPrecedence2Context) interface{}
 
 	// Visit a parse tree produced by MinigoParser#notExpression.
 	VisitNotExpression(ctx *NotExpressionContext) interface{}
@@ -93,9 +99,6 @@ type MinigoVisitor interface {
 
 	// Visit a parse tree produced by MinigoParser#booleanOperation.
 	VisitBooleanOperation(ctx *BooleanOperationContext) interface{}
-
-	// Visit a parse tree produced by MinigoParser#operation.
-	VisitOperation(ctx *OperationContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#expressionList.
 	VisitExpressionList(ctx *ExpressionListContext) interface{}
@@ -207,6 +210,12 @@ type MinigoVisitor interface {
 
 	// Visit a parse tree produced by MinigoParser#expressionSimpleStatement.
 	VisitExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#expressionPostInc.
+	VisitExpressionPostInc(ctx *ExpressionPostIncContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#expressionPostDec.
+	VisitExpressionPostDec(ctx *ExpressionPostDecContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#assignmentSimpleStatement.
 	VisitAssignmentSimpleStatement(ctx *AssignmentSimpleStatementContext) interface{}

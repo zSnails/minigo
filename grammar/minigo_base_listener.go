@@ -170,6 +170,12 @@ func (s *BaseMinigoListener) EnterComparison(ctx *ComparisonContext) {}
 // ExitComparison is called when production comparison is exited.
 func (s *BaseMinigoListener) ExitComparison(ctx *ComparisonContext) {}
 
+// EnterOperationPrecedence1 is called when production operationPrecedence1 is entered.
+func (s *BaseMinigoListener) EnterOperationPrecedence1(ctx *OperationPrecedence1Context) {}
+
+// ExitOperationPrecedence1 is called when production operationPrecedence1 is exited.
+func (s *BaseMinigoListener) ExitOperationPrecedence1(ctx *OperationPrecedence1Context) {}
+
 // EnterExpressionPrimaryExpression is called when production expressionPrimaryExpression is entered.
 func (s *BaseMinigoListener) EnterExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) {
 }
@@ -177,6 +183,12 @@ func (s *BaseMinigoListener) EnterExpressionPrimaryExpression(ctx *ExpressionPri
 // ExitExpressionPrimaryExpression is called when production expressionPrimaryExpression is exited.
 func (s *BaseMinigoListener) ExitExpressionPrimaryExpression(ctx *ExpressionPrimaryExpressionContext) {
 }
+
+// EnterOperationPrecedence2 is called when production operationPrecedence2 is entered.
+func (s *BaseMinigoListener) EnterOperationPrecedence2(ctx *OperationPrecedence2Context) {}
+
+// ExitOperationPrecedence2 is called when production operationPrecedence2 is exited.
+func (s *BaseMinigoListener) ExitOperationPrecedence2(ctx *OperationPrecedence2Context) {}
 
 // EnterNotExpression is called when production notExpression is entered.
 func (s *BaseMinigoListener) EnterNotExpression(ctx *NotExpressionContext) {}
@@ -195,12 +207,6 @@ func (s *BaseMinigoListener) EnterBooleanOperation(ctx *BooleanOperationContext)
 
 // ExitBooleanOperation is called when production booleanOperation is exited.
 func (s *BaseMinigoListener) ExitBooleanOperation(ctx *BooleanOperationContext) {}
-
-// EnterOperation is called when production operation is entered.
-func (s *BaseMinigoListener) EnterOperation(ctx *OperationContext) {}
-
-// ExitOperation is called when production operation is exited.
-func (s *BaseMinigoListener) ExitOperation(ctx *OperationContext) {}
 
 // EnterExpressionList is called when production expressionList is entered.
 func (s *BaseMinigoListener) EnterExpressionList(ctx *ExpressionListContext) {}
@@ -423,6 +429,18 @@ func (s *BaseMinigoListener) EnterExpressionSimpleStatement(ctx *ExpressionSimpl
 
 // ExitExpressionSimpleStatement is called when production expressionSimpleStatement is exited.
 func (s *BaseMinigoListener) ExitExpressionSimpleStatement(ctx *ExpressionSimpleStatementContext) {}
+
+// EnterExpressionPostInc is called when production expressionPostInc is entered.
+func (s *BaseMinigoListener) EnterExpressionPostInc(ctx *ExpressionPostIncContext) {}
+
+// ExitExpressionPostInc is called when production expressionPostInc is exited.
+func (s *BaseMinigoListener) ExitExpressionPostInc(ctx *ExpressionPostIncContext) {}
+
+// EnterExpressionPostDec is called when production expressionPostDec is entered.
+func (s *BaseMinigoListener) EnterExpressionPostDec(ctx *ExpressionPostDecContext) {}
+
+// ExitExpressionPostDec is called when production expressionPostDec is exited.
+func (s *BaseMinigoListener) ExitExpressionPostDec(ctx *ExpressionPostDecContext) {}
 
 // EnterAssignmentSimpleStatement is called when production assignmentSimpleStatement is entered.
 func (s *BaseMinigoListener) EnterAssignmentSimpleStatement(ctx *AssignmentSimpleStatementContext) {}

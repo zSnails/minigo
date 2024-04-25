@@ -82,8 +82,14 @@ type MinigoListener interface {
 	// EnterComparison is called when entering the comparison production.
 	EnterComparison(c *ComparisonContext)
 
+	// EnterOperationPrecedence1 is called when entering the operationPrecedence1 production.
+	EnterOperationPrecedence1(c *OperationPrecedence1Context)
+
 	// EnterExpressionPrimaryExpression is called when entering the expressionPrimaryExpression production.
 	EnterExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
+
+	// EnterOperationPrecedence2 is called when entering the operationPrecedence2 production.
+	EnterOperationPrecedence2(c *OperationPrecedence2Context)
 
 	// EnterNotExpression is called when entering the notExpression production.
 	EnterNotExpression(c *NotExpressionContext)
@@ -93,9 +99,6 @@ type MinigoListener interface {
 
 	// EnterBooleanOperation is called when entering the booleanOperation production.
 	EnterBooleanOperation(c *BooleanOperationContext)
-
-	// EnterOperation is called when entering the operation production.
-	EnterOperation(c *OperationContext)
 
 	// EnterExpressionList is called when entering the expressionList production.
 	EnterExpressionList(c *ExpressionListContext)
@@ -207,6 +210,12 @@ type MinigoListener interface {
 
 	// EnterExpressionSimpleStatement is called when entering the expressionSimpleStatement production.
 	EnterExpressionSimpleStatement(c *ExpressionSimpleStatementContext)
+
+	// EnterExpressionPostInc is called when entering the expressionPostInc production.
+	EnterExpressionPostInc(c *ExpressionPostIncContext)
+
+	// EnterExpressionPostDec is called when entering the expressionPostDec production.
+	EnterExpressionPostDec(c *ExpressionPostDecContext)
 
 	// EnterAssignmentSimpleStatement is called when entering the assignmentSimpleStatement production.
 	EnterAssignmentSimpleStatement(c *AssignmentSimpleStatementContext)
@@ -346,8 +355,14 @@ type MinigoListener interface {
 	// ExitComparison is called when exiting the comparison production.
 	ExitComparison(c *ComparisonContext)
 
+	// ExitOperationPrecedence1 is called when exiting the operationPrecedence1 production.
+	ExitOperationPrecedence1(c *OperationPrecedence1Context)
+
 	// ExitExpressionPrimaryExpression is called when exiting the expressionPrimaryExpression production.
 	ExitExpressionPrimaryExpression(c *ExpressionPrimaryExpressionContext)
+
+	// ExitOperationPrecedence2 is called when exiting the operationPrecedence2 production.
+	ExitOperationPrecedence2(c *OperationPrecedence2Context)
 
 	// ExitNotExpression is called when exiting the notExpression production.
 	ExitNotExpression(c *NotExpressionContext)
@@ -357,9 +372,6 @@ type MinigoListener interface {
 
 	// ExitBooleanOperation is called when exiting the booleanOperation production.
 	ExitBooleanOperation(c *BooleanOperationContext)
-
-	// ExitOperation is called when exiting the operation production.
-	ExitOperation(c *OperationContext)
 
 	// ExitExpressionList is called when exiting the expressionList production.
 	ExitExpressionList(c *ExpressionListContext)
@@ -471,6 +483,12 @@ type MinigoListener interface {
 
 	// ExitExpressionSimpleStatement is called when exiting the expressionSimpleStatement production.
 	ExitExpressionSimpleStatement(c *ExpressionSimpleStatementContext)
+
+	// ExitExpressionPostInc is called when exiting the expressionPostInc production.
+	ExitExpressionPostInc(c *ExpressionPostIncContext)
+
+	// ExitExpressionPostDec is called when exiting the expressionPostDec production.
+	ExitExpressionPostDec(c *ExpressionPostDecContext)
 
 	// ExitAssignmentSimpleStatement is called when exiting the assignmentSimpleStatement production.
 	ExitAssignmentSimpleStatement(c *AssignmentSimpleStatementContext)
