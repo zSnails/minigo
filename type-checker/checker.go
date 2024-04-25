@@ -21,6 +21,64 @@ type TypeChecker struct {
 	SymbolTable *symboltable.SymbolTable
 }
 
+// VisitSwitchCaseBranch implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitSwitchCaseBranch(ctx *grammar.SwitchCaseBranchContext) interface{} {
+	// switch {
+	// case "hola":
+	// 	println("adios")
+	// }
+	// if the current type is nil that means it's a switch statement without a statement
+	currentType, _ := t.symbolStack.Peek()
+	if currentType == nil {
+		currentType = symboltable.Bool
+	}
+
+	types := t.Visit(ctx.ExpressionList()).([]*symboltable.Symbol)
+	for _, _type := range types {
+		if getType(_type) != getType(currentType) {
+			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use symbol of type '%s' as '%s' type in case statement", getType(_type), getType(currentType)))
+		}
+	}
+	return nil
+}
+
+// VisitSwitchDefaultBranch implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitSwitchDefaultBranch(ctx *grammar.SwitchDefaultBranchContext) interface{} {
+    return t.VisitChildren(ctx)
+}
+
+// VisitNormalSwitch implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitNormalSwitch(ctx *grammar.NormalSwitchContext) interface{} {
+	t.symbolStack.Push(nil)
+	return t.VisitChildren(ctx)
+}
+
+// VisitNormalSwitchExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpressionContext) interface{} {
+	expr := ctx.Expression()
+	symbol, ok := t.Visit(expr).(*symboltable.Symbol)
+	if !ok {
+		return nil // unreachable
+	}
+	symbolType := getType(symbol)
+	err := t.symbolStack.Push(symbolType)
+	if err != nil {
+		panic("unreachable")
+	}
+
+	return t.Visit(ctx.ExpressionCaseClauseList())
+}
+
+// VisitSimpleStatementSwitch implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitSimpleStatementSwitch(ctx *grammar.SimpleStatementSwitchContext) interface{} {
+	panic("unimplemented")
+}
+
+// VisitSimpleStatementSwitchExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitSimpleStatementSwitchExpression(ctx *grammar.SimpleStatementSwitchExpressionContext) interface{} {
+	panic("unimplemented")
+}
+
 // VisitIfElseBlock implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfElseBlock(ctx *grammar.IfElseBlockContext) interface{} {
 	return t.VisitChildren(ctx)
@@ -990,14 +1048,9 @@ func (t *TypeChecker) VisitStructMemDecls(ctx *grammar.StructMemDeclsContext) in
 	panic("unimplemented")
 }
 
-// VisitSwitch implements grammar.MinigoVisitor.
-func (t *TypeChecker) VisitSwitch(ctx *grammar.SwitchContext) interface{} {
-	panic("unimplemented")
-}
-
 // VisitSwitchStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSwitchStatement(ctx *grammar.SwitchStatementContext) interface{} {
-	panic("unimplemented")
+	return t.VisitChildren(ctx)
 }
 
 // VisitTerminal implements grammar.MinigoVisitor.
