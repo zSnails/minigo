@@ -116,7 +116,16 @@ func (t *TypeChecker) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interfac
 
 // VisitThreePartFor implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitThreePartFor(ctx *grammar.ThreePartForContext) interface{} {
-	panic("unimplemented")
+	first := ctx.GetFirst()
+	last := ctx.GetLast()
+	t.Visit(first)
+	t.Visit(last)
+	expr := ctx.Expression()
+	_type := t.Visit(expr).(*symboltable.Symbol)
+	if getType(_type) != symboltable.Bool {
+		t.MakeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as boolean expression", getType(_type)))
+	}
+	return t.Visit(ctx.Block())
 }
 
 // VisitWhileFor implements grammar.MinigoVisitor.
