@@ -189,7 +189,7 @@ func (t *TypeChecker) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 
 // VisitExpressionOperand implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitExpressionOperand(ctx *grammar.ExpressionOperandContext) interface{} {
-	return t.VisitChildren(ctx)
+	return t.Visit(ctx.GetChild(1).(antlr.ParseTree))
 }
 
 // VisitIdentifierOperand implements grammar.MinigoVisitor.
