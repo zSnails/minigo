@@ -692,9 +692,10 @@ func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			t.MakeError(ctx.GetStart(), fmt.Errorf("invalid type")) // This should be unreachable
 		}
 		expressionType = getType(expressionType)
+		symbolType := getType(_type.symbol)
 
-		if expressionType != _type.symbol {
-			t.MakeError(expression.GetStart(), fmt.Errorf("cannot use expression of type '%s' as '%s' value in assignment", expressionType, _type.symbol))
+		if expressionType != symbolType {
+			t.MakeError(expression.GetStart(), fmt.Errorf("cannot use expression of type '%s' as '%s' value in assignment", expressionType, symbolType))
 			continue
 		}
 
