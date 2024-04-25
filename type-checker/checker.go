@@ -465,14 +465,14 @@ func (t *TypeChecker) VisitOperation(ctx *grammar.OperationContext) interface{} 
 	return leftType
 }
 
-// VisitPlusExpression implements grammar.MinigoVisitor.
-func (t *TypeChecker) VisitPlusExpression(ctx *grammar.PlusExpressionContext) interface{} {
-	panic("unimplemented")
-}
+// // VisitPlusExpression implements grammar.MinigoVisitor.
+// func (t *TypeChecker) VisitPlusExpression(ctx *grammar.PlusExpressionContext) interface{} {
+// 	panic("unimplemented")
+// }
 
 // VisitFloatLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFloatLiteral(ctx *grammar.FloatLiteralContext) interface{} {
-	return symboltable.Float64
+	return symboltable.Float
 }
 
 // VisitIntLiteral implements grammar.MinigoVisitor.
