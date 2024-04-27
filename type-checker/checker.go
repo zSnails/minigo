@@ -56,7 +56,6 @@ func (t *TypeChecker) VisitSliceDeclType(ctx *grammar.SliceDeclTypeContext) inte
 
 // VisitStructDeclType implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) interface{} {
-	self, _ := t.symbolStack.Peek()
 	out := t.SymbolTable.NewStructType(ctx.GetStart(), "<struct>")
 	if members := ctx.StructMemDecls(); members != nil {
 		decls := members.AllSingleVarDeclNoExps()
