@@ -543,7 +543,6 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		if symbolType != rightType {
 			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
 			return nil // unrecoverable
-
 		}
 	}
 
