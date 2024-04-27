@@ -1112,7 +1112,12 @@ func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) in
 	name := ctx.IDENTIFIER()
 	symbol := t.SymbolTable.NewAliasType(name.GetSymbol(), name.GetText(), nil)
 
-	err := t.symbolStack.Push(symbol)
+	err := t.SymbolTable.AddSymbol(symbol)
+	if err != nil {
+		t.MakeError(name.GetSymbol(), err)
+	}
+
+	err = t.symbolStack.Push(symbol)
 	if err != nil {
 		panic("unreachable")
 	}
