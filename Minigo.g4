@@ -103,7 +103,7 @@ arguments: LEFTPARENTHESIS expressionList* RIGHTPARENTHESIS
 selector: DOT IDENTIFIER
         ;
 
-appendExpression: APPEND LEFTPARENTHESIS expression COMMA expression RIGHTPARENTHESIS
+appendExpression: APPEND LEFTPARENTHESIS slice=expression COMMA value=expression RIGHTPARENTHESIS
                 ;
 
 lengthExpression: LEN LEFTPARENTHESIS expression RIGHTPARENTHESIS
