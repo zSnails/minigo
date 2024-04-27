@@ -87,12 +87,15 @@ operand: literal #literalOperand
        | LEFTPARENTHESIS expression RIGHTPARENTHESIS #expressionOperand
        ;
 
-literal: INTLITERAL #intLiteral
+literal: numericLiteral #intLiteral
        | FLOATLITERAL #floatLiteral
        | RUNELITERAL #runeLiteral
        | RAWSTRINGLITERAL #rawStringLiteral
        | INTERPRETEDSTRINGLITERAL #interpretedStringLiteral
        ;
+numericLiteral: INTLITERAL #numericIntLiteral
+              | HEXINTLITERAL #numerixHexLiteral
+              ;
 
 index: LEFTBRACKET expression RIGHTBRACKET
      ;
@@ -242,6 +245,7 @@ LEFTCURLYBRACE: '{';
 RIGHTCURLYBRACE: '}';
 STRUCT: 'struct';
 INTLITERAL: '-'?[0-9]+;
+HEXINTLITERAL: '-'?'0'[xX][0-9a-fA-F]+;
 LEFTBRACKET: '[';
 RIGHTBRACKET: ']';
 COMMA: ',';
