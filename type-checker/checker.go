@@ -662,7 +662,8 @@ func (t *TypeChecker) VisitFloatLiteral(ctx *grammar.FloatLiteralContext) interf
 
 // VisitIntLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIntLiteral(ctx *grammar.IntLiteralContext) interface{} {
-	return symboltable.Int
+
+	return t.VisitChildren(ctx)
 }
 
 // VisitInterpretedStringLiteral implements grammar.MinigoVisitor.
