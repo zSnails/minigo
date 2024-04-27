@@ -22,6 +22,28 @@ type TypeChecker struct {
 	SymbolTable *symboltable.SymbolTable
 }
 
+// VisitNumericIntLiteral implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitNumericIntLiteral(ctx *grammar.NumericIntLiteralContext) interface{} {
+	number := ctx.INTLITERAL()
+	got, err := strconv.ParseInt(number.GetText(), 10, 64)
+	fmt.Printf("got: %v\n", got)
+	if err != nil {
+		t.MakeError(number.GetSymbol(), errors.New("value exceeds 64 bit limit"))
+	}
+	return symboltable.Int
+}
+
+// VisitNumerixHexLiteral implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitNumerixHexLiteral(ctx *grammar.NumerixHexLiteralContext) interface{} {
+	number := ctx.HEXINTLITERAL()
+	got, err := strconv.ParseInt(number.GetText(), 0, 64)
+	fmt.Printf("got: %v\n", got)
+	if err != nil {
+		t.MakeError(number.GetSymbol(), errors.New("value exceed 64 bit limit"))
+	}
+	return symboltable.Int
+}
+
 // VisitArrayDeclType implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitArrayDeclType(ctx *grammar.ArrayDeclTypeContext) interface{} {
 	_symbol := t.Visit(ctx.DeclType()).(*symboltable.Symbol)
