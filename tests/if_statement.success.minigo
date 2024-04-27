@@ -1,9 +1,5 @@
 package main;
 
-// | IF simpleStatement SEMICOLON expression block #ifSimpleNoElse
-// | IF simpleStatement SEMICOLON expression block ELSE ifStatement #ifSimpleElseIf
-// | IF simpleStatement SEMICOLON expression block ELSE block #ifSimpleElseBlock
-
 func div(a, b int) int {
     if b == 0 {
         return 0;
@@ -16,6 +12,36 @@ func div(a, b int) int {
 
 func greeting(name string) string {
     if edad, nombre2 := 10, "zeta"; edad > 8 && nombre2 == "pablito" {
-        return "hola " + name;
+        return "hello " + name;
+    } else if amigos := 20; amigos != 0 {
+        return "bye";
     };
+};
+
+func farewell(name string) string {
+    if edad := 10; edad != 18 {
+        return "Goodbye " + name;
+    } else {
+        return "hola";
+    };
+};
+
+func checkValue(value string) int {
+    if value == "1" && value != "2" {
+        return 3;
+    } else if value == "3" && value != "3" {
+        return 4;
+    } else if value != "todo" {
+        return -1;
+    } else {
+        return -2;
+    };
+
+    var nombres []string;
+    var a int;
+    nombres = append(nombres, "sds");
+};
+
+func canDrink(name string, age int) bool {
+    return age >= 18 && name != "Samuel";
 };

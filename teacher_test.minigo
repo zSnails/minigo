@@ -16,19 +16,20 @@ func ComputeFac(num (int)) int {
 
 type arregloT []int;
 
-var arrreglo arregloT;
+var arreglo arregloT;
 
 func imprimir() int {
-	print("Este es el resultado: " + operaciones(arreglo[2],10.10)); 
+	print("Este es el resultado: " + operaciones(arreglo[2],10)); 
 	x := cap(arreglo);
-	println(`Valor de variable` + x);
+	print(`Valor de variable`);
+    println(x);
 	return arreglo[len(arreglo)];  
 };
 
 type coordenada struct {x int; y int;};
 
 type hola struct{
-	b boolean;
+	b bool;
     x int;
     a [2]coordenada;
 };
@@ -52,12 +53,16 @@ func operaciones(op1,op2 int) int{
 	var registro hola;
 	registro.b = true; 
 	registro.x = 30;
-	var c1 coordenada = 10;
- 	var c2 coordenada = 100;
+    var c1 coordenada;
+    c1.x = 10;
+    c1.y = 10;
+    var c2 coordenada;
+    c2.x = 100;
+    c2.y = 100;
 	registro.a[0] = c1;
 	registro.a[0] =	c2;	
 	
-	i := 2;
+	i = 2;
 	switch i {
     	case 1:
 		result++;

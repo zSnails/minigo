@@ -70,5 +70,5 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		os.Exit(CompilerError)
 	}
-	// fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
+	fmt.Printf("typeChecker.SymbolTable: %v\n", typeChecker.SymbolTable)
 }

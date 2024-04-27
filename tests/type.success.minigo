@@ -14,3 +14,9 @@ type (
     Hijos []Hijo;
 );
 
+
+func a() {
+    var aaron Persona;
+    var samuel Persona;
+    aaron.Amigos[0] = samuel;
+};
