@@ -328,6 +328,18 @@ func (s *BaseMinigoListener) EnterInterpretedStringLiteral(ctx *InterpretedStrin
 // ExitInterpretedStringLiteral is called when production interpretedStringLiteral is exited.
 func (s *BaseMinigoListener) ExitInterpretedStringLiteral(ctx *InterpretedStringLiteralContext) {}
 
+// EnterNumericIntLiteral is called when production numericIntLiteral is entered.
+func (s *BaseMinigoListener) EnterNumericIntLiteral(ctx *NumericIntLiteralContext) {}
+
+// ExitNumericIntLiteral is called when production numericIntLiteral is exited.
+func (s *BaseMinigoListener) ExitNumericIntLiteral(ctx *NumericIntLiteralContext) {}
+
+// EnterNumerixHexLiteral is called when production numerixHexLiteral is entered.
+func (s *BaseMinigoListener) EnterNumerixHexLiteral(ctx *NumerixHexLiteralContext) {}
+
+// ExitNumerixHexLiteral is called when production numerixHexLiteral is exited.
+func (s *BaseMinigoListener) ExitNumerixHexLiteral(ctx *NumerixHexLiteralContext) {}
+
 // EnterIndex is called when production index is entered.
 func (s *BaseMinigoListener) EnterIndex(ctx *IndexContext) {}
 

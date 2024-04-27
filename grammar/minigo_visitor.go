@@ -160,6 +160,12 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#interpretedStringLiteral.
 	VisitInterpretedStringLiteral(ctx *InterpretedStringLiteralContext) interface{}
 
+	// Visit a parse tree produced by MinigoParser#numericIntLiteral.
+	VisitNumericIntLiteral(ctx *NumericIntLiteralContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#numerixHexLiteral.
+	VisitNumerixHexLiteral(ctx *NumerixHexLiteralContext) interface{}
+
 	// Visit a parse tree produced by MinigoParser#index.
 	VisitIndex(ctx *IndexContext) interface{}
 

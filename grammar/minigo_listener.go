@@ -160,6 +160,12 @@ type MinigoListener interface {
 	// EnterInterpretedStringLiteral is called when entering the interpretedStringLiteral production.
 	EnterInterpretedStringLiteral(c *InterpretedStringLiteralContext)
 
+	// EnterNumericIntLiteral is called when entering the numericIntLiteral production.
+	EnterNumericIntLiteral(c *NumericIntLiteralContext)
+
+	// EnterNumerixHexLiteral is called when entering the numerixHexLiteral production.
+	EnterNumerixHexLiteral(c *NumerixHexLiteralContext)
+
 	// EnterIndex is called when entering the index production.
 	EnterIndex(c *IndexContext)
 
@@ -444,6 +450,12 @@ type MinigoListener interface {
 
 	// ExitInterpretedStringLiteral is called when exiting the interpretedStringLiteral production.
 	ExitInterpretedStringLiteral(c *InterpretedStringLiteralContext)
+
+	// ExitNumericIntLiteral is called when exiting the numericIntLiteral production.
+	ExitNumericIntLiteral(c *NumericIntLiteralContext)
+
+	// ExitNumerixHexLiteral is called when exiting the numerixHexLiteral production.
+	ExitNumerixHexLiteral(c *NumerixHexLiteralContext)
 
 	// ExitIndex is called when exiting the index production.
 	ExitIndex(c *IndexContext)

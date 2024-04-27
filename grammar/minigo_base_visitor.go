@@ -211,6 +211,14 @@ func (v *BaseMinigoVisitor) VisitInterpretedStringLiteral(ctx *InterpretedString
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseMinigoVisitor) VisitNumericIntLiteral(ctx *NumericIntLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitNumerixHexLiteral(ctx *NumerixHexLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseMinigoVisitor) VisitIndex(ctx *IndexContext) interface{} {
 	return v.VisitChildren(ctx)
 }
