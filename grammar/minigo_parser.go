@@ -7043,13 +7043,25 @@ type IAppendExpressionContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetSlice returns the slice rule contexts.
+	GetSlice() IExpressionContext
+
+	// GetValue returns the value rule contexts.
+	GetValue() IExpressionContext
+
+	// SetSlice sets the slice rule contexts.
+	SetSlice(IExpressionContext)
+
+	// SetValue sets the value rule contexts.
+	SetValue(IExpressionContext)
+
 	// Getter signatures
 	APPEND() antlr.TerminalNode
 	LEFTPARENTHESIS() antlr.TerminalNode
-	AllExpression() []IExpressionContext
-	Expression(i int) IExpressionContext
 	COMMA() antlr.TerminalNode
 	RIGHTPARENTHESIS() antlr.TerminalNode
+	AllExpression() []IExpressionContext
+	Expression(i int) IExpressionContext
 
 	// IsAppendExpressionContext differentiates from other interfaces.
 	IsAppendExpressionContext()
@@ -7058,6 +7070,8 @@ type IAppendExpressionContext interface {
 type AppendExpressionContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
+	slice  IExpressionContext
+	value  IExpressionContext
 }
 
 func NewEmptyAppendExpressionContext() *AppendExpressionContext {
@@ -7087,12 +7101,28 @@ func NewAppendExpressionContext(parser antlr.Parser, parent antlr.ParserRuleCont
 
 func (s *AppendExpressionContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *AppendExpressionContext) GetSlice() IExpressionContext { return s.slice }
+
+func (s *AppendExpressionContext) GetValue() IExpressionContext { return s.value }
+
+func (s *AppendExpressionContext) SetSlice(v IExpressionContext) { s.slice = v }
+
+func (s *AppendExpressionContext) SetValue(v IExpressionContext) { s.value = v }
+
 func (s *AppendExpressionContext) APPEND() antlr.TerminalNode {
 	return s.GetToken(MinigoParserAPPEND, 0)
 }
 
 func (s *AppendExpressionContext) LEFTPARENTHESIS() antlr.TerminalNode {
 	return s.GetToken(MinigoParserLEFTPARENTHESIS, 0)
+}
+
+func (s *AppendExpressionContext) COMMA() antlr.TerminalNode {
+	return s.GetToken(MinigoParserCOMMA, 0)
+}
+
+func (s *AppendExpressionContext) RIGHTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
 }
 
 func (s *AppendExpressionContext) AllExpression() []IExpressionContext {
@@ -7134,14 +7164,6 @@ func (s *AppendExpressionContext) Expression(i int) IExpressionContext {
 	}
 
 	return t.(IExpressionContext)
-}
-
-func (s *AppendExpressionContext) COMMA() antlr.TerminalNode {
-	return s.GetToken(MinigoParserCOMMA, 0)
-}
-
-func (s *AppendExpressionContext) RIGHTPARENTHESIS() antlr.TerminalNode {
-	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
 }
 
 func (s *AppendExpressionContext) GetRuleContext() antlr.RuleContext {
@@ -7196,7 +7218,10 @@ func (p *MinigoParser) AppendExpression() (localctx IAppendExpressionContext) {
 	}
 	{
 		p.SetState(313)
-		p.expression(0)
+
+		var _x = p.expression(0)
+
+		localctx.(*AppendExpressionContext).slice = _x
 	}
 	{
 		p.SetState(314)
@@ -7208,7 +7233,10 @@ func (p *MinigoParser) AppendExpression() (localctx IAppendExpressionContext) {
 	}
 	{
 		p.SetState(315)
-		p.expression(0)
+
+		var _x = p.expression(0)
+
+		localctx.(*AppendExpressionContext).value = _x
 	}
 	{
 		p.SetState(316)
