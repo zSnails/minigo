@@ -889,8 +889,8 @@ func (t *TypeChecker) VisitBreakStatement(ctx *grammar.BreakStatementContext) in
 // VisitCapExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitCapExpression(ctx *grammar.CapExpressionContext) interface{} {
 	expr := ctx.Expression()
-	_type := t.Visit(expr).(*symboltable.Symbol)
-	if _type.SymbolType&(symboltable.ArraySymbol|symboltable.SliceSymbol) == 0 {
+	symbol := t.Visit(expr).(*symboltable.Symbol)
+	if symbol.Type.SymbolType&(symboltable.ArraySymbol|symboltable.SliceSymbol) == 0 {
 		t.MakeError(expr.GetStart(), fmt.Errorf("expression in cap call is not a slice or array type"))
 		return nil
 	}
