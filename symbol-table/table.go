@@ -56,25 +56,23 @@ func (s SymbolType) String() string {
 }
 
 var symbolTypeTable = map[SymbolType]string{
-	TypeSymbol:     "Type",
-    PrimitiveTypeSymbol: "Primitive",
-	VariableSymbol: "Variable",
-	FunctionSymbol: "Function",
-	SliceSymbol:    "Slice",
-	ArraySymbol:    "Array",
-	StructSymbol:   "Struct",
+	TypeSymbol:          "Type",
+	PrimitiveTypeSymbol: "Primitive",
+	VariableSymbol:      "Variable",
+	FunctionSymbol:      "Function",
+	SliceSymbol:         "Slice",
+	ArraySymbol:         "Array",
+	StructSymbol:        "Struct",
 }
 
 type Symbol struct {
 	SymbolType SymbolType
 	Token      antlr.Token
-	// IsSlice    bool
-	// IsArray    bool
-	Size    uint64 //  this field will only be used if the symbol is an array
-	Scope   uint8
-	Name    string
-	Type    *Symbol
-	Members []*Symbol
+	Size       uint64 //  this field will only be used if the symbol is an array
+	Scope      uint8
+	Name       string
+	Type       *Symbol
+	Members    []*Symbol
 }
 
 func (s *Symbol) Is(against SymbolType) bool {
