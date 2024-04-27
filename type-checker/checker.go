@@ -1162,22 +1162,22 @@ func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) in
 	// symbol = _type
 	if _type.Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
 		name := symbol.Name
-		symbol = _type
 		symbol.Name = name
+		symbol.SymbolType = _type.SymbolType
+		symbol.Members = _type.Members
+		symbol.Size = _type.Size
+		symbol.Scope = _type.Scope
+		symbol.Type = _type.Type
 	} else {
 		symbol.Type = _type
 	}
-	fmt.Printf("symbol.Type.Members: %v\n", symbol.Type.Members)
-	fmt.Printf("symbol.Name: %v\n", symbol.Name)
 
-	err = t.SymbolTable.AddSymbol(symbol)
-	if err != nil {
-		t.MakeError(name.GetSymbol(), err)
-	}
+	// err = t.SymbolTable.AddSymbol(symbol)
+	// if err != nil {
+	// 	t.MakeError(name.GetSymbol(), err)
+	// }
 
 	return symbol
-	// fmt.Printf("name: %v\n", name)
-	// fmt.Printf("declType: %v\n", _type)
 	// if typeName := declType.IDENTIFIER(); typeName != nil {
 	// 	_type, found := t.SymbolTable.GetSymbol(typeName.GetText())
 	// 	if !found {
