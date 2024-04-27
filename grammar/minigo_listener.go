@@ -61,8 +61,20 @@ type MinigoListener interface {
 	// EnterFuncArgsDecls is called when entering the funcArgsDecls production.
 	EnterFuncArgsDecls(c *FuncArgsDeclsContext)
 
-	// EnterDeclType is called when entering the declType production.
-	EnterDeclType(c *DeclTypeContext)
+	// EnterNestedType is called when entering the nestedType production.
+	EnterNestedType(c *NestedTypeContext)
+
+	// EnterIdentifierDeclType is called when entering the identifierDeclType production.
+	EnterIdentifierDeclType(c *IdentifierDeclTypeContext)
+
+	// EnterSliceType is called when entering the sliceType production.
+	EnterSliceType(c *SliceTypeContext)
+
+	// EnterArrayType is called when entering the arrayType production.
+	EnterArrayType(c *ArrayTypeContext)
+
+	// EnterStructType is called when entering the structType production.
+	EnterStructType(c *StructTypeContext)
 
 	// EnterSliceDeclType is called when entering the sliceDeclType production.
 	EnterSliceDeclType(c *SliceDeclTypeContext)
@@ -334,8 +346,20 @@ type MinigoListener interface {
 	// ExitFuncArgsDecls is called when exiting the funcArgsDecls production.
 	ExitFuncArgsDecls(c *FuncArgsDeclsContext)
 
-	// ExitDeclType is called when exiting the declType production.
-	ExitDeclType(c *DeclTypeContext)
+	// ExitNestedType is called when exiting the nestedType production.
+	ExitNestedType(c *NestedTypeContext)
+
+	// ExitIdentifierDeclType is called when exiting the identifierDeclType production.
+	ExitIdentifierDeclType(c *IdentifierDeclTypeContext)
+
+	// ExitSliceType is called when exiting the sliceType production.
+	ExitSliceType(c *SliceTypeContext)
+
+	// ExitArrayType is called when exiting the arrayType production.
+	ExitArrayType(c *ArrayTypeContext)
+
+	// ExitStructType is called when exiting the structType production.
+	ExitStructType(c *StructTypeContext)
 
 	// ExitSliceDeclType is called when exiting the sliceDeclType production.
 	ExitSliceDeclType(c *SliceDeclTypeContext)

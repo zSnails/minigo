@@ -128,11 +128,35 @@ func (s *BaseMinigoListener) EnterFuncArgsDecls(ctx *FuncArgsDeclsContext) {}
 // ExitFuncArgsDecls is called when production funcArgsDecls is exited.
 func (s *BaseMinigoListener) ExitFuncArgsDecls(ctx *FuncArgsDeclsContext) {}
 
-// EnterDeclType is called when production declType is entered.
-func (s *BaseMinigoListener) EnterDeclType(ctx *DeclTypeContext) {}
+// EnterNestedType is called when production nestedType is entered.
+func (s *BaseMinigoListener) EnterNestedType(ctx *NestedTypeContext) {}
 
-// ExitDeclType is called when production declType is exited.
-func (s *BaseMinigoListener) ExitDeclType(ctx *DeclTypeContext) {}
+// ExitNestedType is called when production nestedType is exited.
+func (s *BaseMinigoListener) ExitNestedType(ctx *NestedTypeContext) {}
+
+// EnterIdentifierDeclType is called when production identifierDeclType is entered.
+func (s *BaseMinigoListener) EnterIdentifierDeclType(ctx *IdentifierDeclTypeContext) {}
+
+// ExitIdentifierDeclType is called when production identifierDeclType is exited.
+func (s *BaseMinigoListener) ExitIdentifierDeclType(ctx *IdentifierDeclTypeContext) {}
+
+// EnterSliceType is called when production sliceType is entered.
+func (s *BaseMinigoListener) EnterSliceType(ctx *SliceTypeContext) {}
+
+// ExitSliceType is called when production sliceType is exited.
+func (s *BaseMinigoListener) ExitSliceType(ctx *SliceTypeContext) {}
+
+// EnterArrayType is called when production arrayType is entered.
+func (s *BaseMinigoListener) EnterArrayType(ctx *ArrayTypeContext) {}
+
+// ExitArrayType is called when production arrayType is exited.
+func (s *BaseMinigoListener) ExitArrayType(ctx *ArrayTypeContext) {}
+
+// EnterStructType is called when production structType is entered.
+func (s *BaseMinigoListener) EnterStructType(ctx *StructTypeContext) {}
+
+// ExitStructType is called when production structType is exited.
+func (s *BaseMinigoListener) ExitStructType(ctx *StructTypeContext) {}
 
 // EnterSliceDeclType is called when production sliceDeclType is entered.
 func (s *BaseMinigoListener) EnterSliceDeclType(ctx *SliceDeclTypeContext) {}

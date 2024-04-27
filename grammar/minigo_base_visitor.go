@@ -79,7 +79,23 @@ func (v *BaseMinigoVisitor) VisitFuncArgsDecls(ctx *FuncArgsDeclsContext) interf
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMinigoVisitor) VisitDeclType(ctx *DeclTypeContext) interface{} {
+func (v *BaseMinigoVisitor) VisitNestedType(ctx *NestedTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitIdentifierDeclType(ctx *IdentifierDeclTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitSliceType(ctx *SliceTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitArrayType(ctx *ArrayTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitStructType(ctx *StructTypeContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -61,8 +61,20 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#funcArgsDecls.
 	VisitFuncArgsDecls(ctx *FuncArgsDeclsContext) interface{}
 
-	// Visit a parse tree produced by MinigoParser#declType.
-	VisitDeclType(ctx *DeclTypeContext) interface{}
+	// Visit a parse tree produced by MinigoParser#nestedType.
+	VisitNestedType(ctx *NestedTypeContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#identifierDeclType.
+	VisitIdentifierDeclType(ctx *IdentifierDeclTypeContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#sliceType.
+	VisitSliceType(ctx *SliceTypeContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#arrayType.
+	VisitArrayType(ctx *ArrayTypeContext) interface{}
+
+	// Visit a parse tree produced by MinigoParser#structType.
+	VisitStructType(ctx *StructTypeContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#sliceDeclType.
 	VisitSliceDeclType(ctx *SliceDeclTypeContext) interface{}

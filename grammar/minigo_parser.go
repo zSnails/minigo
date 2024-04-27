@@ -3159,16 +3159,6 @@ type IDeclTypeContext interface {
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
-
-	// Getter signatures
-	LEFTPARENTHESIS() antlr.TerminalNode
-	DeclType() IDeclTypeContext
-	RIGHTPARENTHESIS() antlr.TerminalNode
-	IDENTIFIER() antlr.TerminalNode
-	SliceDeclType() ISliceDeclTypeContext
-	ArrayDeclType() IArrayDeclTypeContext
-	StructDeclType() IStructDeclTypeContext
-
 	// IsDeclTypeContext differentiates from other interfaces.
 	IsDeclTypeContext()
 }
@@ -3205,51 +3195,37 @@ func NewDeclTypeContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 
 func (s *DeclTypeContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *DeclTypeContext) LEFTPARENTHESIS() antlr.TerminalNode {
-	return s.GetToken(MinigoParserLEFTPARENTHESIS, 0)
+func (s *DeclTypeContext) CopyAll(ctx *DeclTypeContext) {
+	s.CopyFrom(&ctx.BaseParserRuleContext)
 }
 
-func (s *DeclTypeContext) DeclType() IDeclTypeContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IDeclTypeContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IDeclTypeContext)
+func (s *DeclTypeContext) GetRuleContext() antlr.RuleContext {
+	return s
 }
 
-func (s *DeclTypeContext) RIGHTPARENTHESIS() antlr.TerminalNode {
-	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
+func (s *DeclTypeContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *DeclTypeContext) IDENTIFIER() antlr.TerminalNode {
-	return s.GetToken(MinigoParserIDENTIFIER, 0)
+type ArrayTypeContext struct {
+	DeclTypeContext
 }
 
-func (s *DeclTypeContext) SliceDeclType() ISliceDeclTypeContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(ISliceDeclTypeContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
+func NewArrayTypeContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *ArrayTypeContext {
+	var p = new(ArrayTypeContext)
 
-	if t == nil {
-		return nil
-	}
+	InitEmptyDeclTypeContext(&p.DeclTypeContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*DeclTypeContext))
 
-	return t.(ISliceDeclTypeContext)
+	return p
 }
 
-func (s *DeclTypeContext) ArrayDeclType() IArrayDeclTypeContext {
+func (s *ArrayTypeContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ArrayTypeContext) ArrayDeclType() IArrayDeclTypeContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IArrayDeclTypeContext); ok {
@@ -3265,7 +3241,91 @@ func (s *DeclTypeContext) ArrayDeclType() IArrayDeclTypeContext {
 	return t.(IArrayDeclTypeContext)
 }
 
-func (s *DeclTypeContext) StructDeclType() IStructDeclTypeContext {
+func (s *ArrayTypeContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterArrayType(s)
+	}
+}
+
+func (s *ArrayTypeContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitArrayType(s)
+	}
+}
+
+func (s *ArrayTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitArrayType(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type IdentifierDeclTypeContext struct {
+	DeclTypeContext
+}
+
+func NewIdentifierDeclTypeContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *IdentifierDeclTypeContext {
+	var p = new(IdentifierDeclTypeContext)
+
+	InitEmptyDeclTypeContext(&p.DeclTypeContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*DeclTypeContext))
+
+	return p
+}
+
+func (s *IdentifierDeclTypeContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *IdentifierDeclTypeContext) IDENTIFIER() antlr.TerminalNode {
+	return s.GetToken(MinigoParserIDENTIFIER, 0)
+}
+
+func (s *IdentifierDeclTypeContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterIdentifierDeclType(s)
+	}
+}
+
+func (s *IdentifierDeclTypeContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitIdentifierDeclType(s)
+	}
+}
+
+func (s *IdentifierDeclTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitIdentifierDeclType(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type StructTypeContext struct {
+	DeclTypeContext
+}
+
+func NewStructTypeContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *StructTypeContext {
+	var p = new(StructTypeContext)
+
+	InitEmptyDeclTypeContext(&p.DeclTypeContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*DeclTypeContext))
+
+	return p
+}
+
+func (s *StructTypeContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *StructTypeContext) StructDeclType() IStructDeclTypeContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
 		if _, ok := ctx.(IStructDeclTypeContext); ok {
@@ -3281,30 +3341,142 @@ func (s *DeclTypeContext) StructDeclType() IStructDeclTypeContext {
 	return t.(IStructDeclTypeContext)
 }
 
-func (s *DeclTypeContext) GetRuleContext() antlr.RuleContext {
+func (s *StructTypeContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterStructType(s)
+	}
+}
+
+func (s *StructTypeContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitStructType(s)
+	}
+}
+
+func (s *StructTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitStructType(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type NestedTypeContext struct {
+	DeclTypeContext
+}
+
+func NewNestedTypeContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *NestedTypeContext {
+	var p = new(NestedTypeContext)
+
+	InitEmptyDeclTypeContext(&p.DeclTypeContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*DeclTypeContext))
+
+	return p
+}
+
+func (s *NestedTypeContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *DeclTypeContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
+func (s *NestedTypeContext) LEFTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserLEFTPARENTHESIS, 0)
 }
 
-func (s *DeclTypeContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *NestedTypeContext) DeclType() IDeclTypeContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IDeclTypeContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IDeclTypeContext)
+}
+
+func (s *NestedTypeContext) RIGHTPARENTHESIS() antlr.TerminalNode {
+	return s.GetToken(MinigoParserRIGHTPARENTHESIS, 0)
+}
+
+func (s *NestedTypeContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.EnterDeclType(s)
+		listenerT.EnterNestedType(s)
 	}
 }
 
-func (s *DeclTypeContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *NestedTypeContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
-		listenerT.ExitDeclType(s)
+		listenerT.ExitNestedType(s)
 	}
 }
 
-func (s *DeclTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *NestedTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case MinigoVisitor:
-		return t.VisitDeclType(s)
+		return t.VisitNestedType(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+type SliceTypeContext struct {
+	DeclTypeContext
+}
+
+func NewSliceTypeContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *SliceTypeContext {
+	var p = new(SliceTypeContext)
+
+	InitEmptyDeclTypeContext(&p.DeclTypeContext)
+	p.parser = parser
+	p.CopyAll(ctx.(*DeclTypeContext))
+
+	return p
+}
+
+func (s *SliceTypeContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *SliceTypeContext) SliceDeclType() ISliceDeclTypeContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(ISliceDeclTypeContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ISliceDeclTypeContext)
+}
+
+func (s *SliceTypeContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.EnterSliceType(s)
+	}
+}
+
+func (s *SliceTypeContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(MinigoListener); ok {
+		listenerT.ExitSliceType(s)
+	}
+}
+
+func (s *SliceTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case MinigoVisitor:
+		return t.VisitSliceType(s)
 
 	default:
 		return t.VisitChildren(s)
@@ -3322,6 +3494,7 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 
 	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 10, p.GetParserRuleContext()) {
 	case 1:
+		localctx = NewNestedTypeContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(185)
@@ -3345,6 +3518,7 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 		}
 
 	case 2:
+		localctx = NewIdentifierDeclTypeContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(189)
@@ -3356,6 +3530,7 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 		}
 
 	case 3:
+		localctx = NewSliceTypeContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(190)
@@ -3363,6 +3538,7 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 		}
 
 	case 4:
+		localctx = NewArrayTypeContext(p, localctx)
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(191)
@@ -3370,6 +3546,7 @@ func (p *MinigoParser) DeclType() (localctx IDeclTypeContext) {
 		}
 
 	case 5:
+		localctx = NewStructTypeContext(p, localctx)
 		p.EnterOuterAlt(localctx, 5)
 		{
 			p.SetState(192)
