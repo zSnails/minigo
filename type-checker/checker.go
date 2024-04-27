@@ -1,12 +1,11 @@
 package checker
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"slices"
 	"strconv"
-	"strings"
-
-	"log"
 
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/zSnails/minigo/grammar"
