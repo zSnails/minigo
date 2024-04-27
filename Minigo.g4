@@ -38,11 +38,11 @@ funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls? RIGHTPARENTHESIS d
 funcArgsDecls: singleVarDeclNoExps (COMMA singleVarDeclNoExps)*
              ;
 
-declType: LEFTPARENTHESIS declType RIGHTPARENTHESIS
-        | IDENTIFIER
-        | sliceDeclType
-        | arrayDeclType
-        | structDeclType
+declType: LEFTPARENTHESIS declType RIGHTPARENTHESIS #nestedType
+        | IDENTIFIER #identifierDeclType
+        | sliceDeclType #sliceType
+        | arrayDeclType #arrayType
+        | structDeclType #structType
         ;
 
 sliceDeclType: LEFTBRACKET RIGHTBRACKET declType
