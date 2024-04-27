@@ -85,7 +85,6 @@ func (t *TypeChecker) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) in
 			idents := decl.IdentifierList().AllIDENTIFIER()
 			declType := decl.DeclType()
 			_type, ok := t.Visit(declType).(*symboltable.Symbol)
-			fmt.Printf("_type: %v\n", _type)
 			if !ok {
 				continue
 			}
@@ -854,10 +853,6 @@ func (t *TypeChecker) VisitAppendExpression(ctx *grammar.AppendExpressionContext
 
 	sliceType := getType(slice)
 	valueType := getType(value)
-	fmt.Printf("slice: %v\n", slice)
-	fmt.Printf("value: %v\n", value)
-	fmt.Printf("sliceType: %v\n", sliceType)
-	fmt.Printf("valueType: %v\n", valueType)
 
 	if !sliceType.Type.SameType(valueType) {
 		t.MakeError(valueExpr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as '%s' expression in append statement", valueType, slice))
@@ -1064,7 +1059,6 @@ func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	val, ok := t.Visit(expr).(*symboltable.Symbol)
 	if !ok {
 		return nil // unrecoverable
-		// panic(t.MakeError(expr.GetStart(), fmt.Errorf("something went terribly wrong")))
 	}
 
 	valType := getType(val)
