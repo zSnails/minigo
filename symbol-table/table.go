@@ -32,6 +32,7 @@ type SymbolType int
 
 const (
 	TypeSymbol SymbolType = 1 << iota
+	PrimitiveTypeSymbol
 	VariableSymbol
 	FunctionSymbol
 	SliceSymbol
@@ -39,26 +40,73 @@ const (
 	StructSymbol
 )
 
+func (s SymbolType) String() string {
+	sb := strings.Builder{}
+	var bit SymbolType
+	cp := s
+	for bit = 0; bit < 32; bit++ {
+		curr := cp >> bit
+		if (curr & 1) == 0 {
+			continue
+		}
+		var k SymbolType = 1 << bit
+		fmt.Fprintf(&sb, "%s ", symbolTypeTable[k])
+	}
+	return sb.String()
+}
+
+var symbolTypeTable = map[SymbolType]string{
+	TypeSymbol:     "Type",
+    PrimitiveTypeSymbol: "Primitive",
+	VariableSymbol: "Variable",
+	FunctionSymbol: "Function",
+	SliceSymbol:    "Slice",
+	ArraySymbol:    "Array",
+	StructSymbol:   "Struct",
+}
+
 type Symbol struct {
 	SymbolType SymbolType
 	Token      antlr.Token
-	IsSlice    bool
-	IsArray    bool
-	Size       uint64 //  this field will only be used if the symbol is an array
-	Scope      uint8
-	Name       string
-	Type       *Symbol
-	Members    []*Symbol
+	// IsSlice    bool
+	// IsArray    bool
+	Size    uint64 //  this field will only be used if the symbol is an array
+	Scope   uint8
+	Name    string
+	Type    *Symbol
+	Members []*Symbol
 }
 
-func (s *Symbol) Equals(other *Symbol) bool {
-	return other != nil && s.Type == other.Type && s.IsSlice == other.IsSlice && s.IsArray == other.IsArray && s.Name == other.Name
+func (s *Symbol) Is(against SymbolType) bool {
+	return (s.SymbolType&against != 0)
 }
+
+// func (s *Symbol) Equals(other *Symbol) bool {
+// 	return (s.SymbolType&TypeSymbol != 0) && s.Name == other.Name
+// }
+
+func (s *Symbol) SameType(other *Symbol) bool {
+	return s.Name == other.Name && s.SymbolType == other.SymbolType
+}
+
+// func (s *Symbol) SameType(other *Symbol) bool {
+// 	return s.SymbolType == other.SymbolType
+// }
+
+// func (s *Symbol) Equals(other *Symbol) bool {
+// 	return other != nil && s.Type == other.Type && s.IsSlice == other.IsSlice && s.IsArray == other.IsArray && s.Name == other.Name
+// }
 
 func (s Symbol) String() string {
-	if s.SymbolType&ArraySymbol != 0 {
+	if (s.SymbolType)&ArraySymbol != 0 {
+		if s.Type != nil {
+			return fmt.Sprintf("[%d]%s", s.Size, s.Type.String())
+		}
 		return fmt.Sprintf("[%d]%s", s.Size, s.Name)
 	} else if s.SymbolType&SliceSymbol != 0 {
+		if s.Type != nil {
+			return fmt.Sprintf("[]%s", s.Type.String())
+		}
 		return fmt.Sprintf("[]%s", s.Name)
 	}
 
@@ -68,15 +116,12 @@ func (s Symbol) String() string {
 func (s Symbol) Repr() string {
 	if s.SymbolType&FunctionSymbol != 0 {
 		return fmt.Sprintf("func %s%s -> %s", s.Name, s.Members, s.Type)
-	} else if s.SymbolType&VariableSymbol != 0 {
-		if s.IsSlice {
-			return fmt.Sprintf("Slice[%d, %s, %s]", s.Scope, s.Name, s.Type)
-		}
-		return fmt.Sprintf("Variable(%d, %s, %s)", s.Scope, s.Name, s.Type)
 	} else if s.SymbolType&SliceSymbol != 0 {
 		return fmt.Sprintf("[]%s", s.Type)
 	} else if s.SymbolType&ArraySymbol != 0 {
 		return fmt.Sprintf("[%d]%s", s.Size, s.Name)
+	} else if s.SymbolType&VariableSymbol != 0 {
+		return fmt.Sprintf("Variable(%d, %s, %s)", s.Scope, s.Name, s.Type)
 	} else if s.SymbolType&StructSymbol != 0 {
 		return fmt.Sprintf("Struct(%d, %s, %d members (optimized out))", s.Scope, s.Name, len(s.Members))
 	} else if s.SymbolType&TypeSymbol != 0 {
@@ -137,7 +182,6 @@ func (t *SymbolTable) NewVariable(token antlr.Token, name string, _type *Symbol)
 	return &Symbol{
 		SymbolType: VariableSymbol,
 		Token:      token,
-		IsSlice:    false,
 		Size:       0,
 		Scope:      t.Scope,
 		Name:       name,
@@ -150,7 +194,6 @@ func (t *SymbolTable) NewFunction(token antlr.Token, name string, _type *Symbol,
 	return &Symbol{
 		SymbolType: FunctionSymbol,
 		Token:      token,
-		IsSlice:    false,
 		Size:       0,
 		Scope:      t.Scope,
 		Name:       name,
@@ -163,7 +206,6 @@ func (t *SymbolTable) NewStructType(token antlr.Token, name string, members ...*
 	return &Symbol{
 		SymbolType: TypeSymbol | StructSymbol,
 		Token:      token,
-		IsSlice:    false,
 		Size:       0,
 		Scope:      t.Scope,
 		Name:       name,
@@ -176,7 +218,6 @@ func (t *SymbolTable) NewAliasType(token antlr.Token, name string, _type *Symbol
 	return &Symbol{
 		SymbolType: TypeSymbol,
 		Token:      token,
-		IsSlice:    false,
 		Size:       0,
 		Scope:      t.Scope,
 		Name:       name,
@@ -186,7 +227,7 @@ func (t *SymbolTable) NewAliasType(token antlr.Token, name string, _type *Symbol
 }
 func (t *SymbolTable) NewArrayType(token antlr.Token, name string, _type *Symbol, size uint64) *Symbol {
 	return &Symbol{
-		SymbolType: ArraySymbol,
+		SymbolType: TypeSymbol | ArraySymbol,
 		Size:       size,
 		Scope:      t.Scope,
 		Name:       name,
@@ -197,9 +238,8 @@ func (t *SymbolTable) NewArrayType(token antlr.Token, name string, _type *Symbol
 
 func (t *SymbolTable) NewSliceType(token antlr.Token, name string, _type *Symbol) *Symbol {
 	return &Symbol{
-		SymbolType: SliceSymbol,
+		SymbolType: TypeSymbol | SliceSymbol,
 		Token:      token,
-		IsSlice:    false,
 		Size:       0,
 		Scope:      t.Scope,
 		Name:       name,
