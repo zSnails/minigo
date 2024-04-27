@@ -109,62 +109,6 @@ func (t *TypeChecker) VisitStructType(ctx *grammar.StructTypeContext) interface{
 	return t.VisitChildren(ctx)
 }
 
-func (t *TypeChecker) VisitDeclType(ctx *grammar.DeclTypeContext) interface{} {
-	// // Get the name
-	return t.VisitChildren(ctx)
-
-	// childCount := ctx.GetChildCount()
-
-	// if childCount == 3 {
-	// 	a, ok := ctx.GetChild(1).(*grammar.DeclTypeContext)
-	// 	if ok {
-	// 		return t.VisitDeclType(a)
-	// 	}
-	// }
-
-	// out := declTypePayload{
-	// 	symbol:  nil,
-	// 	IsSlice: false,
-	// 	IsArray: false,
-	// }
-	// var name string
-	// if ident := ctx.IDENTIFIER(); ident != nil {
-	// 	name = ident.GetText()
-	// } else if slice := ctx.SliceDeclType(); slice != nil {
-	// 	if ident := slice.DeclType().IDENTIFIER(); ident != nil {
-	// 		name = ident.GetText()
-	// 		out.IsSlice = true
-	// 	}
-	// } else if array := ctx.ArrayDeclType(); array != nil {
-	// 	if ident := array.DeclType().IDENTIFIER(); ident != nil {
-	// 		name = ident.GetText()
-	// 		out.IsArray = true
-	// 	}
-	// } else if _struct := ctx.StructDeclType(); _struct != nil {
-	// 	panic("TODO: implement handling inline struct types, NOTE: I'll probably just create an in memory temp type")
-	// 	return nil // I'll probably return either way so I'll leave this here
-	// }
-
-	// _type, found := t.SymbolTable.GetSymbol(name)
-	// if !found {
-	// 	t.MakeError(ctx.GetStart(), fmt.Errorf("typename '%s' not found", name))
-	// 	return nil
-	// }
-
-	// // BUG: this shouldn't work like this, this is probably the worst code I've
-	// // ever written, there are no standards in this piece of shit
-	// if _type.SymbolType&symboltable.SliceSymbol != 0 {
-	// 	out.IsSlice = true
-	// }
-
-	// if _type.SymbolType&symboltable.ArraySymbol != 0 {
-	// 	out.IsArray = true
-	// }
-
-	// out.symbol = _type
-	// return out
-}
-
 var _ grammar.MinigoVisitor = &TypeChecker{}
 
 // VisitOperationPrecedence1 implements grammar.MinigoVisitor.
