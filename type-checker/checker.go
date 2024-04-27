@@ -1069,6 +1069,13 @@ func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	return nil
 }
 
+func getFirstWithMembers(in *symboltable.Symbol) *symboltable.Symbol {
+	if in.Type != nil {
+		return in.Type
+	}
+	return in
+}
+
 // VisitSelector implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
 	// XXX: I need to store the current selected item
@@ -1078,7 +1085,8 @@ func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
 	}
 	memberName := ctx.IDENTIFIER().GetText()
 	symbolType := getType(symbol)
-	idx := slices.IndexFunc(symbolType.Type.Members, func(s *symboltable.Symbol) bool {
+	withMembers := getFirstWithMembers(symbolType)
+	idx := slices.IndexFunc(withMembers.Members, func(s *symboltable.Symbol) bool {
 		return s.Name == memberName
 	})
 	if idx == -1 {
@@ -1086,7 +1094,7 @@ func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
 		return nil
 	}
 
-	return symbolType.Type.Members[idx]
+	return withMembers.Members[idx]
 }
 
 // VisitSimpleStatement implements grammar.MinigoVisitor.
