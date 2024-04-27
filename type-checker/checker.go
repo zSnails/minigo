@@ -1013,13 +1013,13 @@ func (t *TypeChecker) VisitInnerVarDecls(ctx *grammar.InnerVarDeclsContext) inte
 
 // VisitLengthExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitLengthExpression(ctx *grammar.LengthExpressionContext) interface{} {
-	_type, ok := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	symbol, ok := t.Visit(ctx.Expression()).(*symboltable.Symbol)
 	if !ok {
 		return nil // unrecoverable
 	}
 
-	if !_type.Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
-		t.MakeError(_type.Token, fmt.Errorf("cannot use symbol of type '%s' in len call", getType(_type)))
+	if !getType(symbol).Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
+		t.MakeError(symbol.Token, fmt.Errorf("cannot use symbol of type '%s' in len call", getType(symbol)))
 		return nil
 	}
 
