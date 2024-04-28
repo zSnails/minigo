@@ -3,7 +3,6 @@ package checker
 import (
 	"errors"
 	"fmt"
-	"log"
 	"slices"
 	"strconv"
 
@@ -192,10 +191,6 @@ func (t *TypeChecker) VisitExpressionPostInc(ctx *grammar.ExpressionPostIncConte
 
 // VisitSwitchCaseBranch implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSwitchCaseBranch(ctx *grammar.SwitchCaseBranchContext) interface{} {
-	// switch {
-	// case "hola":
-	// 	println("adios")
-	// }
 	// if the current type is nil that means it's a switch statement without a statement
 	currentType, _ := t.symbolStack.Peek()
 	if currentType == nil {
@@ -345,7 +340,6 @@ func (t *TypeChecker) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 
 		right, ok := t.Visit(expression).(*symboltable.Symbol)
 		if !ok {
-			// panic(t.MakeError(expression.GetStart(), fmt.Errorf("Something went terribly wrong")))
 			continue // unrecoverable
 		}
 
