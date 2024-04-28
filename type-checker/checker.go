@@ -604,7 +604,7 @@ func getType(in *symboltable.Symbol) *symboltable.Symbol {
 	// 	return getType(in.Type)
 	// }
 
-	if in.Type != nil {
+	if in != nil && in.Type != nil {
 		return in.Type
 	}
 
