@@ -874,6 +874,8 @@ func (t *TypeChecker) VisitBlock(ctx *grammar.BlockContext) interface{} {
 
 // VisitBlockStatement implements grammar.MinigoVisitor.o
 func (t *TypeChecker) VisitBlockStatement(ctx *grammar.BlockStatementContext) interface{} {
+	t.SymbolTable.EnterScope()
+	defer t.SymbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
