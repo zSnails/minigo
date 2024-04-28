@@ -836,7 +836,6 @@ func (t *TypeChecker) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 
 // VisitAppendExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitAppendExpression(ctx *grammar.AppendExpressionContext) interface{} {
-	// TODO: rework thie piece of shit to use the new system
 	sliceExpr := ctx.GetSlice()
 	slice := t.Visit(sliceExpr).(*symboltable.Symbol)
 	valueExpr := ctx.GetValue()
@@ -940,7 +939,6 @@ func (t *TypeChecker) VisitExpressionList(ctx *grammar.ExpressionListContext) in
 	for _, expr := range exprs {
 		_type, ok := t.Visit(expr).(*symboltable.Symbol)
 		if !ok {
-			// panic("TODO: fix this piece of shit, this should never happen")
 			continue
 		}
 		out = append(out, _type)
@@ -963,7 +961,7 @@ func (t *TypeChecker) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 	defer t.SymbolTable.ExitScope() // This will exit the scope created in the FuncFrontDecl
 	val, found := t.SymbolTable.GetSymbol(ctx.FuncFrontDecl().IDENTIFIER().GetText())
 	if !found {
-		panic("TODO: proper error message here")
+		panic("unreachable")
 	}
 	// t.currentFunction = val
 	t.symbolStack.Push(val)
@@ -1045,13 +1043,11 @@ func (t *TypeChecker) VisitOperand(ctx *grammar.OperandContext) interface{} {
 
 // VisitPrintStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitPrintStatement(ctx *grammar.PrintStatementContext) interface{} {
-	log.Println("TODO: Implement this piece of shit (VisitPrintStatement)")
 	return t.VisitChildren(ctx)
 }
 
 // VisitPrintlnStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext) interface{} {
-	log.Println("TODO: Implement this piece of shit (VisitPrintlnStatement)")
 	return t.VisitChildren(ctx)
 }
 
@@ -1290,13 +1286,11 @@ func (t *TypeChecker) VisitTypeDeclStatement(ctx *grammar.TypeDeclStatementConte
 
 // VisitVariableDeclStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitVariableDeclStatement(ctx *grammar.VariableDeclStatementContext) interface{} {
-	// TODO: use the symbol table and add the symbols declared here to it
 	return t.VisitChildren(ctx)
 }
 
 // VisitVariableDeclaration implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitVariableDeclaration(ctx *grammar.VariableDeclarationContext) interface{} {
-	// TODO: use the symbol table and add the symbols declared here to it
 	return t.VisitChildren(ctx)
 }
 
