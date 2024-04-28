@@ -1023,13 +1023,10 @@ func (t *TypeChecker) VisitLengthExpression(ctx *grammar.LengthExpressionContext
 	return symboltable.Int
 }
 
-// VisitLoop implements grammar.MinigoVisitor.
-func (t *TypeChecker) VisitLoop(ctx *grammar.LoopContext) interface{} {
-	return t.VisitChildren(ctx)
-}
-
 // VisitLoopStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitLoopStatement(ctx *grammar.LoopStatementContext) interface{} {
+	t.SymbolTable.EnterScope()
+	defer t.SymbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
