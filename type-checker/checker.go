@@ -987,6 +987,8 @@ func (t *TypeChecker) VisitIdentifierList(ctx *grammar.IdentifierListContext) in
 
 // VisitIfStatementStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfStatementStatement(ctx *grammar.IfStatementStatementContext) interface{} {
+	t.SymbolTable.EnterScope()
+	defer t.SymbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
