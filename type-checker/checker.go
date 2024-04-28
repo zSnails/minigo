@@ -1079,7 +1079,6 @@ func getFirstWithMembers(in *symboltable.Symbol) *symboltable.Symbol {
 
 // VisitSelector implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
-	// XXX: I need to store the current selected item
 	symbol, err := t.symbolStack.Pop()
 	if err != nil {
 		panic("unreachable")
