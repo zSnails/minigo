@@ -489,7 +489,7 @@ func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 	}
 
 	if getType(index) != symboltable.Int {
-		t.makeError(accessee.Token, fmt.Errorf("cannot use value of type '%s' as index selector", getType(index)))
+		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use value of type '%s' as index selector", getType(index)))
 		return nil // unrecoverable
 	}
 	return accessee.Type
