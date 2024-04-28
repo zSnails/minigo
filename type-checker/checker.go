@@ -1143,73 +1143,7 @@ func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) in
 		symbol.Type = _type
 	}
 
-	// err = t.SymbolTable.AddSymbol(symbol)
-	// if err != nil {
-	// 	t.MakeError(name.GetSymbol(), err)
-	// }
-
 	return symbol
-	// if typeName := declType.IDENTIFIER(); typeName != nil {
-	// 	_type, found := t.SymbolTable.GetSymbol(typeName.GetText())
-	// 	if !found {
-	// 		t.MakeError(typeName.GetSymbol(), fmt.Errorf("unknown symbol '%s'", typeName.GetText()))
-	// 		return nil // Can't continue from here, it will just not work
-	// 	}
-	// 	symbol := t.SymbolTable.NewAliasType(name.GetSymbol(), name.GetText(), _type)
-	// 	err := t.SymbolTable.AddSymbol(symbol)
-	// 	if err != nil {
-	// 		t.MakeError(name.GetSymbol(), err)
-	// 	}
-	// } else if sliceDecl := declType.SliceDeclType(); sliceDecl != nil {
-	// 	typeName := sliceDecl.DeclType().IDENTIFIER().GetText()
-	// 	_type, found := t.SymbolTable.GetSymbol(typeName)
-	// 	if !found {
-	// 		t.MakeError(sliceDecl.GetStart(), fmt.Errorf("unknown symbol '%s'", typeName))
-	// 		return nil // Can't continue from here, it will just not work
-	// 	}
-	// 	symbol := t.SymbolTable.NewSliceType(name.GetSymbol(), name.GetText(), _type)
-	// 	err := t.SymbolTable.AddSymbol(symbol)
-	// 	if err != nil {
-	// 		t.MakeError(name.GetSymbol(), err)
-	// 	}
-	// } else if arrayDecl := declType.ArrayDeclType(); arrayDecl != nil {
-	// 	originalSize := arrayDecl.INTLITERAL().GetText()
-	// 	size, _ := strconv.ParseUint(originalSize, 10, 64)
-	// 	typeName := arrayDecl.DeclType().IDENTIFIER().GetText()
-	// 	_type, found := t.SymbolTable.GetSymbol(typeName)
-	// 	if !found {
-	// 		t.MakeError(arrayDecl.GetStart(), fmt.Errorf("unknown symbol '%s'", typeName))
-	// 		return nil // Can't continue from here, it will just not work
-	// 	}
-	// 	symbol := t.SymbolTable.NewArrayType(name.GetSymbol(), name.GetText(), _type, size)
-	// 	err := t.SymbolTable.AddSymbol(symbol)
-	// 	if err != nil {
-	// 		t.MakeError(name.GetSymbol(), err)
-	// 	}
-	// } else if structType := declType.StructDeclType(); structType != nil {
-	// 	symbol := t.SymbolTable.NewStructType(name.GetSymbol(), name.GetText())
-	// 	err := t.SymbolTable.AddSymbol(symbol)
-	// 	if err != nil {
-	// 		t.MakeError(ctx.GetStart(), err)
-	// 		return nil
-	// 	}
-	// 	if members := structType.StructMemDecls(); members != nil {
-	// 		decls := members.AllSingleVarDeclNoExps()
-	// 		for _, decl := range decls {
-	// 			idents := decl.IdentifierList().AllIDENTIFIER()
-	// 			_type, ok := t.Visit(decl.DeclType()).(declTypePayload)
-	// 			if !ok {
-	// 				continue
-	// 			}
-	// 			for _, ident := range idents {
-	// 				variable := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type.symbol)
-	// 				variable = makeSlice(variable, _type)
-	// 				symbol.Members = append(symbol.Members, variable)
-	// 			}
-	// 		}
-	// 	}
-	// 	return nil
-	// }
 }
 
 // VisitSingleVarDecl implements grammar.MinigoVisitor.
