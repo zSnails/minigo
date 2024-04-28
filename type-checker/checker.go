@@ -240,12 +240,19 @@ func (t *TypeChecker) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpre
 
 // VisitSimpleStatementSwitch implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSimpleStatementSwitch(ctx *grammar.SimpleStatementSwitchContext) interface{} {
-	panic("unimplemented")
+	t.symbolStack.Push(symboltable.Bool)
+	return t.VisitChildren(ctx)
 }
 
 // VisitSimpleStatementSwitchExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSimpleStatementSwitchExpression(ctx *grammar.SimpleStatementSwitchExpressionContext) interface{} {
-	panic("unimplemented")
+	simpleStatement := ctx.SimpleStatement()
+	t.Visit(simpleStatement)
+
+	expr := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	t.symbolStack.Push(expr)
+	clauseList := ctx.ExpressionCaseClauseList()
+	return t.Visit(clauseList)
 }
 
 // VisitIfElseBlock implements grammar.MinigoVisitor.
