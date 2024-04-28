@@ -1195,6 +1195,8 @@ func (t *TypeChecker) VisitStructMemDecls(ctx *grammar.StructMemDeclsContext) in
 
 // VisitSwitchStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSwitchStatement(ctx *grammar.SwitchStatementContext) interface{} {
+	t.SymbolTable.EnterScope()
+	defer t.SymbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
