@@ -1,0 +1,30 @@
+package main;
+
+type Person struct {
+    Friends []Person;
+    Name string;
+    Age int;
+    Married bool;
+};
+
+var mathew Person;
+func main() {
+    mathew.Name = 10;
+    mathew.Age = "Samuel";
+    mathew.Married = 1;
+    mathew.Friends[0x0] = 0xdeadbeef;
+
+    var result int = addNoReturn(1, 0xff);
+    var result bool = addNoReturn(1, 0xdd);
+    !addNoReturn(1, 2);
+};
+
+func addNoReturn(a, b int) Person {
+    var result string = a + b;
+};
+
+var (
+    Name string = 1;
+    Age int = 1;
+);
+
