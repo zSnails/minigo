@@ -5,12 +5,12 @@
 git clone https://github.com/zSnails/minigo.git
 ```
 
-1. Make sure to download all the dependencies
+2. Make sure to download all the dependencies
 ```bash
 go mod tidy
 ```
 
-1. Build the compiler
+3. Build the compiler
 ```bash
 go build cmd/minigo.go
 ```
