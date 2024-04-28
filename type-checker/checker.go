@@ -24,10 +24,9 @@ type TypeChecker struct {
 // VisitNumericIntLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNumericIntLiteral(ctx *grammar.NumericIntLiteralContext) interface{} {
 	number := ctx.INTLITERAL()
-	got, err := strconv.ParseInt(number.GetText(), 10, 64)
-	fmt.Printf("got: %v\n", got)
+	_, err := strconv.ParseInt(number.GetText(), 10, 64)
 	if err != nil {
-		t.MakeError(number.GetSymbol(), errors.New("value exceeds 64 bit limit"))
+		t.makeError(number.GetSymbol(), errors.New("value exceeds 64 bit limit"))
 	}
 	return symboltable.Int
 }
@@ -35,10 +34,9 @@ func (t *TypeChecker) VisitNumericIntLiteral(ctx *grammar.NumericIntLiteralConte
 // VisitNumerixHexLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNumerixHexLiteral(ctx *grammar.NumerixHexLiteralContext) interface{} {
 	number := ctx.HEXINTLITERAL()
-	got, err := strconv.ParseInt(number.GetText(), 0, 64)
-	fmt.Printf("got: %v\n", got)
+	_, err := strconv.ParseInt(number.GetText(), 0, 64)
 	if err != nil {
-		t.MakeError(number.GetSymbol(), errors.New("value exceed 64 bit limit"))
+		t.makeError(number.GetSymbol(), errors.New("value exceed 64 bit limit"))
 	}
 	return symboltable.Int
 }
@@ -107,7 +105,7 @@ func (t *TypeChecker) VisitIdentifierDeclType(ctx *grammar.IdentifierDeclTypeCon
 	name := ctx.IDENTIFIER()
 	symbol, found := t.SymbolTable.GetSymbol(name.GetText())
 	if !found {
-		t.MakeError(name.GetSymbol(), fmt.Errorf("unknown symbol '%s'", name.GetText()))
+		t.makeError(name.GetSymbol(), fmt.Errorf("unknown symbol '%s'", name.GetText()))
 		return nil
 	}
 	return symbol
@@ -142,7 +140,7 @@ func (t *TypeChecker) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 	rightType = getType(rightType)
 
 	if (leftOk && rightOk) && (!leftType.SameType(rightType)) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
+		t.makeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
 	}
 
 	if leftType == nil {
@@ -163,7 +161,7 @@ func (t *TypeChecker) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 	rightType = getType(rightType)
 
 	if (leftOk && rightOk) && (leftType != rightType) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
+		t.makeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
 	}
 
 	if leftType == nil {
@@ -177,7 +175,7 @@ func (t *TypeChecker) VisitExpressionPostDec(ctx *grammar.ExpressionPostDecConte
 	expr := ctx.Expression()
 	symbol := t.Visit(expr).(*symboltable.Symbol)
 	if getType(symbol) != symboltable.Int {
-		t.MakeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post decrement statement", getType(symbol)))
+		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post decrement statement", getType(symbol)))
 	}
 	return nil
 }
@@ -187,7 +185,7 @@ func (t *TypeChecker) VisitExpressionPostInc(ctx *grammar.ExpressionPostIncConte
 	expr := ctx.Expression()
 	symbol := t.Visit(expr).(*symboltable.Symbol)
 	if getType(symbol) != symboltable.Int {
-		t.MakeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post increment statement", getType(symbol)))
+		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post increment statement", getType(symbol)))
 	}
 	return nil
 }
@@ -207,7 +205,7 @@ func (t *TypeChecker) VisitSwitchCaseBranch(ctx *grammar.SwitchCaseBranchContext
 	types := t.Visit(ctx.ExpressionList()).([]*symboltable.Symbol)
 	for _, _type := range types {
 		if getType(_type) != getType(currentType) {
-			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use symbol of type '%s' as '%s' type in case statement", getType(_type), getType(currentType)))
+			t.makeError(ctx.GetStart(), fmt.Errorf("cannot use symbol of type '%s' as '%s' type in case statement", getType(_type), getType(currentType)))
 		}
 	}
 	return nil
