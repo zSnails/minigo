@@ -95,7 +95,10 @@ func (s *Symbol) SameType(other *Symbol) bool {
 // 	return other != nil && s.Type == other.Type && s.IsSlice == other.IsSlice && s.IsArray == other.IsArray && s.Name == other.Name
 // }
 
-func (s Symbol) String() string {
+func (s *Symbol) String() string {
+    if s == nil {
+        return "no value"
+    }
 	if (s.SymbolType)&ArraySymbol != 0 {
 		if s.Type != nil {
 			return fmt.Sprintf("[%d]%s", s.Size, s.Type.String())
