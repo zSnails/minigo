@@ -299,7 +299,7 @@ func (t *TypeChecker) VisitThreePartFor(ctx *grammar.ThreePartForContext) interf
 	expr := ctx.Expression()
 	_type := t.Visit(expr).(*symboltable.Symbol)
 	if getType(_type) != symboltable.Bool {
-		t.MakeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as boolean expression", getType(_type)))
+		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as boolean expression", getType(_type)))
 	}
 	return t.Visit(ctx.Block())
 }
@@ -314,7 +314,7 @@ func (t *TypeChecker) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 	_type := getType(expressionType)
 
 	if _type != symboltable.Bool {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use expression of type '%s' in for condition", _type))
+		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use expression of type '%s' in for condition", _type))
 	}
 	return t.Visit(ctx.Block())
 }
@@ -337,7 +337,7 @@ func (t *TypeChecker) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 	idenLen := len(lhs)
 	exprLen := len(rhs)
 	if idenLen != exprLen {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d vaules", idenLen, exprLen))
+		t.makeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d vaules", idenLen, exprLen))
 		return nil
 	}
 	for idx, ident := range lhs {
@@ -352,14 +352,14 @@ func (t *TypeChecker) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 		symbol := t.SymbolTable.NewVariable(ident.GetStart(), ident.GetText(), right)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
-			t.MakeError(ident.GetStart(), err)
+			t.makeError(ident.GetStart(), err)
 		}
 
 		sType := getType(symbol)
 		rType := getType(right)
 
 		if sType != rType {
-			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", sType, rType))
+			t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", sType, rType))
 		}
 	}
 	return nil
@@ -375,10 +375,10 @@ func (t *TypeChecker) VisitIdentifierOperand(ctx *grammar.IdentifierOperandConte
 	if ident := ctx.IDENTIFIER(); ident != nil {
 		symbol, found := t.SymbolTable.GetSymbol(ident.GetText())
 		if !found {
-			t.MakeError(ctx.GetStart(), fmt.Errorf("unknown symbol: %s", ident.GetText()))
+			t.makeError(ctx.GetStart(), fmt.Errorf("unknown symbol: %s", ident.GetText()))
 			return nil
 		}
-		return symbol // XXX: I removed the .Type call here, so now I gotta figure out what got affected by this
+		return symbol
 	}
 	return t.VisitChildren(ctx)
 }
@@ -422,14 +422,14 @@ func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 	gotArgs := len(args)
 
 	if gotArgs != expectedMembers {
-		t.MakeError(ctx.GetStop(), fmt.Errorf("expected %d arguments but got %d instead", expectedMembers, gotArgs))
+		t.makeError(ctx.GetStop(), fmt.Errorf("expected %d arguments but got %d instead", expectedMembers, gotArgs))
 	}
 
 	if expectedMembers <= gotArgs {
 		for idx, member := range fn.Members {
 			arg := getType(args[idx])
 			if member.Type != arg {
-				t.MakeError(ctx.GetStart(), fmt.Errorf("expected type '%s' but got '%s' instead", member.Type, arg))
+				t.makeError(ctx.GetStart(), fmt.Errorf("expected type '%s' but got '%s' instead", member.Type, arg))
 			}
 		}
 	}
@@ -479,7 +479,7 @@ func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 	}
 
 	if !getInnerMostType(accessee).Is(symboltable.ArraySymbol | symboltable.SliceSymbol) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("symbol '%s' is not a slice or array type", accessee.Name))
+		t.makeError(ctx.GetStart(), fmt.Errorf("symbol '%s' is not a slice or array type", accessee.Name))
 		return nil // unrecoverable
 	}
 
@@ -489,7 +489,7 @@ func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 	}
 
 	if getType(index) != symboltable.Int {
-		t.MakeError(accessee.Token, fmt.Errorf("cannot use value of type '%s' as index selector", getType(index)))
+		t.makeError(accessee.Token, fmt.Errorf("cannot use value of type '%s' as index selector", getType(index)))
 		return nil // unrecoverable
 	}
 	return accessee.Type
@@ -513,7 +513,7 @@ func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 	rightType := getType(right)
 
 	if symbolType != rightType {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
+		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
 	}
 
 	return nil
@@ -526,7 +526,7 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 	lhsLen := len(lhs)
 	rhsLen := len(rhs)
 	if rhsLen != lhsLen {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", lhsLen, rhsLen))
+		t.makeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", lhsLen, rhsLen))
 		return nil //
 	}
 	for idx, ident := range lhs {
@@ -545,7 +545,7 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		symbolType := getType(symbol)
 		rightType := getType(right)
 		if symbolType != rightType {
-			t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
+			t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
 			return nil // unrecoverable
 		}
 	}
@@ -561,7 +561,7 @@ func (t *TypeChecker) VisitCaretExpression(ctx *grammar.CaretExpressionContext) 
 		return nil // unrecoverable
 	}
 	if getType(symbol) != symboltable.Int {
-		t.MakeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s'", getType(symbol)))
+		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as 'int' value", getType(symbol)))
 	}
 	return nil
 }
@@ -580,7 +580,7 @@ func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) inte
 	}
 	symbolType := getType(symbol)
 	if symbolType != symboltable.Bool {
-		t.MakeError(expr.GetStart(), fmt.Errorf("expression of type '%s' is not boolean", symbolType))
+		t.makeError(expr.GetStart(), fmt.Errorf("expression of type '%s' is not boolean", symbol.Name))
 	}
 
 	return nil // unrecoverable
@@ -634,7 +634,7 @@ func (t *TypeChecker) VisitComparison(ctx *grammar.ComparisonContext) interface{
 	}
 
 	if (leftOk && rightOk) && (leftType != rightType) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
+		t.makeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
 	}
 
 	return symboltable.Bool
@@ -648,11 +648,11 @@ func (t *TypeChecker) VisitBooleanOperation(ctx *grammar.BooleanOperationContext
 	rightType = getType(rightType)
 
 	if !(leftOk && rightOk) {
-		return nil // BUG: this could cause a potential bug unrecoverable
+		return nil
 	}
 
 	if (leftOk && rightOk) && (leftType != rightType) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
+		t.makeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
 	}
 
 	return symboltable.Bool
@@ -724,7 +724,7 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 		symbol = makeSlice(symbol, rt)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
-			t.MakeError(ctx.GetStart(), err)
+			t.makeError(ctx.GetStart(), err)
 			return nil
 		}
 	}
@@ -761,7 +761,7 @@ func (t *TypeChecker) VisitMultiTypeDeclaration(ctx *grammar.MultiTypeDeclaratio
 	return t.VisitChildren(ctx)
 }
 
-func (t *TypeChecker) MakeError(token antlr.Token, err error) {
+func (t *TypeChecker) makeError(token antlr.Token, err error) {
 	t.listener.SyntaxError(nil, token, token.GetLine(), token.GetColumn(), err.Error(), nil)
 	//return fmt.Errorf("%s:%d:%d: %w", t.filename, token.GetLine(), token.GetColumn(), err)
 }
@@ -782,7 +782,7 @@ func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 	_type := t.Visit(ctx.DeclType()).(*symboltable.Symbol)
 	expressions := ctx.ExpressionList().AllExpression()
 	if idenLen, exprLen := len(identifiers), len(expressions); idenLen != exprLen {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", idenLen, exprLen))
+		t.makeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", idenLen, exprLen))
 		return nil
 	}
 
@@ -790,22 +790,20 @@ func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 		expression := expressions[idx]
 		expressionType, ok := t.Visit(expression).(*symboltable.Symbol)
 		if !ok {
-			t.MakeError(ctx.GetStart(), fmt.Errorf("invalid type")) // This should be unreachable
+			t.makeError(ctx.GetStart(), fmt.Errorf("invalid type")) // This should be unreachable
 		}
-		expressionType = getType(expressionType)
+		exprType := getType(expressionType)
 		symbolType := getType(_type)
 
-		if expressionType != symbolType {
-			t.MakeError(expression.GetStart(), fmt.Errorf("cannot use expression of type '%s' as '%s' value in assignment", symbolType, expressionType))
+		if exprType != symbolType {
+			t.makeError(expression.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", expressionType, symbolType))
 			continue
 		}
 
 		symbol := t.SymbolTable.NewVariable(identifier.GetSymbol(), identifier.GetText(), getType(expressionType))
-		// BUG: this might cause a bug, check later
-		// symbol = makeSlice(symbol, expressionType)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
-			t.MakeError(identifier.GetSymbol(), err)
+			t.makeError(identifier.GetSymbol(), err)
 		}
 	}
 
@@ -817,19 +815,19 @@ func (t *TypeChecker) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 	identifiers := ctx.IdentifierList().AllIDENTIFIER()
 	expressions := ctx.ExpressionList().AllExpression()
 	if idenLen, exprLen := len(identifiers), len(expressions); idenLen != exprLen {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d vaules", idenLen, exprLen))
+		t.makeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d vaules", idenLen, exprLen))
 		return nil // Unrecoverable
 	}
 	for idx, ident := range identifiers {
 		expr := expressions[idx]
 		_type, ok := t.Visit(expr).(*symboltable.Symbol)
 		if !ok {
-			t.MakeError(ctx.GetStart(), fmt.Errorf("invalid type"))
+			t.makeError(ctx.GetStart(), fmt.Errorf("invalid type"))
 		}
 		symbol := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
-			t.MakeError(ident.GetSymbol(), err)
+			t.makeError(ident.GetSymbol(), err)
 		}
 	}
 
@@ -847,11 +845,11 @@ func (t *TypeChecker) VisitAppendExpression(ctx *grammar.AppendExpressionContext
 
 	leftSideExpression, _ := t.symbolStack.Peek()
 	if !leftSideExpression.Type.Is(sliceOrArray) {
-		t.MakeError(ctx.GetStart(), fmt.Errorf("cannot use expression of type '%s' as slice expression in append statement", leftSideExpression.Type))
+		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use expression of type '%s' as slice expression in append statement", leftSideExpression.Type))
 		return nil
 	}
 	if !slice.Type.Is(sliceOrArray) {
-		t.MakeError(sliceExpr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as slice expression in append statement", slice.Type))
+		t.makeError(sliceExpr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as slice expression in append statement", slice.Type))
 		return nil
 	}
 
@@ -859,7 +857,7 @@ func (t *TypeChecker) VisitAppendExpression(ctx *grammar.AppendExpressionContext
 	valueType := getType(value)
 
 	if !sliceType.Type.SameType(valueType) {
-		t.MakeError(valueExpr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as '%s' expression in append statement", valueType, slice))
+		t.makeError(valueExpr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as '%s' expression in append statement", valueType, slice))
 	}
 
 	return slice
@@ -890,7 +888,7 @@ func (t *TypeChecker) VisitCapExpression(ctx *grammar.CapExpressionContext) inte
 	expr := ctx.Expression()
 	symbol := t.Visit(expr).(*symboltable.Symbol)
 	if symbol.Type.SymbolType&(symboltable.ArraySymbol|symboltable.SliceSymbol) == 0 {
-		t.MakeError(expr.GetStart(), fmt.Errorf("expression in cap call is not a slice or array type"))
+		t.makeError(expr.GetStart(), fmt.Errorf("expression in cap call is not a slice or array type"))
 		return nil
 	}
 	return symboltable.Int
@@ -1018,7 +1016,7 @@ func (t *TypeChecker) VisitLengthExpression(ctx *grammar.LengthExpressionContext
 	}
 
 	if !getType(symbol).Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
-		t.MakeError(symbol.Token, fmt.Errorf("cannot use symbol of type '%s' in len call", getType(symbol)))
+		t.makeError(symbol.Token, fmt.Errorf("cannot use symbol of type '%s' in len call", getType(symbol)))
 		return nil
 	}
 
@@ -1069,7 +1067,7 @@ func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	// if !valType.Equals(t.currentFunction.Type) {
 	currentFunction, _ := t.symbolStack.Peek()
 	if valType != getType(currentFunction) {
-		t.MakeError(expr.GetStart(), fmt.Errorf("cannot return value of type '%s' in function with return type of '%s'", valType, getType(currentFunction)))
+		t.makeError(expr.GetStart(), fmt.Errorf("cannot return value of type '%s' in function with return type of '%s'", valType, getType(currentFunction)))
 	}
 	return nil
 }
@@ -1095,7 +1093,7 @@ func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
 		return s.Name == memberName
 	})
 	if idx == -1 {
-		t.MakeError(ctx.IDENTIFIER().GetSymbol(), fmt.Errorf("symbol '%s' of type '%s' has no member called '%s'", symbol.Name, symbolType, memberName))
+		t.makeError(ctx.IDENTIFIER().GetSymbol(), fmt.Errorf("symbol '%s' of type '%s' has no member called '%s'", symbol.Name, symbolType, memberName))
 		return nil
 	}
 
@@ -1114,13 +1112,12 @@ func (t *TypeChecker) VisitSimpleStatementStatement(ctx *grammar.SimpleStatement
 
 // VisitSingleTypeDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) interface{} {
-	// TODO: fix this piece of shit
 	name := ctx.IDENTIFIER()
 	symbol := t.SymbolTable.NewAliasType(name.GetSymbol(), name.GetText(), nil)
 
 	err := t.SymbolTable.AddSymbol(symbol)
 	if err != nil {
-		t.MakeError(name.GetSymbol(), err)
+		t.makeError(name.GetSymbol(), err)
 	}
 
 	err = t.symbolStack.Push(symbol)
@@ -1246,13 +1243,10 @@ func (t *TypeChecker) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsC
 		return nil // Unrecoverable error
 	}
 	for _, ident := range ctx.IdentifierList().AllIDENTIFIER() {
-		// BUG: this will fix case A, but will break case B (case A is when the
-		// type is of the following form -> []string, case B is when the type)
-		// is of the following form -> SliceAliasType
 		symbol := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type)
 		err := t.SymbolTable.AddSymbol(symbol)
 		if err != nil {
-			t.MakeError(ident.GetSymbol(), err)
+			t.makeError(ident.GetSymbol(), err)
 		}
 	}
 	return nil
