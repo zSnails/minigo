@@ -773,7 +773,10 @@ func (t *TypeChecker) VisitTypeDeclaration(ctx *grammar.TypeDeclarationContext) 
 // VisitTypedVarDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interface{} {
 	identifiers := ctx.IdentifierList().AllIDENTIFIER()
-	_type := t.Visit(ctx.DeclType()).(*symboltable.Symbol)
+	_type, ok := t.Visit(ctx.DeclType()).(*symboltable.Symbol)
+    if !ok {
+        return nil
+    }
 	expressions := ctx.ExpressionList().AllExpression()
 	if idenLen, exprLen := len(identifiers), len(expressions); idenLen != exprLen {
 		t.makeError(ctx.GetStart(), fmt.Errorf("assignment mismatch: %d variables but %d values", idenLen, exprLen))
