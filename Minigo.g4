@@ -1,6 +1,6 @@
 grammar Minigo;
 
-root: PACKAGE IDENTIFIER SEMICOLON topDeclarationList;
+root: PACKAGE IDENTIFIER SEMICOLON topDeclarationList EOF;
 
 topDeclarationList: (variableDecl | typeDecl | funcDecl)*;
 
