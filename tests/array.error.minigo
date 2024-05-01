@@ -1,0 +1,8 @@
+package main;
+
+
+func main() {
+    var edades [5]int;
+
+    edades = append(edades, 4);
+};

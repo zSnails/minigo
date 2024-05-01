@@ -123,8 +123,8 @@ func minigoParserInit() {
 		1, 39, 1, 39, 1, 39, 1, 39, 1, 40, 1, 40, 1, 40, 3, 40, 513, 8, 40, 1,
 		40, 0, 2, 36, 40, 41, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26,
 		28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62,
-		64, 66, 68, 70, 72, 74, 76, 78, 80, 0, 5, 1, 0, 45, 50, 1, 0, 43, 44, 1,
-		0, 59, 61, 1, 0, 51, 58, 1, 0, 12, 22, 548, 0, 82, 1, 0, 0, 0, 2, 93, 1,
+		64, 66, 68, 70, 72, 74, 76, 78, 80, 0, 5, 1, 0, 59, 61, 1, 0, 51, 58, 1,
+		0, 45, 50, 1, 0, 43, 44, 1, 0, 12, 22, 548, 0, 82, 1, 0, 0, 0, 2, 93, 1,
 		0, 0, 0, 4, 110, 1, 0, 0, 0, 6, 112, 1, 0, 0, 0, 8, 132, 1, 0, 0, 0, 10,
 		134, 1, 0, 0, 0, 12, 151, 1, 0, 0, 0, 14, 153, 1, 0, 0, 0, 16, 163, 1,
 		0, 0, 0, 18, 166, 1, 0, 0, 0, 20, 170, 1, 0, 0, 0, 22, 180, 1, 0, 0, 0,
@@ -5156,8 +5156,8 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 
 			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 15, p.GetParserRuleContext()) {
 			case 1:
-				localctx = NewComparisonContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				localctx.(*ComparisonContext).left = _prevctx
+				localctx = NewOperationPrecedence1Context(p, NewExpressionContext(p, _parentctx, _parentState))
+				localctx.(*OperationPrecedence1Context).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_expression)
 				p.SetState(240)
@@ -5170,7 +5170,7 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(241)
 					_la = p.GetTokenStream().LA(1)
 
-					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&2216615441596416) != 0) {
+					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4035225266123964416) != 0) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -5182,12 +5182,12 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 
 					var _x = p.expression(8)
 
-					localctx.(*ComparisonContext).right = _x
+					localctx.(*OperationPrecedence1Context).right = _x
 				}
 
 			case 2:
-				localctx = NewBooleanOperationContext(p, NewExpressionContext(p, _parentctx, _parentState))
-				localctx.(*BooleanOperationContext).left = _prevctx
+				localctx = NewOperationPrecedence2Context(p, NewExpressionContext(p, _parentctx, _parentState))
+				localctx.(*OperationPrecedence2Context).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_expression)
 				p.SetState(243)
@@ -5200,7 +5200,7 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(244)
 					_la = p.GetTokenStream().LA(1)
 
-					if !(_la == MinigoParserOR || _la == MinigoParserAND) {
+					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&574208952489738240) != 0) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -5212,12 +5212,12 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 
 					var _x = p.expression(7)
 
-					localctx.(*BooleanOperationContext).right = _x
+					localctx.(*OperationPrecedence2Context).right = _x
 				}
 
 			case 3:
-				localctx = NewOperationPrecedence1Context(p, NewExpressionContext(p, _parentctx, _parentState))
-				localctx.(*OperationPrecedence1Context).left = _prevctx
+				localctx = NewComparisonContext(p, NewExpressionContext(p, _parentctx, _parentState))
+				localctx.(*ComparisonContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_expression)
 				p.SetState(246)
@@ -5230,7 +5230,7 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(247)
 					_la = p.GetTokenStream().LA(1)
 
-					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&4035225266123964416) != 0) {
+					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&2216615441596416) != 0) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -5242,12 +5242,12 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 
 					var _x = p.expression(6)
 
-					localctx.(*OperationPrecedence1Context).right = _x
+					localctx.(*ComparisonContext).right = _x
 				}
 
 			case 4:
-				localctx = NewOperationPrecedence2Context(p, NewExpressionContext(p, _parentctx, _parentState))
-				localctx.(*OperationPrecedence2Context).left = _prevctx
+				localctx = NewBooleanOperationContext(p, NewExpressionContext(p, _parentctx, _parentState))
+				localctx.(*BooleanOperationContext).left = _prevctx
 
 				p.PushNewRecursionContext(localctx, _startState, MinigoParserRULE_expression)
 				p.SetState(249)
@@ -5260,7 +5260,7 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 					p.SetState(250)
 					_la = p.GetTokenStream().LA(1)
 
-					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&574208952489738240) != 0) {
+					if !(_la == MinigoParserOR || _la == MinigoParserAND) {
 						p.GetErrorHandler().RecoverInline(p)
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
@@ -5272,7 +5272,7 @@ func (p *MinigoParser) expression(_p int) (localctx IExpressionContext) {
 
 					var _x = p.expression(5)
 
-					localctx.(*OperationPrecedence2Context).right = _x
+					localctx.(*BooleanOperationContext).right = _x
 				}
 
 			case antlr.ATNInvalidAltNumber:

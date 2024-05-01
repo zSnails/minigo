@@ -59,10 +59,10 @@ structMemDecls: singleVarDeclNoExps SEMICOLON (singleVarDeclNoExps SEMICOLON)*
 identifierList: IDENTIFIER (COMMA IDENTIFIER)*
               ;
 
-expression: left=expression (LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | COMPARISON | NEGATION) right=expression #comparison
-          | left=expression (AND | OR) right=expression #booleanOperation
-          | left=expression (TIMES | DIV | MOD) right=expression #operationPrecedence1
+expression: left=expression (TIMES | DIV | MOD) right=expression #operationPrecedence1
           | left=expression (LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET) right=expression #operationPrecedence2
+          | left=expression (LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | COMPARISON | NEGATION) right=expression #comparison
+          | left=expression (AND | OR) right=expression #booleanOperation
           | primaryExpression #expressionPrimaryExpression
           // | PLUS expression #plusExpression
           // | MINUS expression #minusExpression
