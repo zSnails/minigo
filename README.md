@@ -24,3 +24,16 @@ If you're on linux you should already know how to add a binary to your path, if 
 don't then consider moving back to windows.
 
 If you're on windows there's this tool called the internet, you should check it out.
+
+
+# Available Types
+
+`bool`, `int`, `float`, `string`, `rune`
+
+# Built in constants
+
+`true`, `false`
+
+# Built in functions
+
+`append`, `len`, `cap`
