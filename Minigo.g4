@@ -2,7 +2,7 @@ grammar Minigo;
 
 root: PACKAGE IDENTIFIER SEMICOLON topDeclarationList EOF;
 
-topDeclarationList: (variableDecl | typeDecl | funcDecl)*;
+topDeclarationList: (variableDecl | typeDecl | funcDef | funcDecl)*;
 
 variableDecl: VAR singleVarDecl SEMICOLON                                   #variableDeclaration
             | VAR LEFTPARENTHESIS innerVarDecls RIGHTPARENTHESIS SEMICOLON  #multiVariableDeclaration
@@ -31,6 +31,9 @@ singleTypeDecl: IDENTIFIER declType
 
 funcDecl: funcFrontDecl block SEMICOLON
         ;
+
+funcDef: funcFrontDecl SEMICOLON
+       ;
 
 funcFrontDecl: FUNC IDENTIFIER LEFTPARENTHESIS funcArgsDecls? RIGHTPARENTHESIS declType?
              ;
