@@ -116,6 +116,12 @@ func (s *BaseMinigoListener) EnterFuncDecl(ctx *FuncDeclContext) {}
 // ExitFuncDecl is called when production funcDecl is exited.
 func (s *BaseMinigoListener) ExitFuncDecl(ctx *FuncDeclContext) {}
 
+// EnterFuncDef is called when production funcDef is entered.
+func (s *BaseMinigoListener) EnterFuncDef(ctx *FuncDefContext) {}
+
+// ExitFuncDef is called when production funcDef is exited.
+func (s *BaseMinigoListener) ExitFuncDef(ctx *FuncDefContext) {}
+
 // EnterFuncFrontDecl is called when production funcFrontDecl is entered.
 func (s *BaseMinigoListener) EnterFuncFrontDecl(ctx *FuncFrontDeclContext) {}
 

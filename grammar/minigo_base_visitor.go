@@ -71,6 +71,10 @@ func (v *BaseMinigoVisitor) VisitFuncDecl(ctx *FuncDeclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseMinigoVisitor) VisitFuncDef(ctx *FuncDefContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseMinigoVisitor) VisitFuncFrontDecl(ctx *FuncFrontDeclContext) interface{} {
 	return v.VisitChildren(ctx)
 }

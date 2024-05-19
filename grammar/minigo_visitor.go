@@ -55,6 +55,9 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#funcDecl.
 	VisitFuncDecl(ctx *FuncDeclContext) interface{}
 
+	// Visit a parse tree produced by MinigoParser#funcDef.
+	VisitFuncDef(ctx *FuncDefContext) interface{}
+
 	// Visit a parse tree produced by MinigoParser#funcFrontDecl.
 	VisitFuncFrontDecl(ctx *FuncFrontDeclContext) interface{}
 

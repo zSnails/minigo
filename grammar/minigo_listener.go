@@ -55,6 +55,9 @@ type MinigoListener interface {
 	// EnterFuncDecl is called when entering the funcDecl production.
 	EnterFuncDecl(c *FuncDeclContext)
 
+	// EnterFuncDef is called when entering the funcDef production.
+	EnterFuncDef(c *FuncDefContext)
+
 	// EnterFuncFrontDecl is called when entering the funcFrontDecl production.
 	EnterFuncFrontDecl(c *FuncFrontDeclContext)
 
@@ -345,6 +348,9 @@ type MinigoListener interface {
 
 	// ExitFuncDecl is called when exiting the funcDecl production.
 	ExitFuncDecl(c *FuncDeclContext)
+
+	// ExitFuncDef is called when exiting the funcDef production.
+	ExitFuncDef(c *FuncDefContext)
 
 	// ExitFuncFrontDecl is called when exiting the funcFrontDecl production.
 	ExitFuncFrontDecl(c *FuncFrontDeclContext)
