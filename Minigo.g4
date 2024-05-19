@@ -100,7 +100,7 @@ numericLiteral: INTLITERAL #numericIntLiteral
 index: LEFTBRACKET expression RIGHTBRACKET
      ;
 
-arguments: LEFTPARENTHESIS expressionList* RIGHTPARENTHESIS
+arguments: LEFTPARENTHESIS expressionList? RIGHTPARENTHESIS
          ;
 
 selector: DOT IDENTIFIER
