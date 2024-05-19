@@ -20,6 +20,11 @@ type TypeChecker struct {
 	SymbolTable *symboltable.SymbolTable
 }
 
+// VisitFuncDef implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitFuncDef(ctx *grammar.FuncDefContext) interface{} {
+	return t.VisitChildren(ctx)
+}
+
 // VisitNumericIntLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNumericIntLiteral(ctx *grammar.NumericIntLiteralContext) interface{} {
 	number := ctx.INTLITERAL()
@@ -404,7 +409,7 @@ func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 	if !ok {
 		return nil
 	}
-	exprCtx, ok := ctx.Arguments().ExpressionList(0).(*grammar.ExpressionListContext)
+	exprCtx, ok := ctx.Arguments().ExpressionList().(*grammar.ExpressionListContext)
 	if !ok {
 		return nil //unrecoverable
 	}
@@ -726,6 +731,41 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 	variables := ctx.TopDeclarationList().AllVariableDecl()
 	for _, variable := range variables {
 		t.Visit(variable)
+	}
+
+	{
+		funcs := ctx.TopDeclarationList().AllFuncDef()
+		for _, fn := range funcs {
+			fun := fn.FuncFrontDecl()
+			fun.IDENTIFIER()
+			var rt *symboltable.Symbol
+			if returnType := fun.DeclType(); returnType != nil {
+				rt = t.Visit(returnType).(*symboltable.Symbol)
+			}
+
+			var members []*symboltable.Symbol = nil
+			if arguments := fun.FuncArgsDecls(); arguments != nil {
+				for _, variable := range arguments.AllSingleVarDeclNoExps() {
+					varType, ok := t.Visit(variable.DeclType()).(*symboltable.Symbol)
+					if !ok {
+						continue // unrecoverable
+					}
+					for _, identifier := range variable.IdentifierList().AllIDENTIFIER() {
+						symbol := t.SymbolTable.NewVariable(identifier.GetSymbol(), identifier.GetText(), getType(varType))
+						symbol = makeSlice(symbol, varType)
+						members = append(members, symbol)
+					}
+				}
+			}
+
+			symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetSymbol(), fun.IDENTIFIER().GetText(), rt, members...)
+			symbol = makeSlice(symbol, rt)
+			err := t.SymbolTable.AddSymbol(symbol)
+			if err != nil {
+				t.makeError(ctx.GetStart(), err)
+				return nil
+			}
+		}
 	}
 
 	funcs = ctx.TopDeclarationList().AllFuncDecl()
