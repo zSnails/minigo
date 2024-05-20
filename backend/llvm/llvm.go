@@ -193,9 +193,25 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 	left := l.Visit(ctx.GetLeft()).(value.Value)
 	right := l.Visit(ctx.GetRight()).(value.Value)
 
+	if types.IsPointer(left.Type()) {
+		left = fn.NewLoad(right.Type(), left)
+	}
+
+	if types.IsPointer(right.Type()) {
+		right = fn.NewLoad(left.Type(), right)
+	}
+
 	switch {
 	case ctx.COMPARISON() != nil:
 		return fn.NewICmp(enum.IPredEQ, left, right)
+	case ctx.GREATERTHAN() != nil:
+		return fn.NewICmp(enum.IPredSGT, left, right)
+	case ctx.LESSTHAN() != nil:
+		return fn.NewICmp(enum.IPredSLT, left, right)
+	case ctx.GREATERTHANEQUAL() != nil:
+		return fn.NewICmp(enum.IPredSGE, left, right)
+	case ctx.LESSTHANEQUAL() != nil:
+		return fn.NewICmp(enum.IPredSLE, left, right)
 	}
 
 	return nil
@@ -381,26 +397,35 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 
 	for _, expr := range ctx.Arguments().ExpressionList().AllExpression() {
 		//panic: interface conversion: interface {} is *constant.Int, not *ir.Global
+		// BUG: This might cause some bugs on other places, I still have to check
 
-		fmt.Printf("expr.GetText(): %v\n", expr.GetText())
-		argument := l.Visit(expr)
-		switch argument := argument.(type) {
-		case *ir.Global:
-			{
-				switch argument.ContentType {
-				case types.I64, types.I1, types.I8, types.Double:
-					arg := blk.NewLoad(argument.ContentType, argument)
-					args = append(args, arg)
-				default:
-					args = append(args, argument)
-				}
-			}
-		// case value.Named:
-		// 	load := fn.body.NewLoad(argument.Type(), argument)
-		// 	args = append(args, load)
-		case value.Value:
+		argument := l.Visit(expr).(value.Value)
+
+		if types.IsPointer(argument.Type()) {
+			arg := blk.NewLoad(argument.Type(), argument)
+			args = append(args, arg)
+		} else {
 			args = append(args, argument)
 		}
+
+		// switch argument := argument.(type) {
+		// case *ir.Global:
+		// 	{
+		// 		switch argument.ContentType {
+		// 		case types.I64, types.I1, types.I8, types.Double:
+		// 			arg := blk.NewLoad(argument.ContentType, argument)
+		// 			args = append(args, arg)
+		// 		default:
+		// 			args = append(args, argument)
+		// 		}
+		// 	}
+		// // case value.Named:
+		// // 	load := fn.body.NewLoad(argument.Type(), argument)
+		// // 	args = append(args, load)
+		// case value.Value:
+		// 	args = append(args, argument)
+		// }
+
 	}
 
 	return blk.NewCall(callee, args...)
@@ -419,19 +444,18 @@ func (l *LlvmBackend) VisitIdentifierList(ctx *grammar.IdentifierListContext) in
 // VisitIdentifierOperand implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIdentifierOperand(ctx *grammar.IdentifierOperandContext) interface{} {
 	name := ctx.IDENTIFIER().GetText()
-
-	symbol, found := l.moduleSymbolTable.GetSymbol(name)
-	if !found {
-		// Try within the function
-		fn, _ := l.funcStack.Peek()
-		val, ok := fn.idents[name]
-		if !ok {
+	fmt.Printf("name: %v\n", name)
+	fn, _ := l.funcStack.Peek()
+	val, ok := fn.idents[name]
+	if !ok {
+		symbol, found := l.moduleSymbolTable.GetSymbol(name)
+		if !found {
 			panic("unreachable")
 		}
-		return val
-	}
 
-	return symbol.Symbol
+		return symbol.Symbol
+	}
+	return val
 }
 
 // VisitIfElseBlock implements grammar.MinigoVisitor.
@@ -575,6 +599,20 @@ func (l *LlvmBackend) VisitNestedType(ctx *grammar.NestedTypeContext) interface{
 
 var zero = constant.NewInt(types.I64, 0)
 
+func (l *LlvmBackend) GetSymbol(name string) (value.Value, bool) {
+	fn, _ := l.funcStack.Peek()
+	val, ok := fn.idents[name]
+	if !ok {
+		symbol, found := l.moduleSymbolTable.GetSymbol(name)
+		if !found {
+			return nil, false
+		}
+
+		return symbol.Symbol, true
+	}
+	return val, ok
+}
+
 // VisitNormalAssignment implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext) interface{} {
 	blk, err := l.blockStack.Peek()
@@ -589,29 +627,13 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 	rhs := ctx.GetRight()
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 
-		symbol, found := l.moduleSymbolTable.GetSymbol(ident.GetText())
+		symbol, found := l.GetSymbol(ident.GetText())
 		if !found {
 			panic("unreachable")
 		}
 
-		switch expr := l.Visit(rhs.Expression(idx)).(type) {
-		case *ir.Global:
-			// panic("TODO: implement this piece of shit (this should allow us to reassign string values)")
-			gep := constant.NewGetElementPtr(expr.ContentType, expr, zero, zero)
-			alloc := blk.NewAlloca(symbol.Symbol.Type())
-			blk.NewStore(symbol.Symbol, alloc)
-			blk.NewStore(gep, alloc)
-		case value.Value:
-			if symbol.Scope == GLOBAL_SCOPE {
-				blk.NewStore(expr, symbol.Symbol)
-			} else {
-				alloc := blk.NewAlloca(expr.Type())
-				blk.NewStore(symbol.Symbol, alloc)
-				blk.NewStore(expr, symbol.Symbol)
-			}
-		default:
-			panic("unreachable")
-		}
+		expr := l.Visit(rhs.Expression(idx)).(value.Value)
+		blk.NewStore(expr, symbol)
 	}
 
 	// l.Visit()
@@ -619,6 +641,33 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 
 	return nil
 }
+
+type ptrType struct {
+	ident string
+}
+
+// Ident implements value.Value.
+func (p *ptrType) Ident() string {
+	return p.ident
+}
+
+// String implements value.Value.
+func (p *ptrType) String() string {
+	return fmt.Sprintf("ptr %s", p.ident)
+}
+
+// Type implements value.Value.
+func (p *ptrType) Type() types.Type {
+	return types.I64Ptr
+}
+
+func NewPtrType(ident string) value.Value {
+	return &ptrType{
+		ident: ident,
+	}
+}
+
+var _ value.Value = &ptrType{}
 
 // VisitNormalSwitch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNormalSwitch(ctx *grammar.NormalSwitchContext) interface{} {
@@ -647,7 +696,7 @@ func (l *LlvmBackend) VisitNumericIntLiteral(ctx *grammar.NumericIntLiteralConte
 
 // VisitNumerixHexLiteral implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNumerixHexLiteral(ctx *grammar.NumerixHexLiteralContext) interface{} {
-	val, err := strconv.ParseInt(ctx.HEXINTLITERAL().GetText(), 16, 64)
+	val, err := strconv.ParseInt(ctx.HEXINTLITERAL().GetText(), 0, 64)
 	if err != nil {
 		panic(err)
 	}
@@ -920,6 +969,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		expr := l.Visit(ctx.ExpressionList().Expression(idx))
+		name := ident.GetText()
 		if err != nil {
 			fmt.Printf("GOT HERE (function nil check)\n")
 			switch expr := expr.(type) {
@@ -935,14 +985,15 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			l.moduleSymbolTable.AddSymbol(declared)
 		case constant.Constant:
 			alloca := blk.NewAlloca(expr.Type())
+			alloca.SetName(name)
 			blk.NewStore(expr, alloca)
-			declared := blk.NewLoad(expr.Type(), alloca)
-			declared.SetName(ident.GetText())
-			l.moduleSymbolTable.AddSymbol(declared)
+			fn.idents[name] = alloca
+			// l.moduleSymbolTable.AddSymbol(alloca)
 		case *ir.InstCall:
 			// BUG: This might cause a bug with other stuff, check back later
 			// alloca := fn.body.NewAlloca(expr.Typ)
 			// fn.body.NewStore(expr, alloca)
+			expr.SetName(name)
 			fn.idents[ident.GetText()] = expr
 		case value.Named:
 			fmt.Printf("named:expr: %v\n", expr)
@@ -952,6 +1003,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			// declared := fn.body.NewAlloca(expr.Type())
 			// declared.SetName(ident.GetText())
 			// fn.body.NewStore(expr, load)
+			expr.SetName(name)
 			fn.idents[ident.GetText()] = expr
 			// l.moduleSymbolTable.AddSymbol(declared)
 		default:
