@@ -396,36 +396,21 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 	var args []value.Value
 
 	for _, expr := range ctx.Arguments().ExpressionList().AllExpression() {
-		//panic: interface conversion: interface {} is *constant.Int, not *ir.Global
-		// BUG: This might cause some bugs on other places, I still have to check
-
 		argument := l.Visit(expr).(value.Value)
-
 		if types.IsPointer(argument.Type()) {
-			arg := blk.NewLoad(argument.Type(), argument)
-			args = append(args, arg)
+			if str, ok := argument.(*ir.Global); ok {
+				ptr := blk.NewGetElementPtr(types.I8, str, zero)
+				alloca := blk.NewAlloca(types.I8Ptr)
+				blk.NewStore(ptr, alloca)
+				load := blk.NewLoad(alloca.ElemType, alloca)
+				args = append(args, load)
+			} else {
+				load := blk.NewLoad(argument.Type(), argument)
+				args = append(args, load)
+			}
 		} else {
 			args = append(args, argument)
 		}
-
-		// switch argument := argument.(type) {
-		// case *ir.Global:
-		// 	{
-		// 		switch argument.ContentType {
-		// 		case types.I64, types.I1, types.I8, types.Double:
-		// 			arg := blk.NewLoad(argument.ContentType, argument)
-		// 			args = append(args, arg)
-		// 		default:
-		// 			args = append(args, argument)
-		// 		}
-		// 	}
-		// // case value.Named:
-		// // 	load := fn.body.NewLoad(argument.Type(), argument)
-		// // 	args = append(args, load)
-		// case value.Value:
-		// 	args = append(args, argument)
-		// }
-
 	}
 
 	return blk.NewCall(callee, args...)
