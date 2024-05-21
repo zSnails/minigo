@@ -249,7 +249,11 @@ func (t *TypeChecker) VisitSimpleStatementSwitchExpression(ctx *grammar.SimpleSt
 	simpleStatement := ctx.SimpleStatement()
 	t.Visit(simpleStatement)
 
-	expr := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	expr, ok := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	if !ok {
+		return nil
+	}
+
 	t.symbolStack.Push(expr)
 	clauseList := ctx.ExpressionCaseClauseList()
 	return t.Visit(clauseList)
@@ -272,17 +276,46 @@ func (t *TypeChecker) VisitIfSimpleElseBlock(ctx *grammar.IfSimpleElseBlockConte
 
 // VisitIfSimpleElseIf implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfSimpleElseIf(ctx *grammar.IfSimpleElseIfContext) interface{} {
-	return t.VisitChildren(ctx)
+	t.Visit(ctx.SimpleStatement())
+	expr, ok := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	if !ok {
+		return nil
+	}
+	if _type := getInnerMostType(expr); _type != symboltable.Bool {
+		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("mismatched types '%s' and 'bool'", _type))
+		return nil
+	}
+	t.Visit(ctx.Block())
+	return t.Visit(ctx.IfStatement())
 }
 
 // VisitIfSimpleNoElse implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfSimpleNoElse(ctx *grammar.IfSimpleNoElseContext) interface{} {
-	return t.VisitChildren(ctx)
+	t.Visit(ctx.SimpleStatement())
+	expr, ok := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	if !ok {
+		return nil
+	}
+
+	if _type := getInnerMostType(expr); _type != symboltable.Bool {
+		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("mismatched types '%s' and 'bool'", _type))
+		return nil
+	}
+	return t.Visit(ctx.Block())
 }
 
 // VisitIfSingleExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionContext) interface{} {
-	return t.VisitChildren(ctx)
+	expr, ok := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	if !ok {
+		return nil
+	}
+
+	if _type := getInnerMostType(expr); _type != symboltable.Bool {
+		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("mismatched types '%s' and 'bool'", _type))
+		return nil
+	}
+	return t.Visit(ctx.Block())
 }
 
 // VisitInfiniteFor implements grammar.MinigoVisitor.
@@ -354,8 +387,16 @@ func (t *TypeChecker) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 			t.makeError(ident.GetStart(), err)
 		}
 
-		sType := getType(symbol)
-		rType := getType(right)
+		// sType := getType(symbol)
+		// rType := getType(right)
+
+		sType := getInnerMostType(symbol)
+		rType := getInnerMostType(right)
+
+        // fmt.Printf("sType: %v\n", sType)
+        // fmt.Printf("rType: %v\n", rType)
+        // fmt.Printf("getInnerMostType(symbol): %v\n", getInnerMostType(symbol))
+        // fmt.Printf("getInnerMostType(rType): %v\n", getInnerMostType(rType))
 
 		if sType != rType {
 			t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", sType, rType))
@@ -625,8 +666,11 @@ func (t *TypeChecker) VisitComparison(ctx *grammar.ComparisonContext) interface{
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(*symboltable.Symbol)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(*symboltable.Symbol)
 
-	leftType = getType(leftType)
-	rightType = getType(rightType)
+	// leftType = getType(leftType)
+	// rightType = getType(rightType)
+
+	leftType = getInnerMostType(leftType)
+	rightType = getInnerMostType(rightType)
 
 	if !(rightOk && leftOk) {
 		return nil // unrecoverable
