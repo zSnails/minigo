@@ -377,17 +377,17 @@ func (l *LlvmBackend) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) inte
 	var params []*ir.Param
 	for _, argument := range symbol.Members {
 		param := ir.NewParam(argument.Name, argument.Type.LlvmType)
-		l.moduleSymbolTable.AddSymbol(param)
+		l.moduleSymbolTable.AddSymbol(argument.Name, param)
 		params = append(params, param)
 	}
 
 	fn := l.module.NewFunc(symbol.Name, _type, params...)
-	entry := fn.NewBlock("entry")
+	entry := fn.NewBlock("")
 
 	return &Func{
-		Func:   fn,
-		body:   entry,
-		idents: map[string]value.Value{},
+		Func: fn,
+		body: entry,
+		// idents: map[string]value.Value{},
 	}
 }
 
@@ -1115,7 +1115,6 @@ func (l *LlvmBackend) VisitTypeDeclaration(ctx *grammar.TypeDeclarationContext) 
 
 // VisitTypedVarDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interface{} {
-	fn, err := l.funcStack.Peek()
 
 	var blk *ir.Block
 
