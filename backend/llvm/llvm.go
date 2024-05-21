@@ -877,6 +877,14 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 	leftNode := l.Visit(ctx.GetLeft()).(value.Value)
 	rightNode := l.Visit(ctx.GetRight()).(value.Value)
 
+	if types.IsPointer(leftNode.Type()) {
+		leftNode = blk.NewLoad(rightNode.Type(), leftNode)
+	}
+
+	if types.IsPointer(rightNode.Type()) {
+		rightNode = blk.NewLoad(leftNode.Type(), rightNode)
+	}
+
 	switch {
 	// LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET
 	case ctx.PLUS() != nil:
