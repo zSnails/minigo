@@ -935,15 +935,18 @@ func (l *LlvmBackend) VisitRawStringLiteral(ctx *grammar.RawStringLiteralContext
 
 // VisitReturnStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) interface{} {
+	fn, _ := l.funcStack.Peek()
 	blk, _ := l.blockStack.Peek()
 
 	if expr := ctx.Expression(); expr != nil {
 		expr := l.Visit(expr).(value.Value)
-		blk.NewRet(expr)
+		if types.IsPointer(expr.Type()) {
+			load := blk.NewLoad(fn.Sig.RetType, expr)
+			return blk.NewRet(load)
+		}
+		return blk.NewRet(expr)
 	}
-	// expr := l.Visit(ctx.Expression())
-	// return l.Visit(ctx.Expression())
-	return nil
+	return blk.NewRet(nil)
 }
 
 var typeMap = map[string]types.Type{
