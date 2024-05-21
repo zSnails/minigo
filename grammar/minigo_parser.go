@@ -10671,6 +10671,8 @@ func (s *IfSimpleNoElseContext) Accept(visitor antlr.ParseTreeVisitor) interface
 
 type IfElseBlockContext struct {
 	IfStatementContext
+	firstBlock IBlockContext
+	lastBlock  IBlockContext
 }
 
 func NewIfElseBlockContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *IfElseBlockContext {
@@ -10682,6 +10684,14 @@ func NewIfElseBlockContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *If
 
 	return p
 }
+
+func (s *IfElseBlockContext) GetFirstBlock() IBlockContext { return s.firstBlock }
+
+func (s *IfElseBlockContext) GetLastBlock() IBlockContext { return s.lastBlock }
+
+func (s *IfElseBlockContext) SetFirstBlock(v IBlockContext) { s.firstBlock = v }
+
+func (s *IfElseBlockContext) SetLastBlock(v IBlockContext) { s.lastBlock = v }
 
 func (s *IfElseBlockContext) GetRuleContext() antlr.RuleContext {
 	return s
@@ -10705,6 +10715,10 @@ func (s *IfElseBlockContext) Expression() IExpressionContext {
 	}
 
 	return t.(IExpressionContext)
+}
+
+func (s *IfElseBlockContext) ELSE() antlr.TerminalNode {
+	return s.GetToken(MinigoParserELSE, 0)
 }
 
 func (s *IfElseBlockContext) AllBlock() []IBlockContext {
@@ -10748,10 +10762,6 @@ func (s *IfElseBlockContext) Block(i int) IBlockContext {
 	return t.(IBlockContext)
 }
 
-func (s *IfElseBlockContext) ELSE() antlr.TerminalNode {
-	return s.GetToken(MinigoParserELSE, 0)
-}
-
 func (s *IfElseBlockContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(MinigoListener); ok {
 		listenerT.EnterIfElseBlock(s)
@@ -10776,6 +10786,8 @@ func (s *IfElseBlockContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 
 type IfSimpleElseBlockContext struct {
 	IfStatementContext
+	firstBlock IBlockContext
+	lastBlock  IBlockContext
 }
 
 func NewIfSimpleElseBlockContext(parser antlr.Parser, ctx antlr.ParserRuleContext) *IfSimpleElseBlockContext {
@@ -10787,6 +10799,14 @@ func NewIfSimpleElseBlockContext(parser antlr.Parser, ctx antlr.ParserRuleContex
 
 	return p
 }
+
+func (s *IfSimpleElseBlockContext) GetFirstBlock() IBlockContext { return s.firstBlock }
+
+func (s *IfSimpleElseBlockContext) GetLastBlock() IBlockContext { return s.lastBlock }
+
+func (s *IfSimpleElseBlockContext) SetFirstBlock(v IBlockContext) { s.firstBlock = v }
+
+func (s *IfSimpleElseBlockContext) SetLastBlock(v IBlockContext) { s.lastBlock = v }
 
 func (s *IfSimpleElseBlockContext) GetRuleContext() antlr.RuleContext {
 	return s
@@ -10832,6 +10852,10 @@ func (s *IfSimpleElseBlockContext) Expression() IExpressionContext {
 	return t.(IExpressionContext)
 }
 
+func (s *IfSimpleElseBlockContext) ELSE() antlr.TerminalNode {
+	return s.GetToken(MinigoParserELSE, 0)
+}
+
 func (s *IfSimpleElseBlockContext) AllBlock() []IBlockContext {
 	children := s.GetChildren()
 	len := 0
@@ -10871,10 +10895,6 @@ func (s *IfSimpleElseBlockContext) Block(i int) IBlockContext {
 	}
 
 	return t.(IBlockContext)
-}
-
-func (s *IfSimpleElseBlockContext) ELSE() antlr.TerminalNode {
-	return s.GetToken(MinigoParserELSE, 0)
 }
 
 func (s *IfSimpleElseBlockContext) EnterRule(listener antlr.ParseTreeListener) {
@@ -11074,7 +11094,10 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		}
 		{
 			p.SetState(426)
-			p.Block()
+
+			var _x = p.Block()
+
+			localctx.(*IfElseBlockContext).firstBlock = _x
 		}
 		{
 			p.SetState(427)
@@ -11086,7 +11109,10 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		}
 		{
 			p.SetState(428)
-			p.Block()
+
+			var _x = p.Block()
+
+			localctx.(*IfElseBlockContext).lastBlock = _x
 		}
 
 	case 4:
@@ -11194,7 +11220,10 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		}
 		{
 			p.SetState(448)
-			p.Block()
+
+			var _x = p.Block()
+
+			localctx.(*IfSimpleElseBlockContext).firstBlock = _x
 		}
 		{
 			p.SetState(449)
@@ -11206,7 +11235,10 @@ func (p *MinigoParser) IfStatement() (localctx IIfStatementContext) {
 		}
 		{
 			p.SetState(450)
-			p.Block()
+
+			var _x = p.Block()
+
+			localctx.(*IfSimpleElseBlockContext).lastBlock = _x
 		}
 
 	case antlr.ATNInvalidAltNumber:
