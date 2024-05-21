@@ -49,18 +49,18 @@ func (l *LlvmBackend) VisitFuncDef(ctx *grammar.FuncDefContext) interface{} {
 	var params []*ir.Param
 	for _, argument := range symbol.Members {
 		param := ir.NewParam(argument.Name, argument.Type.LlvmType)
-		l.moduleSymbolTable.AddSymbol(param)
+		l.moduleSymbolTable.AddSymbol(argument.Name, param)
 		params = append(params, param)
 	}
 	fn := l.module.NewFunc(symbol.Name, _type, params...)
-	l.moduleSymbolTable.AddSymbol(fn)
+	l.moduleSymbolTable.AddSymbol(symbol.Name, fn)
 	return fn
 }
 
 type Func struct {
 	*ir.Func
-	body   *ir.Block
-	idents map[string]value.Value
+	body *ir.Block
+	// idents map[string]value.Value
 }
 
 func (l *LlvmBackend) String() string {
@@ -297,10 +297,13 @@ func (l *LlvmBackend) VisitFuncArgsDecls(ctx *grammar.FuncArgsDeclsContext) inte
 func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 
 	fn := l.Visit(ctx.FuncFrontDecl()).(*Func)
-	l.moduleSymbolTable.AddSymbol(fn)
+	l.moduleSymbolTable.AddSymbol(fn.Name(), fn)
+	if fn.Func.Name() != "main" {
+		fn.Func.Linkage = enum.LinkagePrivate
+	}
 
 	_ = l.funcStack.Push(fn)
-	l.blockStack = stack.NewStack[*ir.Block](100)
+	// l.blockStack = stack.NewStack[*ir.Block](100)
 	l.blockStack.Push(fn.body)
 	l.moduleSymbolTable.EnterScope()
 	l.Visit(ctx.Block())
@@ -397,19 +400,19 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 
 	for _, expr := range ctx.Arguments().ExpressionList().AllExpression() {
 		argument := l.Visit(expr).(value.Value)
-		if types.IsPointer(argument.Type()) {
-			if str, ok := argument.(*ir.Global); ok {
-				ptr := blk.NewGetElementPtr(types.I8, str, zero)
-				alloca := blk.NewAlloca(types.I8Ptr)
-				blk.NewStore(ptr, alloca)
-				load := blk.NewLoad(alloca.ElemType, alloca)
-				args = append(args, load)
-			} else {
-				load := blk.NewLoad(argument.Type(), argument)
-				args = append(args, load)
-			}
-		} else {
+		switch argument := argument.(type) {
+		case *ir.InstGetElementPtr, *ir.Global:
+			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+			args = append(args, ptr)
+		case *ir.InstAlloca:
+			load := blk.NewLoad(argument.ElemType, argument)
+			args = append(args, load)
+		case constant.Constant:
 			args = append(args, argument)
+		default:
+			fmt.Printf("argument: %v\n", argument)
+			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
+			panic("unimplemented")
 		}
 	}
 
@@ -641,54 +644,33 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		panic(err)
 	}
 
-	// %4 = alloca i32, align 4
-	// store i32 %1, ptr %4, align 4
-	// store i32 5, ptr %4, align 4
-
 	rhs := ctx.GetRight()
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 
-		symbol, found := l.GetSymbol(ident.GetText())
+		name := ident.GetText()
+		symbol, found := l.GetSymbol(name)
 		if !found {
 			panic("unreachable")
 		}
 
 		expr := l.Visit(rhs.Expression(idx)).(value.Value)
-		blk.NewStore(expr, symbol)
+		switch expr := expr.(type) {
+		case *ir.InstAdd, *ir.InstCall:
+			blk.NewStore(expr, symbol)
+		case *ir.Global:
+			panic("TODO: implement string assignment")
+			// blk.NewGetElementPtr(types.I8, expr, zero)
+			// ptr.SetName(name)
+		default:
+			fmt.Printf("symbol: %v\n", symbol)
+			fmt.Printf("expr: %v\n", expr)
+			fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(expr).String())
+			panic("unimplemented")
+		}
 	}
-
-	// l.Visit()
-	// current.NewAlloca()
 
 	return nil
 }
-
-type ptrType struct {
-	ident string
-}
-
-// Ident implements value.Value.
-func (p *ptrType) Ident() string {
-	return p.ident
-}
-
-// String implements value.Value.
-func (p *ptrType) String() string {
-	return fmt.Sprintf("ptr %s", p.ident)
-}
-
-// Type implements value.Value.
-func (p *ptrType) Type() types.Type {
-	return types.I64Ptr
-}
-
-func NewPtrType(ident string) value.Value {
-	return &ptrType{
-		ident: ident,
-	}
-}
-
-var _ value.Value = &ptrType{}
 
 // VisitNormalSwitch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNormalSwitch(ctx *grammar.NormalSwitchContext) interface{} {
@@ -989,46 +971,21 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 	}
 
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
-		expr := l.Visit(ctx.ExpressionList().Expression(idx))
 		name := ident.GetText()
-		if err != nil {
-			fmt.Printf("GOT HERE (function nil check)\n")
-			switch expr := expr.(type) {
-			case constant.Constant:
-				declared := l.module.NewGlobalDef(ident.GetText(), expr)
-				l.moduleSymbolTable.AddSymbol(declared)
-			}
-			continue
-		}
-		switch expr := expr.(type) {
-		case *constant.CharArray:
-			declared := l.module.NewGlobalDef(ident.GetText(), expr)
-			l.moduleSymbolTable.AddSymbol(declared)
-		case constant.Constant:
+		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
+
+		switch argument := expr.(type) {
+		case *ir.InstGetElementPtr, *ir.Global:
+			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+			l.moduleSymbolTable.AddSymbol(name, ptr)
+		case constant.Constant, *ir.InstAdd:
 			alloca := blk.NewAlloca(expr.Type())
-			alloca.SetName(name)
 			blk.NewStore(expr, alloca)
-			fn.idents[name] = alloca
-			// l.moduleSymbolTable.AddSymbol(alloca)
-		case *ir.InstCall:
-			// BUG: This might cause a bug with other stuff, check back later
-			// alloca := fn.body.NewAlloca(expr.Typ)
-			// fn.body.NewStore(expr, alloca)
-			expr.SetName(name)
-			fn.idents[ident.GetText()] = expr
-		case value.Named:
-			fmt.Printf("named:expr: %v\n", expr)
-			// load := fn.body.NewLoad(expr.Type(), expr)
-			// ptr := fn.body.NewGetElementPtr(expr.Type(), load, zero)
-			// fn.body.
-			// declared := fn.body.NewAlloca(expr.Type())
-			// declared.SetName(ident.GetText())
-			// fn.body.NewStore(expr, load)
-			expr.SetName(name)
-			fn.idents[ident.GetText()] = expr
-			// l.moduleSymbolTable.AddSymbol(declared)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
 		default:
-			panic("unreachable")
+			fmt.Printf("argument: %v\n", argument)
+			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
+			panic("unimplemented")
 		}
 	}
 
@@ -1037,7 +994,31 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 
 // VisitUntypedVarDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) interface{} {
-	panic("unimplemented")
+	var blk *ir.Block
+	if l.blockStack != nil {
+		blk, _ = l.blockStack.Peek()
+	}
+
+	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
+		name := ident.GetText()
+		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
+
+		switch argument := expr.(type) {
+		case *ir.InstGetElementPtr, *ir.Global:
+			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+			l.moduleSymbolTable.AddSymbol(name, ptr)
+		case constant.Constant, *ir.InstAdd:
+			alloca := blk.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		default:
+			fmt.Printf("argument: %v\n", argument)
+			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
+			panic("unimplemented")
+		}
+	}
+
+	return nil
 }
 
 // VisitVariableDeclStatement implements grammar.MinigoVisitor.
@@ -1053,7 +1034,31 @@ func (l *LlvmBackend) VisitVariableDeclaration(ctx *grammar.VariableDeclarationC
 
 // VisitWalrusDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationContext) interface{} {
-	panic("unimplemented")
+	var blk *ir.Block
+	if l.blockStack != nil {
+		blk, _ = l.blockStack.Peek()
+	}
+
+	for idx, ident := range ctx.GetLeft().AllExpression() {
+		name := ident.GetText()
+		expr := l.Visit(ctx.GetRight().Expression(idx)).(value.Value)
+
+		switch argument := expr.(type) {
+		case *ir.InstGetElementPtr, *ir.Global:
+			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+			l.moduleSymbolTable.AddSymbol(name, ptr)
+		case constant.Constant, *ir.InstAdd:
+			alloca := blk.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		default:
+			fmt.Printf("argument: %v\n", argument)
+			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
+			panic("unimplemented")
+		}
+	}
+
+	return nil
 }
 
 // VisitWhileFor implements grammar.MinigoVisitor.
