@@ -432,43 +432,190 @@ func (l *LlvmBackend) VisitIdentifierList(ctx *grammar.IdentifierListContext) in
 // VisitIdentifierOperand implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIdentifierOperand(ctx *grammar.IdentifierOperandContext) interface{} {
 	name := ctx.IDENTIFIER().GetText()
-	fmt.Printf("name: %v\n", name)
-	fn, _ := l.funcStack.Peek()
-	val, ok := fn.idents[name]
-	if !ok {
-		symbol, found := l.moduleSymbolTable.GetSymbol(name)
-		if !found {
-			panic("unreachable")
-		}
-
-		return symbol.Symbol
+	symbol, found := l.moduleSymbolTable.GetSymbol(name)
+	if !found {
+		panic("unreachable")
 	}
-	return val
+
+	return symbol.Symbol
 }
 
 // VisitIfElseBlock implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIfElseBlock(ctx *grammar.IfElseBlockContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	if types.IsPointer(expr.Type()) {
+		expr = blk.NewLoad(types.I1, expr)
+	}
+
+	True := fn.NewBlock("")
+
+	l.blockStack.Push(True)
+	l.Visit(ctx.GetFirstBlock())
+	l.blockStack.Pop()
+
+	False := fn.NewBlock("")
+	l.blockStack.Push(False)
+	l.Visit(ctx.GetLastBlock())
+	l.blockStack.Pop()
+
+	Done := fn.NewBlock("")
+	blk.NewCondBr(expr, True, False)
+
+	if True.Term == nil {
+		True.NewBr(Done)
+	}
+
+	if False.Term == nil {
+		False.NewBr(Done)
+	}
+
+	l.blockStack.Push(Done)
+
+	return nil
 }
 
 // VisitIfElseIf implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIfElseIf(ctx *grammar.IfElseIfContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	if types.IsPointer(expr.Type()) {
+		expr = blk.NewLoad(types.I1, expr)
+	}
+
+	True := fn.NewBlock("")
+
+	l.blockStack.Push(True)
+	l.Visit(ctx.Block())
+	l.blockStack.Pop()
+
+	False := fn.NewBlock("")
+	l.blockStack.Push(False)
+	l.Visit(ctx.IfStatement())
+	toConnect, _ := l.blockStack.Pop()
+
+	Done := fn.NewBlock("")
+	if toConnect.Term == nil {
+		toConnect.NewBr(Done)
+	}
+	blk.NewCondBr(expr, True, False)
+
+	if True.Term == nil {
+		True.NewBr(Done)
+	}
+	if False.Term == nil {
+		False.NewBr(Done)
+	}
+
+	l.blockStack.Push(Done)
+
+	return nil
 }
 
 // VisitIfSimpleElseBlock implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIfSimpleElseBlock(ctx *grammar.IfSimpleElseBlockContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	l.Visit(ctx.SimpleStatement()) // This will probably never return anything
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	if types.IsPointer(expr.Type()) {
+		expr = blk.NewLoad(types.I1, expr)
+	}
+
+	True := fn.NewBlock("")
+
+	l.blockStack.Push(True)
+	l.Visit(ctx.GetFirstBlock())
+	l.blockStack.Pop()
+
+	False := fn.NewBlock("")
+	l.blockStack.Push(False)
+	l.Visit(ctx.GetLastBlock())
+	l.blockStack.Pop()
+
+	Done := fn.NewBlock("")
+	blk.NewCondBr(expr, True, False)
+	if True.Term == nil {
+		True.NewBr(Done)
+	}
+
+	if False.Term == nil {
+		False.NewBr(Done)
+	}
+	l.blockStack.Push(Done)
+
+	return nil
 }
 
 // VisitIfSimpleElseIf implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIfSimpleElseIf(ctx *grammar.IfSimpleElseIfContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	l.Visit(ctx.SimpleStatement()) // This will probably never return anything
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	if types.IsPointer(expr.Type()) {
+		expr = blk.NewLoad(types.I1, expr)
+	}
+
+	True := fn.NewBlock("")
+	l.blockStack.Push(True)
+	l.Visit(ctx.Block())
+	l.blockStack.Pop()
+
+	False := fn.NewBlock("")
+	l.blockStack.Push(False)
+	l.Visit(ctx.IfStatement())
+	got, _ := l.blockStack.Peek()
+
+	// Done := fn.NewBlock("sex")
+	// if got.Term == nil {
+	// 	got.NewBr(Done)
+	// }
+
+	blk.NewCondBr(expr, True, False)
+	if True.Term == nil {
+		// True.NewBr(Done)
+		True.NewBr(got)
+	}
+	if False.Term == nil {
+		False.NewBr(got)
+	}
+	// l.blockStack.Push(Done)
+
+	return nil
 }
 
 // VisitIfSimpleNoElse implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIfSimpleNoElse(ctx *grammar.IfSimpleNoElseContext) interface{} {
-	panic("unimplemented")
+
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	l.Visit(ctx.SimpleStatement()) // This will probably never return anything
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	if types.IsPointer(expr.Type()) {
+		expr = blk.NewLoad(types.I1, expr)
+	}
+
+	True := fn.NewBlock("")
+	l.blockStack.Push(True)
+	l.Visit(ctx.Block())
+	l.blockStack.Pop()
+	Done := fn.NewBlock("")
+	blk.NewCondBr(expr, True, Done)
+	if True.Term == nil {
+		True.NewBr(Done)
+	}
+
+	l.blockStack.Push(Done)
+
+	return nil
 }
 
 // VisitIfSingleExpression implements grammar.MinigoVisitor.
@@ -477,28 +624,31 @@ func (l *LlvmBackend) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionCon
 	blk, _ := l.blockStack.Peek()
 
 	expr := l.Visit(ctx.Expression()).(value.Value)
-
-	True := fn.NewBlock("")
-	l.blockStack.Push(True)
-	res := l.Visit(ctx.Block())
-	fmt.Printf("res: %v\n", res)
-	l.blockStack.Pop()
-
-	Done := fn.NewBlock("")
-
-	blk.NewCondBr(expr, True, Done)
-	if True.Term == nil {
-		True.NewBr(Done)
+	if types.IsPointer(expr.Type()) {
+		expr = blk.NewLoad(types.I1, expr)
 	}
 
-	l.blockStack.Push(Done)
+	then := fn.NewBlock("")
+	l.blockStack.Push(then)
+	l.Visit(ctx.Block())
+	l.blockStack.Pop()
 
-	fmt.Printf("expr: %v\n", expr)
+	end := fn.NewBlock("")
+
+	blk.NewCondBr(expr, then, end)
+	if then.Term == nil {
+		then.NewBr(end)
+	}
+
+	l.blockStack.Push(end)
+
 	return nil
 }
 
 // VisitIfStatementStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIfStatementStatement(ctx *grammar.IfStatementStatementContext) interface{} {
+	l.moduleSymbolTable.EnterScope()
+	defer l.moduleSymbolTable.ExitScope()
 	return l.Visit(ctx.IfStatement())
 }
 
