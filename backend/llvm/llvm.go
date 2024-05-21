@@ -678,8 +678,8 @@ func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interfac
 	blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
 
-	_for := fn.NewBlock(fmt.Sprintf("start%d", l.blockStack.Len()))
-	end := ir.NewBlock(fmt.Sprintf("end%d", l.blockStack.Len()))
+	_for := fn.NewBlock("")
+	end := ir.NewBlock("")
 
 	blk.NewBr(_for)
 
