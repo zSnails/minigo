@@ -151,10 +151,10 @@ assignmentStatement: left=expressionList EQUALS right=expressionList #normalAssi
 
 ifStatement: IF expression block #ifSingleExpression
            | IF expression block ELSE ifStatement #ifElseIf
-           | IF expression block ELSE block #ifElseBlock
+           | IF expression firstBlock=block ELSE lastBlock=block #ifElseBlock
            | IF simpleStatement SEMICOLON expression block #ifSimpleNoElse
            | IF simpleStatement SEMICOLON expression block ELSE ifStatement #ifSimpleElseIf
-           | IF simpleStatement SEMICOLON expression block ELSE block #ifSimpleElseBlock
+           | IF simpleStatement SEMICOLON expression firstBlock=block ELSE lastBlock=block #ifSimpleElseBlock
            ;
 
 loop: FOR block #infiniteFor
