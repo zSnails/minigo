@@ -127,8 +127,13 @@ func New(table *symboltable.SymbolTable, listener antlr.ErrorListener) *LlvmBack
 		module:            ir.NewModule(),
 		symbolTable:       table,
 		moduleSymbolTable: NewTable(),
-		funcStack:         stack.NewStack[*Func](20),
+		// loopStack:         arrayqueue.New[*ir.Block](),
+		loopStack:  stack.NewStack[*ir.Block](100),
+		blockStack: stack.NewStack[*ir.Block](100),
+		funcStack:  stack.NewStack[*Func](20),
 	}
+
+	b.module.TargetTriple = "x86_64-pc-linux-gnu"
 	b.addBuiltIns()
 	return b
 }
