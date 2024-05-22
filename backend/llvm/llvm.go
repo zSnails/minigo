@@ -95,10 +95,30 @@ func (l *LlvmBackend) GetModule() *ir.Module {
 	return l.module
 }
 
+var putchar *ir.Func
 var puts *ir.Func
+var printf *ir.Func
+var strcat *ir.Func
+
+var basicInt *ir.Global
+var basicFloat *ir.Global
+var basicBool *ir.Global
 
 func (l *LlvmBackend) addBuiltIns() {
 	puts = l.module.NewFunc("puts", types.I32, ir.NewParam("", types.I8Ptr))
+	putchar = l.module.NewFunc("putchar", types.I8, ir.NewParam("", types.I8))
+	printf = l.module.NewFunc("printf", types.I64, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I64))
+	strcat = l.module.NewFunc("strcat", types.I8Ptr, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
+
+	l.moduleSymbolTable.AddSymbol("printf", printf)
+	l.moduleSymbolTable.AddSymbol("putchar", putchar)
+	l.moduleSymbolTable.AddSymbol("puts", puts)
+	l.moduleSymbolTable.AddSymbol("strcat", strcat)
+
+	basicInt = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%d\x00"))
+	basicFloat = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%f\x00"))
+	basicBool = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%t\x00"))
+
 }
 
 func New(table *symboltable.SymbolTable, listener antlr.ErrorListener) *LlvmBackend {

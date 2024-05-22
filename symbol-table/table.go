@@ -294,11 +294,17 @@ func (t *SymbolTable) addPrimitives() {
 	False = t.NewVariable(nil, "false", Bool)
 	_ = t.AddSymbol(True)
 	_ = t.AddSymbol(False)
+
+	printf := t.NewFunction(nil, "printf", Int, t.NewVariable(nil, "", String))
+	printf.Variadic = true
+	_ = t.AddSymbol(printf)
+
+	_ = t.AddSymbol(t.NewFunction(nil, "strcat", String, t.NewVariable(nil, "", String), t.NewVariable(nil, "", String)))
 }
 
 func NewSymbolTable() *SymbolTable {
 	t := &SymbolTable{
-		Symbols: single.NewLinkedList[*Symbol](),
+		Symbols: double.NewLinkedList[*Symbol](),
 		Scope:   0,
 	}
 	t.addPrimitives()
