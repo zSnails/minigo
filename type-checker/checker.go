@@ -472,26 +472,41 @@ func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 	if !ok {
 		return nil
 	}
+
+	if fn.Name == "main" {
+		t.makeError(ctx.GetStart(), fmt.Errorf("the main function cannot be called"))
+		return nil
+	}
+
+	expectedMembers := len(fn.Members)
 	exprCtx, ok := ctx.Arguments().ExpressionList().(*grammar.ExpressionListContext)
 	if !ok {
-		return nil //unrecoverable
+		if fn.Variadic {
+			t.makeError(ctx.GetStop(), fmt.Errorf("expected at least %d arguments but got no arguments instead", expectedMembers))
+		} else {
+			t.makeError(ctx.GetStop(), fmt.Errorf("expected %d arguments but got no arguments instead", expectedMembers))
+		}
+		return nil
 	}
+
 	args, ok := t.VisitExpressionList(exprCtx).([]*symboltable.Symbol)
 	if !ok {
 		return nil // unrecoverable
 	}
-	expectedMembers := len(fn.Members)
 	gotArgs := len(args)
 
-	if gotArgs != expectedMembers {
+	if (!fn.Variadic && gotArgs != expectedMembers) || (fn.Variadic && gotArgs < expectedMembers) {
 		t.makeError(ctx.GetStop(), fmt.Errorf("expected %d arguments but got %d instead", expectedMembers, gotArgs))
+		return nil
 	}
 
 	if expectedMembers <= gotArgs {
 		for idx, member := range fn.Members {
-			arg := getType(args[idx])
-			if member.Type != arg {
-				t.makeError(ctx.GetStart(), fmt.Errorf("expected type '%s' but got '%s' instead", member.Type, arg))
+			arg := args[idx]
+			memberTy := getInnerMostType(member)
+			argTy := getInnerMostType(arg)
+			if memberTy != argTy {
+				t.makeError(ctx.GetStart(), fmt.Errorf("expected type '%s' but got '%s' instead", memberTy, argTy))
 			}
 		}
 	}
