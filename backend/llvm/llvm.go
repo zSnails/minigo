@@ -1010,12 +1010,12 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 	leftNode := l.Visit(ctx.GetLeft()).(value.Value)
 	rightNode := l.Visit(ctx.GetRight()).(value.Value)
 
-	if types.IsPointer(leftNode.Type()) {
-		leftNode = blk.NewLoad(rightNode.Type(), leftNode)
+	if ptr, ok := leftNode.Type().(*types.PointerType); ok {
+		leftNode = blk.NewLoad(ptr.ElemType, leftNode)
 	}
 
-	if types.IsPointer(rightNode.Type()) {
-		rightNode = blk.NewLoad(leftNode.Type(), rightNode)
+	if ptr, ok := rightNode.Type().(*types.PointerType); ok {
+		rightNode = blk.NewLoad(ptr.ElemType, rightNode)
 	}
 
 	switch {
