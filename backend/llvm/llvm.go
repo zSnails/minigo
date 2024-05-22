@@ -928,7 +928,43 @@ func (l *LlvmBackend) VisitOperandExpression(ctx *grammar.OperandExpressionConte
 
 // VisitOperationPrecedence1 implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence1Context) interface{} {
-	panic("unimplemented")
+	blk, err := l.blockStack.Peek()
+	if err != nil {
+		panic(err)
+	}
+
+	leftNode := l.Visit(ctx.GetLeft()).(value.Value)
+	rightNode := l.Visit(ctx.GetRight()).(value.Value)
+
+	if types.IsPointer(leftNode.Type()) {
+		leftNode = blk.NewLoad(rightNode.Type(), leftNode)
+	}
+
+	if types.IsPointer(rightNode.Type()) {
+		rightNode = blk.NewLoad(leftNode.Type(), rightNode)
+	}
+	// left=expression (MOD) right=expression #operationPrecedence1
+	switch {
+	case ctx.TIMES() != nil:
+		if leftNode.Type() == types.Double {
+			return blk.NewFMul(leftNode, rightNode)
+		}
+		return blk.NewMul(leftNode, rightNode)
+	case ctx.DIV() != nil:
+		if leftNode.Type() == types.Double {
+			return blk.NewFDiv(leftNode, rightNode)
+		}
+		return blk.NewSDiv(leftNode, rightNode)
+	case ctx.MOD() != nil:
+		if leftNode.Type() == types.Double {
+			// TODO: find a way of getting the modulo return blk.NewFDiv(leftNode, rightNode)
+		}
+		// TODO: find a way of getting the modulo return blk.NewSDiv(leftNode, rightNode)
+	default:
+		panic("unreachable")
+	}
+
+	return nil
 }
 
 // VisitOperationPrecedence2 implements grammar.MinigoVisitor.
