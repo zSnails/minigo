@@ -366,7 +366,7 @@ func (t *TypeChecker) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 		return nil // unrecoverable
 	}
 
-	_type := getType(expressionType)
+	_type := getInnerMostType(expressionType)
 
 	if _type != symboltable.Bool {
 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use expression of type '%s' in for condition", _type))
