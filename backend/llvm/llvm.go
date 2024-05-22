@@ -235,6 +235,7 @@ func (l *LlvmBackend) VisitChildren(node antlr.RuleNode) interface{} {
 func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{} {
 	// LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | COMPARISON | NEGATION
 	fn, _ := l.blockStack.Peek()
+	blk, _ := l.blockStack.Peek()
 
 	left := l.Visit(ctx.GetLeft()).(value.Value)
 	right := l.Visit(ctx.GetRight()).(value.Value)
