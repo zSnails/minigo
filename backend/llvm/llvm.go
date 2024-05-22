@@ -961,40 +961,74 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 			return blk.NewFSub(leftNode, rightNode)
 		}
 		return blk.NewSub(leftNode, rightNode)
+	default:
+		panic("unimplemented")
 	}
 	return nil
 }
 
 // VisitPrintStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitPrintStatement(ctx *grammar.PrintStatementContext) interface{} {
-	blk, _ := l.blockStack.Peek()
-
-	for _, expr := range ctx.ExpressionList().AllExpression() {
-		innerString := l.Visit(expr) //.(*ir.Global)
-		switch val := innerString.(type) {
-		case *ir.Global:
-			// arg := fn.body.NewLoad(val.ContentType, val)
-			blk.NewCall(puts, val)
-		case *ir.InstAlloca:
-			fmt.Printf("val: %v\n", val)
-			arg := blk.NewLoad(val.Typ.ElemType, val)
-			blk.NewCall(puts, arg)
-			//panic("TODO: Implement this piece of shit")
-			// arg := current.NewLoad(val.Type(), val)
-			// current.NewCall(puts, arg)
-		}
-	}
-
-	return nil
-}
-
-// VisitPrintlnStatement implements grammar.MinigoVisitor.
-func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext) interface{} {
+	panic("TODO: fix print statement")
 	blk, _ := l.blockStack.Peek()
 
 	for _, expr := range ctx.ExpressionList().AllExpression() {
 		innerString := l.Visit(expr).(value.Named)
 		blk.NewCall(puts, innerString)
+	}
+
+	return nil
+}
+
+var newline = constant.NewInt(types.I8, 0x0A)
+
+// VisitPrintlnStatement implements grammar.MinigoVisitor.
+func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext) interface{} {
+	// panic("TODO: fix println statement")
+	blk, _ := l.blockStack.Peek()
+
+	for _, expr := range ctx.ExpressionList().AllExpression() {
+		// innerString := l.Visit(expr).(value.Named)
+		// blk.NewCall(puts, innerString)
+		val := l.Visit(expr).(value.Value)
+		switch val := val.(type) {
+		case *ir.InstGetElementPtr, *ir.Global:
+			ptr := blk.NewGetElementPtr(types.I8, val, zero)
+			blk.NewCall(puts, ptr)
+		case *constant.Int:
+			blk.NewCall(printf, basicInt, val)
+			blk.NewCall(putchar, newline)
+		case *constant.Float:
+			blk.NewCall(printf, basicFloat, val)
+			blk.NewCall(putchar, newline)
+		case *ir.InstCall:
+			switch val.Type() {
+			case types.I1, types.I8, types.I64:
+				blk.NewCall(printf, basicInt, val)
+			case types.Double:
+				blk.NewCall(printf, basicFloat, val)
+			default:
+				fmt.Printf("val.Type(): %v\n", val.Type())
+				panic("unimplemented")
+			}
+
+			blk.NewCall(putchar, newline)
+		case *ir.InstAlloca:
+			load := blk.NewLoad(val.ElemType, val)
+			switch val.ElemType {
+			case types.I8, types.I64, types.I1:
+				blk.NewCall(printf, basicInt, load)
+			case types.Double:
+				blk.NewCall(printf, basicFloat, load)
+			}
+			blk.NewCall(putchar, newline)
+
+		default:
+			fmt.Printf("val: %v\n", val)
+			fmt.Printf("reflect.TypeOf(val).String(): %v\n", reflect.TypeOf(val).String())
+			panic("unimplemented")
+
+		}
 	}
 
 	return nil
