@@ -836,19 +836,15 @@ func (l *LlvmBackend) VisitNestedType(ctx *grammar.NestedTypeContext) interface{
 }
 
 var zero = constant.NewInt(types.I64, 0)
+var zerof = constant.NewFloat(types.Double, 0.0)
 
 func (l *LlvmBackend) GetSymbol(name string) (value.Value, bool) {
-	fn, _ := l.funcStack.Peek()
-	val, ok := fn.idents[name]
-	if !ok {
-		symbol, found := l.moduleSymbolTable.GetSymbol(name)
-		if !found {
-			return nil, false
-		}
-
-		return symbol.Symbol, true
+	symbol, found := l.moduleSymbolTable.GetSymbol(name)
+	if !found {
+		return nil, false
 	}
-	return val, ok
+
+	return symbol.Symbol, true
 }
 
 // VisitNormalAssignment implements grammar.MinigoVisitor.
