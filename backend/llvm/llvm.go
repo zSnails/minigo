@@ -1426,6 +1426,8 @@ func (l *LlvmBackend) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 
 	l.Visit(ctx.Block())
 
+	l.loopStack.Pop()
+
 	expr := l.Visit(ctx.Expression()).(value.Value)
 
 	got, _ := l.blockStack.Peek()
@@ -1458,6 +1460,8 @@ func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interfac
 	l.loopStack.Push(end)
 
 	l.Visit(ctx.Block())
+
+	l.loopStack.Pop()
 
 	got, _ := l.blockStack.Peek()
 	if got.Term == nil {
