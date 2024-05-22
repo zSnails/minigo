@@ -764,10 +764,16 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 	// cross reference
 	for _, fn := range funcs {
 		fun := fn.FuncFrontDecl()
-		fun.IDENTIFIER()
 		var rt *symboltable.Symbol
 		if returnType := fun.DeclType(); returnType != nil {
 			rt = t.Visit(returnType).(*symboltable.Symbol)
+		}
+
+		if fun.IDENTIFIER().GetText() == "main" {
+			if rt != nil {
+				t.makeError(fun.IDENTIFIER().GetSymbol(), fmt.Errorf("the main function cannot have a return type"))
+				return nil
+			}
 		}
 
 		var members []*symboltable.Symbol = nil
