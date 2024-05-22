@@ -561,17 +561,20 @@ func (l *LlvmBackend) VisitIfElseBlock(ctx *grammar.IfElseBlockContext) interfac
 	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
+	l.blockStack.Push(False)
+
 	l.Visit(ctx.GetLastBlock())
 	elseBlock, _ := l.blockStack.Pop()
 	Done := fn.NewBlock("")
-	l.blockStack.Push(False)
 
 	if ifBlock != nil && ifBlock.Term == nil {
-		ifBlock.NewBr(False)
+		ifBlock.NewBr(Done)
 	}
+
 	if elseBlock != nil && elseBlock.Term == nil {
-		elseBlock.NewBr(False)
+		elseBlock.NewBr(Done)
 	}
+
 	blk.NewCondBr(expr, True, False)
 
 	if True.Term == nil {
