@@ -471,7 +471,7 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 		case *ir.InstAlloca:
 			load := blk.NewLoad(argument.ElemType, argument)
 			args = append(args, load)
-		case constant.Constant:
+		case constant.Constant, ir.Instruction: // BUG: this might cause a bug
 			args = append(args, argument)
 		default:
 			fmt.Printf("argument: %v\n", argument)
