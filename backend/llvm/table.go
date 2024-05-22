@@ -16,12 +16,13 @@ func NewTable() *llTable {
 		currentScope: 0,
 		Symbols:      single.NewLinkedList[*llSymbol](),
 	}
-	table.AddSymbol(constant.True)
-	table.AddSymbol(constant.False)
+	table.AddSymbol("true", constant.True)
+	table.AddSymbol("false", constant.False)
 	return table
 }
 
 type llSymbol struct {
+	Name   string
 	Scope  int
 	Symbol value.Value
 }
@@ -37,8 +38,9 @@ func (l *llTable) ExitScope() {
 	l.currentScope--
 }
 
-func (l *llTable) AddSymbol(val value.Value) {
+func (l *llTable) AddSymbol(name string, val value.Value) {
 	v := &llSymbol{
+		Name:   name,
 		Scope:  l.currentScope,
 		Symbol: val,
 	}
@@ -47,13 +49,7 @@ func (l *llTable) AddSymbol(val value.Value) {
 
 func (l *llTable) GetSymbol(name string) (*llSymbol, bool) {
 	symbol, found := l.Symbols.FindFirst(func(ls *llSymbol) bool {
-		switch ls := ls.Symbol.(type) {
-		case value.Named:
-			return ls.Name() == name
-		case constant.Constant:
-			return ls.Ident() == name
-		}
-		return false
+		return ls.Name == name
 	})
 	if !found {
 		return nil, found
