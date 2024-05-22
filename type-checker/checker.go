@@ -524,7 +524,7 @@ func (t *TypeChecker) VisitOperandExpression(ctx *grammar.OperandExpressionConte
 }
 
 func getInnerMostType(in *symboltable.Symbol) *symboltable.Symbol {
-	if in.Type != nil {
+	if in != nil && in.Type != nil {
 		if in.Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
 			return in
 		}
