@@ -31,6 +31,14 @@ func (l *llTable) EnterScope() {
 	l.currentScope++
 }
 
+func (l *llTable) Replace(name string, symbol value.Value) {
+    l.Symbols.ForEach(func(ls *llSymbol) {
+        if ls.Name == name {
+            ls.Symbol = symbol
+        }
+    })
+}
+
 func (l *llTable) ExitScope() {
 	l.Symbols.RemoveIf(func(ls *llSymbol) bool {
 		return ls.Scope == l.currentScope
