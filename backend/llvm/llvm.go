@@ -362,19 +362,24 @@ func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 
 	fn := l.Visit(ctx.FuncFrontDecl()).(*Func)
 	l.moduleSymbolTable.AddSymbol(fn.Name(), fn)
-	if fn.Func.Name() != "main" {
-		fn.Func.Linkage = enum.LinkagePrivate
-	}
 
 	_ = l.funcStack.Push(fn)
 	// l.blockStack = stack.NewStack[*ir.Block](100)
 	l.blockStack.Push(fn.body)
 	l.moduleSymbolTable.EnterScope()
 	l.Visit(ctx.Block())
-	if fn.Func.Sig.RetType == types.Void {
+
+	if name := fn.Func.Name(); name != "main" {
+		fn.Func.Linkage = enum.LinkagePrivate
+	} else if fn.Func.Sig.RetType == types.Void && name != "main" {
 		blk, _ := l.blockStack.Peek()
-		fmt.Printf("blk: %v\n", blk)
 		blk.NewRet(nil)
+	} else {
+		fn.Func.Sig.RetType = types.I64
+		l := len(fn.Blocks)
+		if l > 0 {
+			fn.Blocks[l-1].NewRet(zero)
+		}
 	}
 
 	l.moduleSymbolTable.ExitScope()
