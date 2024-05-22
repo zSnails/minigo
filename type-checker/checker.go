@@ -1143,9 +1143,8 @@ func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 
 	valType := getType(val)
 	// if !valType.Equals(t.currentFunction.Type) {
-	currentFunction, _ := t.symbolStack.Peek()
 	if valType != getType(currentFunction) {
-		t.makeError(expr.GetStart(), fmt.Errorf("cannot return value of type '%s' in function with return type of '%s'", valType, getType(currentFunction)))
+		t.makeError(expr.GetStart(), fmt.Errorf("cannot return value of type '%s' in function with return type of '%s'", valType, currentFunction.Type))
 	}
 	return nil
 }
