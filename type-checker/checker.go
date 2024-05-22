@@ -409,16 +409,8 @@ func (t *TypeChecker) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 			t.makeError(ident.GetStart(), err)
 		}
 
-		// sType := getType(symbol)
-		// rType := getType(right)
-
 		sType := getInnerMostType(symbol)
 		rType := getInnerMostType(right)
-
-        // fmt.Printf("sType: %v\n", sType)
-        // fmt.Printf("rType: %v\n", rType)
-        // fmt.Printf("getInnerMostType(symbol): %v\n", getInnerMostType(symbol))
-        // fmt.Printf("getInnerMostType(rType): %v\n", getInnerMostType(rType))
 
 		if sType != rType {
 			t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", sType, rType))
