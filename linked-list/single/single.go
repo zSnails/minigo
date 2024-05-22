@@ -1,5 +1,10 @@
 package single
 
+import (
+	"fmt"
+	"strings"
+)
+
 type LinkedList[T any] struct {
 	Len  int
 	Head *Node[T]
@@ -10,6 +15,27 @@ func (l *LinkedList[T]) Add(value T) {
 	node.Next = l.Head
 	l.Head = node
 	l.Len++
+}
+
+func (t *LinkedList[T]) String() string {
+	sb := strings.Builder{}
+	fmt.Fprint(&sb, "[")
+	current := t.Head
+	for current != nil {
+		fmt.Fprintf(&sb, "%v", current.Value)
+		if current.Next != nil {
+			fmt.Fprint(&sb, ", ")
+		}
+		current = current.Next
+	}
+	fmt.Fprint(&sb, "]")
+	return sb.String()
+}
+
+func (l *LinkedList[T]) ForEach(a func(T)) {
+	for curr := l.Head; curr != nil; curr = curr.Next {
+		a(curr.Value)
+	}
 }
 
 func (l *LinkedList[T]) RemoveIf(predicate func(T) bool) {
