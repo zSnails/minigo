@@ -1223,7 +1223,65 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 
 // VisitWhileFor implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	_for := fn.NewBlock("")
+	end := ir.NewBlock("")
+
+	blk.NewBr(_for)
+
+	l.blockStack.Push(_for)
+	l.loopStack.Push(end)
+
+	l.Visit(ctx.Block())
+
+	expr := l.Visit(ctx.Expression()).(value.Value)
+
+	got, _ := l.blockStack.Peek()
+	if got.Term == nil {
+		// if types.IsPointer(expr.Type()) {
+		// 	expr = blk.NewLoad(types.I1, expr)
+		// }
+		got.NewCondBr(expr, _for, end)
+	}
+
+	end.Parent = fn.Func
+	fn.Blocks = append(fn.Blocks, end)
+
+	l.blockStack.Push(end)
+
+	return nil
+}
+
+// VisitInfiniteFor implements grammar.MinigoVisitor.
+func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interface{} {
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	_for := fn.NewBlock("for")
+	end := ir.NewBlock("end")
+
+	blk.NewBr(_for)
+
+	l.blockStack.Push(_for)
+	l.loopStack.Push(end)
+
+	l.Visit(ctx.Block())
+
+	got, _ := l.blockStack.Peek()
+	if got.Term == nil {
+		got.NewBr(_for)
+	}
+
+	// l.loopStack.Peek()
+
+	end.Parent = fn.Func
+	fn.Blocks = append(fn.Blocks, end)
+
+	l.blockStack.Push(end)
+
+	return nil
 }
 
 var _ grammar.MinigoVisitor = &LlvmBackend{}
