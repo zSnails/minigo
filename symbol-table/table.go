@@ -5,11 +5,12 @@ import (
 	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
-	"github.com/zSnails/minigo/linked-list/single"
+	"github.com/llir/llvm/ir/types"
+	"github.com/zSnails/minigo/linked-list/double"
 )
 
 type SymbolTable struct {
-	Symbols *single.LinkedList[*Symbol]
+	Symbols *double.LinkedList[*Symbol]
 	Scope   uint8
 }
 
@@ -38,6 +39,7 @@ const (
 	SliceSymbol
 	ArraySymbol
 	StructSymbol
+	ConstantSymbol
 )
 
 func (s SymbolType) String() string {
@@ -70,8 +72,10 @@ type Symbol struct {
 	Token      antlr.Token
 	Size       uint64 //  this field will only be used if the symbol is an array
 	Scope      uint8
+	Variadic   bool
 	Name       string
 	Type       *Symbol
+	LlvmType   types.Type
 	Members    []*Symbol
 }
 
@@ -96,9 +100,9 @@ func (s *Symbol) SameType(other *Symbol) bool {
 // }
 
 func (s *Symbol) String() string {
-    if s == nil {
-        return "no value"
-    }
+	if s == nil {
+		return "no value"
+	}
 	if (s.SymbolType)&ArraySymbol != 0 {
 		if s.Type != nil {
 			return fmt.Sprintf("[%d]%s", s.Size, s.Type.String())
@@ -169,11 +173,24 @@ func (t *SymbolTable) ExitScope() {
 	t.Scope--
 }
 
-func NewPrimitive(name string) *Symbol {
+func NewConstant(name string, _type *Symbol, llvmtype types.Type) *Symbol {
 	return &Symbol{
-		SymbolType: TypeSymbol,
+		SymbolType: ConstantSymbol,
+		Token:      nil,
+		Scope:      0,
+		Name:       name,
+		Type:       _type,
+		LlvmType:   llvmtype,
+		Members:    nil,
+	}
+}
+
+func NewPrimitive(name string, llvmtype types.Type) *Symbol {
+	return &Symbol{
+		SymbolType: TypeSymbol | PrimitiveTypeSymbol,
 		Scope:      0, // This is the global scope
 		Name:       name,
+		LlvmType:   llvmtype,
 		Type:       nil,
 		Members:    nil,
 	}
@@ -250,8 +267,10 @@ func (t *SymbolTable) NewSliceType(token antlr.Token, name string, _type *Symbol
 }
 
 var (
-	Bool = NewPrimitive("bool")
-	Int  = NewPrimitive("int")
+	Bool         = NewPrimitive("bool", types.I1)
+	ConstantBool = NewConstant("bool", Bool, types.I1)
+	Int          = NewPrimitive("int", types.I64)
+	ConstantInt  = NewConstant("int", Int, types.I64)
 	// Int8       = NewPrimitive("int8")
 	// Int16      = NewPrimitive("int16")
 	// Int32      = NewPrimitive("int32")
@@ -263,17 +282,22 @@ var (
 	// Uint64     = NewPrimitive("uint64")
 	// Float32    = NewPrimitive("float32")
 	// Float64    = NewPrimitive("float64")
-	Float = NewPrimitive("float")
+	Float         = NewPrimitive("float", types.Double)
+	ConstantFloat = NewConstant("float", Float, types.Double)
 	// Complex64  = NewPrimitive("complex64")
 	// Complex128 = NewPrimitive("complex128")
-	String = NewPrimitive("string")
-	Rune   = NewPrimitive("rune")
-	True   *Symbol
-	False  *Symbol
+	String         = NewPrimitive("string", types.I8Ptr)
+	ConstantString = NewConstant("string", String, types.I8Ptr)
+	Rune           = NewPrimitive("rune", types.I8)
+	ConstantRune   = NewConstant("rune", Rune, types.I8)
+
+	True  *Symbol
+	False *Symbol
 )
 
 func (t *SymbolTable) addPrimitives() {
 	_ = t.AddSymbol(Int)
+	_ = t.AddSymbol(Float)
 	// _ = t.AddSymbol(Int8)
 	// _ = t.AddSymbol(Int16)
 	// _ = t.AddSymbol(Int32)
