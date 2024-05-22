@@ -318,17 +318,37 @@ func (l *LlvmBackend) VisitExpressionList(ctx *grammar.ExpressionListContext) in
 
 // VisitExpressionOperand implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionOperand(ctx *grammar.ExpressionOperandContext) interface{} {
-	panic("unimplemented")
+	return l.Visit(ctx.Expression())
 }
 
 // VisitExpressionPostDec implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionPostDec(ctx *grammar.ExpressionPostDecContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	expr := l.Visit(ctx.Expression()).(value.Value)
+
+	var temp value.Value
+	if types.IsPointer(expr.Type()) {
+		temp = blk.NewLoad(types.I64, expr)
+	}
+
+	result := blk.NewSub(temp, constant.NewInt(types.I64, 1))
+	blk.NewStore(result, expr)
+	return nil
 }
 
 // VisitExpressionPostInc implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionPostInc(ctx *grammar.ExpressionPostIncContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	expr := l.Visit(ctx.Expression()).(value.Value)
+
+	var sex value.Value
+	if types.IsPointer(expr.Type()) {
+		sex = blk.NewLoad(types.I64, expr)
+	}
+
+	result := blk.NewAdd(sex, constant.NewInt(types.I64, 1))
+	blk.NewStore(result, expr)
+	return nil
 }
 
 // VisitExpressionPrimaryExpression implements grammar.MinigoVisitor.
