@@ -1157,7 +1157,16 @@ func (t *TypeChecker) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 
 // VisitReturnStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) interface{} {
+	currentFunction, _ := t.symbolStack.Peek()
+
 	expr := ctx.Expression()
+	if expr == nil {
+        if currentFunction.Type != nil {
+            t.makeError(currentFunction.Token, fmt.Errorf("empty return statement on function with non void return type", currentFunction.Type))
+            return nil
+        }
+        return nil
+	}
 	val, ok := t.Visit(expr).(*symboltable.Symbol)
 	if !ok {
 		return nil // unrecoverable
