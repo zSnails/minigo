@@ -1285,8 +1285,12 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 
 		switch argument := expr.(type) {
 		case *ir.InstGetElementPtr, *ir.Global:
-			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-			l.moduleSymbolTable.AddSymbol(name, ptr)
+			if blk != nil {
+				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+				l.moduleSymbolTable.AddSymbol(name, ptr)
+			} else {
+				l.moduleSymbolTable.AddSymbol(name, argument)
+			}
 		case constant.Constant, ir.Instruction:
 			alloca := blk.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
