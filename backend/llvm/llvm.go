@@ -1116,11 +1116,11 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	nblk := fn.NewBlock("")
 	blk.NewBr(nblk)
 
-    lk := fn.NewBlock("")
-    lk.NewBr(lk)
+	lk := fn.NewBlock("")
+	lk.NewBr(lk)
 
 	if fn.Name() == "main" {
-        l.blockStack.Push(lk)
+		l.blockStack.Push(lk)
 		return nblk.NewRet(zero)
 	}
 
@@ -1128,11 +1128,11 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 		expr := l.Visit(expr).(value.Value)
 		if types.IsPointer(expr.Type()) {
 
-            l.blockStack.Push(lk)
+			l.blockStack.Push(lk)
 			load := nblk.NewLoad(fn.Sig.RetType, expr)
 			return nblk.NewRet(load)
 		}
-        l.blockStack.Push(lk)
+		l.blockStack.Push(lk)
 		return nblk.NewRet(expr)
 	}
 
