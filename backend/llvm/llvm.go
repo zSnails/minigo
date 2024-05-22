@@ -875,7 +875,7 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 
 		expr := l.Visit(rhs.Expression(idx)).(value.Value)
 		switch expr := expr.(type) {
-		case *ir.InstAdd, *ir.InstCall, constant.Constant, ir.Instruction:
+		case *ir.InstAdd, *ir.InstCall, ir.Instruction:
 			blk.NewStore(expr, symbol)
 		case *ir.Global:
 			ptr := blk.NewGetElementPtr(types.I8, expr, zero)
