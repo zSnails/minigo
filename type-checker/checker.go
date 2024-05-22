@@ -20,6 +20,28 @@ type TypeChecker struct {
 	SymbolTable *symboltable.SymbolTable
 }
 
+// VisitNegativeExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitNegativeExpression(ctx *grammar.NegativeExpressionContext) interface{} {
+	expr := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	typ := getType(expr)
+	if !(typ != symboltable.Int || typ != symboltable.Float) {
+		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("cannot use expression of type '%s' as numeric expression", typ))
+		return nil
+	}
+	return expr
+}
+
+// VisitPositiveExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitPositiveExpression(ctx *grammar.PositiveExpressionContext) interface{} {
+	expr := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	typ := getType(expr)
+	if !(typ != symboltable.Int || typ != symboltable.Float) {
+		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("cannot use expression of type '%s' as numeric expression", typ))
+		return nil
+	}
+	return expr
+}
+
 // VisitFuncDef implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFuncDef(ctx *grammar.FuncDefContext) interface{} {
 	return t.VisitChildren(ctx)
