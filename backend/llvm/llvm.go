@@ -1324,10 +1324,21 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			} else {
 				l.moduleSymbolTable.AddSymbol(name, argument)
 			}
-		case constant.Constant, ir.Instruction:
-			alloca := blk.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case ir.Instruction:
+			if blk != nil {
+				// alloca := blk.NewAlloca(expr.Type())
+				// blk.NewStore(expr, alloca)
+				l.moduleSymbolTable.AddSymbol(name, expr)
+			}
+			l.moduleSymbolTable.AddSymbol(name, expr)
+		case constant.Constant:
+			if blk != nil {
+				alloca := blk.NewAlloca(expr.Type())
+				blk.NewStore(expr, alloca)
+				l.moduleSymbolTable.AddSymbol(name, alloca)
+			}
+			def := l.module.NewGlobalDef("", argument)
+			l.moduleSymbolTable.AddSymbol(name, def)
 		default:
 			fmt.Printf("argument: %v\n", argument)
 			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
@@ -1357,10 +1368,21 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
 				l.moduleSymbolTable.AddSymbol(name, ptr)
 			}
-		case constant.Constant, ir.Instruction:
-			alloca := blk.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case ir.Instruction:
+			if blk != nil {
+				// alloca := blk.NewAlloca(expr.Type())
+				// blk.NewStore(expr, alloca)
+				l.moduleSymbolTable.AddSymbol(name, expr)
+			}
+			l.moduleSymbolTable.AddSymbol(name, expr)
+		case constant.Constant:
+			if blk != nil {
+				alloca := blk.NewAlloca(expr.Type())
+				blk.NewStore(expr, alloca)
+				l.moduleSymbolTable.AddSymbol(name, alloca)
+			}
+			def := l.module.NewGlobalDef("", argument)
+			l.moduleSymbolTable.AddSymbol(name, def)
 		default:
 			fmt.Printf("argument: %v\n", argument)
 			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
