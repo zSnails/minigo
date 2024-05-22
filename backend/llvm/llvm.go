@@ -1197,12 +1197,13 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
 		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
+		fmt.Printf("expr: %v\n", expr)
 
 		switch argument := expr.(type) {
 		case *ir.InstGetElementPtr, *ir.Global:
 			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
 			l.moduleSymbolTable.AddSymbol(name, ptr)
-		case constant.Constant, *ir.InstAdd:
+		case constant.Constant, ir.Instruction:
 			alloca := blk.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
