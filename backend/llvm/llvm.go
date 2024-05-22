@@ -197,11 +197,6 @@ func (l *LlvmBackend) VisitBooleanOperation(ctx *grammar.BooleanOperationContext
 	panic("unimplemented")
 }
 
-// VisitBreakStatement implements grammar.MinigoVisitor.
-func (l *LlvmBackend) VisitBreakStatement(ctx *grammar.BreakStatementContext) interface{} {
-	panic("unimplemented")
-}
-
 // VisitCapCall implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
 	panic("unimplemented")
