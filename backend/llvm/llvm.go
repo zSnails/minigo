@@ -369,7 +369,6 @@ func (l *LlvmBackend) VisitFloatLiteral(ctx *grammar.FloatLiteralContext) interf
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("val: %v\n", val)
 
 	return constant.NewFloat(types.Double, val)
 }
@@ -1283,7 +1282,6 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
 		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
-		fmt.Printf("expr: %v\n", expr)
 
 		switch argument := expr.(type) {
 		case *ir.InstGetElementPtr, *ir.Global:
