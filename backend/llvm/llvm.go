@@ -869,12 +869,11 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 
 		expr := l.Visit(rhs.Expression(idx)).(value.Value)
 		switch expr := expr.(type) {
-		case *ir.InstAdd, *ir.InstCall:
+		case *ir.InstAdd, *ir.InstCall, constant.Constant, ir.Instruction:
 			blk.NewStore(expr, symbol)
 		case *ir.Global:
-			panic("TODO: implement string assignment")
-			// blk.NewGetElementPtr(types.I8, expr, zero)
-			// ptr.SetName(name)
+			ptr := blk.NewGetElementPtr(types.I8, expr, zero)
+			l.moduleSymbolTable.Replace(name, ptr)
 		default:
 			fmt.Printf("symbol: %v\n", symbol)
 			fmt.Printf("expr: %v\n", expr)
