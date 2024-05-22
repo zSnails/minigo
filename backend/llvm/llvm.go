@@ -1010,15 +1010,25 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	fn, _ := l.funcStack.Peek()
 	blk, _ := l.blockStack.Peek()
 
+	nblk := fn.NewBlock("")
+	blk.NewBr(nblk)
+
+	if fn.Name() == "main" {
+		return nblk.NewRet(zero)
+	}
+
 	if expr := ctx.Expression(); expr != nil {
 		expr := l.Visit(expr).(value.Value)
 		if types.IsPointer(expr.Type()) {
-			load := blk.NewLoad(fn.Sig.RetType, expr)
-			return blk.NewRet(load)
+			load := nblk.NewLoad(fn.Sig.RetType, expr)
+			return nblk.NewRet(load)
 		}
-		return blk.NewRet(expr)
+		return nblk.NewRet(expr)
 	}
-	return blk.NewRet(nil)
+
+	defer l.blockStack.Push(fn.NewBlock("sex"))
+
+	return nblk.NewRet(nil)
 }
 
 var typeMap = map[string]types.Type{
