@@ -1116,20 +1116,25 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	nblk := fn.NewBlock("")
 	blk.NewBr(nblk)
 
+    lk := fn.NewBlock("")
+    lk.NewBr(lk)
+
 	if fn.Name() == "main" {
+        l.blockStack.Push(lk)
 		return nblk.NewRet(zero)
 	}
 
 	if expr := ctx.Expression(); expr != nil {
 		expr := l.Visit(expr).(value.Value)
 		if types.IsPointer(expr.Type()) {
+
+            l.blockStack.Push(lk)
 			load := nblk.NewLoad(fn.Sig.RetType, expr)
 			return nblk.NewRet(load)
 		}
+        l.blockStack.Push(lk)
 		return nblk.NewRet(expr)
 	}
-
-	defer l.blockStack.Push(fn.NewBlock("sex"))
 
 	return nblk.NewRet(nil)
 }
