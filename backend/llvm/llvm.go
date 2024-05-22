@@ -557,14 +557,20 @@ func (l *LlvmBackend) VisitIfElseBlock(ctx *grammar.IfElseBlockContext) interfac
 
 	l.blockStack.Push(True)
 	l.Visit(ctx.GetFirstBlock())
-	l.blockStack.Pop()
+	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
-	l.blockStack.Push(False)
 	l.Visit(ctx.GetLastBlock())
-	l.blockStack.Pop()
-
+	elseBlock, _ := l.blockStack.Pop()
 	Done := fn.NewBlock("")
+	l.blockStack.Push(False)
+
+	if ifBlock != nil && ifBlock.Term == nil {
+		ifBlock.NewBr(False)
+	}
+	if elseBlock != nil && elseBlock.Term == nil {
+		elseBlock.NewBr(False)
+	}
 	blk.NewCondBr(expr, True, False)
 
 	if True.Term == nil {
@@ -594,7 +600,7 @@ func (l *LlvmBackend) VisitIfElseIf(ctx *grammar.IfElseIfContext) interface{} {
 
 	l.blockStack.Push(True)
 	l.Visit(ctx.Block())
-	l.blockStack.Pop()
+	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
 	l.blockStack.Push(False)
@@ -602,9 +608,14 @@ func (l *LlvmBackend) VisitIfElseIf(ctx *grammar.IfElseIfContext) interface{} {
 	toConnect, _ := l.blockStack.Pop()
 
 	Done := fn.NewBlock("")
-	if toConnect.Term == nil {
+	if toConnect != nil && toConnect.Term == nil {
 		toConnect.NewBr(Done)
 	}
+
+	if ifBlock != nil && ifBlock.Term == nil {
+		ifBlock.NewBr(Done)
+	}
+
 	blk.NewCondBr(expr, True, False)
 
 	if True.Term == nil {
@@ -634,14 +645,20 @@ func (l *LlvmBackend) VisitIfSimpleElseBlock(ctx *grammar.IfSimpleElseBlockConte
 
 	l.blockStack.Push(True)
 	l.Visit(ctx.GetFirstBlock())
-	l.blockStack.Pop()
+	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
 	l.blockStack.Push(False)
 	l.Visit(ctx.GetLastBlock())
-	l.blockStack.Pop()
+	elseBlock, _ := l.blockStack.Pop()
 
 	Done := fn.NewBlock("")
+	if ifBlock != nil && ifBlock.Term == nil {
+		ifBlock.NewBr(Done)
+	}
+	if elseBlock != nil && elseBlock.Term == nil {
+		elseBlock.NewBr(Done)
+	}
 	blk.NewCondBr(expr, True, False)
 	if True.Term == nil {
 		True.NewBr(Done)
@@ -669,25 +686,25 @@ func (l *LlvmBackend) VisitIfSimpleElseIf(ctx *grammar.IfSimpleElseIfContext) in
 	True := fn.NewBlock("")
 	l.blockStack.Push(True)
 	l.Visit(ctx.Block())
-	l.blockStack.Pop()
+	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
 	l.blockStack.Push(False)
 	l.Visit(ctx.IfStatement())
 	got, _ := l.blockStack.Peek()
 
-	// Done := fn.NewBlock("sex")
-	// if got.Term == nil {
-	// 	got.NewBr(Done)
-	// }
-
 	blk.NewCondBr(expr, True, False)
 	if True.Term == nil {
 		// True.NewBr(Done)
 		True.NewBr(got)
 	}
+
 	if False.Term == nil {
 		False.NewBr(got)
+	}
+
+	if ifBlock != nil && ifBlock.Term == nil {
+		ifBlock.NewBr(got)
 	}
 	// l.blockStack.Push(Done)
 
@@ -709,8 +726,12 @@ func (l *LlvmBackend) VisitIfSimpleNoElse(ctx *grammar.IfSimpleNoElseContext) in
 	True := fn.NewBlock("")
 	l.blockStack.Push(True)
 	l.Visit(ctx.Block())
-	l.blockStack.Pop()
+	s, _ := l.blockStack.Pop()
 	Done := fn.NewBlock("")
+	if s != nil && s.Term == nil {
+		s.NewBr(Done)
+	}
+
 	blk.NewCondBr(expr, True, Done)
 	if True.Term == nil {
 		True.NewBr(Done)
@@ -734,9 +755,12 @@ func (l *LlvmBackend) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionCon
 	then := fn.NewBlock("")
 	l.blockStack.Push(then)
 	l.Visit(ctx.Block())
-	l.blockStack.Pop()
+	s, _ := l.blockStack.Pop()
 
 	end := fn.NewBlock("")
+	if s != nil && s.Term == nil {
+		s.NewBr(end)
+	}
 
 	blk.NewCondBr(expr, then, end)
 	if then.Term == nil {
