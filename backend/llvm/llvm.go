@@ -792,7 +792,8 @@ func (l *LlvmBackend) VisitInterpretedStringLiteral(ctx *grammar.InterpretedStri
 	if err != nil {
 		panic(err)
 	}
-	return l.module.NewGlobalDef("", constant.NewCharArrayFromString(makeCstr(unquoted)))
+	car := constant.NewCharArrayFromString(makeCstr(unquoted))
+	return l.module.NewGlobalDef("", car)
 }
 
 // VisitLenCall implements grammar.MinigoVisitor.
