@@ -250,34 +250,34 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 	switch {
 	case ctx.COMPARISON() != nil:
 		if left.Type() == types.Double {
-			return fn.NewFCmp(enum.FPredOEQ, left, right)
+			return blk.NewFCmp(enum.FPredOEQ, left, right)
 		}
-		return fn.NewICmp(enum.IPredEQ, left, right)
+		return blk.NewICmp(enum.IPredEQ, left, right)
 	case ctx.GREATERTHAN() != nil:
 		if left.Type() == types.Double {
-			return fn.NewFCmp(enum.FPredOGT, left, right)
+			return blk.NewFCmp(enum.FPredOGT, left, right)
 		}
-		return fn.NewICmp(enum.IPredSGT, left, right)
+		return blk.NewICmp(enum.IPredSGT, left, right)
 	case ctx.LESSTHAN() != nil:
 		if left.Type() == types.Double {
-			return fn.NewFCmp(enum.FPredOLT, left, right)
+			return blk.NewFCmp(enum.FPredOLT, left, right)
 		}
-		return fn.NewICmp(enum.IPredSLT, left, right)
+		return blk.NewICmp(enum.IPredSLT, left, right)
 	case ctx.GREATERTHANEQUAL() != nil:
 		if left.Type() == types.Double {
-			return fn.NewFCmp(enum.FPredOGE, left, right)
+			return blk.NewFCmp(enum.FPredOGE, left, right)
 		}
-		return fn.NewICmp(enum.IPredSGE, left, right)
+		return blk.NewICmp(enum.IPredSGE, left, right)
 	case ctx.LESSTHANEQUAL() != nil:
 		if left.Type() == types.Double {
-			return fn.NewFCmp(enum.FPredOLE, left, right)
+			return blk.NewFCmp(enum.FPredOLE, left, right)
 		}
-		return fn.NewICmp(enum.IPredSLE, left, right)
+		return blk.NewICmp(enum.IPredSLE, left, right)
 	case ctx.NEGATION() != nil:
 		if left.Type() == types.Double {
-			return fn.NewFCmp(enum.FPredONE, left, right)
+			return blk.NewFCmp(enum.FPredONE, left, right)
 		}
-		return fn.NewICmp(enum.IPredNE, left, right)
+		return blk.NewICmp(enum.IPredNE, left, right)
 	}
 
 	panic("unreachable")
