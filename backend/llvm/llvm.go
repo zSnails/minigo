@@ -730,40 +730,10 @@ func (l *LlvmBackend) VisitIndex(ctx *grammar.IndexContext) interface{} {
 func (l *LlvmBackend) VisitBreakStatement(ctx *grammar.BreakStatementContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 	loop, err := l.loopStack.Pop()
-    if err != nil {
-        panic(err)
-    }
-	blk.NewBr(loop)
-	return nil
-}
-
-// VisitInfiniteFor implements grammar.MinigoVisitor.
-func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interface{} {
-	blk, _ := l.blockStack.Peek()
-	fn, _ := l.funcStack.Peek()
-
-	_for := fn.NewBlock("")
-	end := ir.NewBlock("")
-
-	blk.NewBr(_for)
-
-	l.blockStack.Push(_for)
-	l.loopStack.Push(end)
-
-	l.Visit(ctx.Block())
-
-	got, _ := l.blockStack.Peek()
-	if got.Term == nil {
-		got.NewBr(_for)
+	if err != nil {
+		panic(err)
 	}
-
-	// l.loopStack.Peek()
-
-	end.Parent = fn.Func
-	fn.Blocks = append(fn.Blocks, end)
-
-	l.blockStack.Push(end)
-
+	blk.NewBr(loop)
 	return nil
 }
 
