@@ -812,7 +812,7 @@ func (l *LlvmBackend) VisitLiteralOperand(ctx *grammar.LiteralOperandContext) in
 
 // VisitLoopStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitLoopStatement(ctx *grammar.LoopStatementContext) interface{} {
-	panic("unimplemented")
+	return l.Visit(ctx.Loop())
 }
 
 // VisitMemberAccessor implements grammar.MinigoVisitor.
