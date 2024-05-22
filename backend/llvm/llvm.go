@@ -1209,9 +1209,13 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 
 		switch argument := expr.(type) {
 		case *ir.InstGetElementPtr, *ir.Global:
-			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-			l.moduleSymbolTable.AddSymbol(name, ptr)
-		case constant.Constant, *ir.InstAdd:
+			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
+				l.moduleSymbolTable.AddSymbol(name, argument)
+			} else {
+				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+				l.moduleSymbolTable.AddSymbol(name, ptr)
+			}
+		case constant.Constant, ir.Instruction:
 			alloca := blk.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
@@ -1251,7 +1255,7 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 		case *ir.InstGetElementPtr, *ir.Global:
 			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
 			l.moduleSymbolTable.AddSymbol(name, ptr)
-		case constant.Constant, *ir.InstAdd:
+		case constant.Constant, ir.Instruction:
 			alloca := blk.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
