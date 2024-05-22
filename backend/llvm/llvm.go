@@ -25,10 +25,34 @@ type LlvmBackend struct {
 	module            *ir.Module
 	symbolTable       *symboltable.SymbolTable
 	moduleSymbolTable *llTable
-	blockStack        *stack.Stack[*ir.Block]
-	funcStack         *stack.Stack[*Func]
+	// loopQueue *arrayqueue.Queue[*ir.Block]
+	loopStack  *stack.Stack[*ir.Block]
+	blockStack *stack.Stack[*ir.Block]
+	funcStack  *stack.Stack[*Func]
 	// TODO: figure out the correct type for stack values
 	// symbolStack *stack.Stack[]
+}
+
+// VisitNegativeExpression implements grammar.MinigoVisitor.
+func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionContext) interface{} {
+	blk, _ := l.blockStack.Peek()
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	switch expr.(type) {
+	case *constant.Float:
+		return blk.NewFSub(zerof, expr)
+	}
+	return blk.NewSub(zero, expr)
+}
+
+// VisitPositiveExpression implements grammar.MinigoVisitor.
+func (l *LlvmBackend) VisitPositiveExpression(ctx *grammar.PositiveExpressionContext) interface{} {
+	blk, _ := l.blockStack.Peek()
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	switch expr.(type) {
+	case *constant.Float:
+		return blk.NewFAdd(zerof, expr)
+	}
+	return blk.NewSub(zero, expr)
 }
 
 // VisitFuncDef implements grammar.MinigoVisitor.
