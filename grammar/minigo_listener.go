@@ -94,6 +94,9 @@ type MinigoListener interface {
 	// EnterIdentifierList is called when entering the identifierList production.
 	EnterIdentifierList(c *IdentifierListContext)
 
+	// EnterNegativeExpression is called when entering the negativeExpression production.
+	EnterNegativeExpression(c *NegativeExpressionContext)
+
 	// EnterComparison is called when entering the comparison production.
 	EnterComparison(c *ComparisonContext)
 
@@ -105,6 +108,9 @@ type MinigoListener interface {
 
 	// EnterOperationPrecedence2 is called when entering the operationPrecedence2 production.
 	EnterOperationPrecedence2(c *OperationPrecedence2Context)
+
+	// EnterPositiveExpression is called when entering the positiveExpression production.
+	EnterPositiveExpression(c *PositiveExpressionContext)
 
 	// EnterNotExpression is called when entering the notExpression production.
 	EnterNotExpression(c *NotExpressionContext)
@@ -388,6 +394,9 @@ type MinigoListener interface {
 	// ExitIdentifierList is called when exiting the identifierList production.
 	ExitIdentifierList(c *IdentifierListContext)
 
+	// ExitNegativeExpression is called when exiting the negativeExpression production.
+	ExitNegativeExpression(c *NegativeExpressionContext)
+
 	// ExitComparison is called when exiting the comparison production.
 	ExitComparison(c *ComparisonContext)
 
@@ -399,6 +408,9 @@ type MinigoListener interface {
 
 	// ExitOperationPrecedence2 is called when exiting the operationPrecedence2 production.
 	ExitOperationPrecedence2(c *OperationPrecedence2Context)
+
+	// ExitPositiveExpression is called when exiting the positiveExpression production.
+	ExitPositiveExpression(c *PositiveExpressionContext)
 
 	// ExitNotExpression is called when exiting the notExpression production.
 	ExitNotExpression(c *NotExpressionContext)

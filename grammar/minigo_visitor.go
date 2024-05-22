@@ -94,6 +94,9 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#identifierList.
 	VisitIdentifierList(ctx *IdentifierListContext) interface{}
 
+	// Visit a parse tree produced by MinigoParser#negativeExpression.
+	VisitNegativeExpression(ctx *NegativeExpressionContext) interface{}
+
 	// Visit a parse tree produced by MinigoParser#comparison.
 	VisitComparison(ctx *ComparisonContext) interface{}
 
@@ -105,6 +108,9 @@ type MinigoVisitor interface {
 
 	// Visit a parse tree produced by MinigoParser#operationPrecedence2.
 	VisitOperationPrecedence2(ctx *OperationPrecedence2Context) interface{}
+
+	// Visit a parse tree produced by MinigoParser#positiveExpression.
+	VisitPositiveExpression(ctx *PositiveExpressionContext) interface{}
 
 	// Visit a parse tree produced by MinigoParser#notExpression.
 	VisitNotExpression(ctx *NotExpressionContext) interface{}

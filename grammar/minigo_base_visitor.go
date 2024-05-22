@@ -123,6 +123,10 @@ func (v *BaseMinigoVisitor) VisitIdentifierList(ctx *IdentifierListContext) inte
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseMinigoVisitor) VisitNegativeExpression(ctx *NegativeExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseMinigoVisitor) VisitComparison(ctx *ComparisonContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -136,6 +140,10 @@ func (v *BaseMinigoVisitor) VisitExpressionPrimaryExpression(ctx *ExpressionPrim
 }
 
 func (v *BaseMinigoVisitor) VisitOperationPrecedence2(ctx *OperationPrecedence2Context) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMinigoVisitor) VisitPositiveExpression(ctx *PositiveExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

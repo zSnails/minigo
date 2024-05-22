@@ -194,6 +194,12 @@ func (s *BaseMinigoListener) EnterIdentifierList(ctx *IdentifierListContext) {}
 // ExitIdentifierList is called when production identifierList is exited.
 func (s *BaseMinigoListener) ExitIdentifierList(ctx *IdentifierListContext) {}
 
+// EnterNegativeExpression is called when production negativeExpression is entered.
+func (s *BaseMinigoListener) EnterNegativeExpression(ctx *NegativeExpressionContext) {}
+
+// ExitNegativeExpression is called when production negativeExpression is exited.
+func (s *BaseMinigoListener) ExitNegativeExpression(ctx *NegativeExpressionContext) {}
+
 // EnterComparison is called when production comparison is entered.
 func (s *BaseMinigoListener) EnterComparison(ctx *ComparisonContext) {}
 
@@ -219,6 +225,12 @@ func (s *BaseMinigoListener) EnterOperationPrecedence2(ctx *OperationPrecedence2
 
 // ExitOperationPrecedence2 is called when production operationPrecedence2 is exited.
 func (s *BaseMinigoListener) ExitOperationPrecedence2(ctx *OperationPrecedence2Context) {}
+
+// EnterPositiveExpression is called when production positiveExpression is entered.
+func (s *BaseMinigoListener) EnterPositiveExpression(ctx *PositiveExpressionContext) {}
+
+// ExitPositiveExpression is called when production positiveExpression is exited.
+func (s *BaseMinigoListener) ExitPositiveExpression(ctx *PositiveExpressionContext) {}
 
 // EnterNotExpression is called when production notExpression is entered.
 func (s *BaseMinigoListener) EnterNotExpression(ctx *NotExpressionContext) {}

@@ -62,13 +62,14 @@ structMemDecls: singleVarDeclNoExps SEMICOLON (singleVarDeclNoExps SEMICOLON)*
 identifierList: IDENTIFIER (COMMA IDENTIFIER)*
               ;
 
-expression: left=expression (TIMES | DIV | MOD) right=expression #operationPrecedence1
+
+expression: primaryExpression #expressionPrimaryExpression
+          | left=expression (TIMES | DIV | MOD) right=expression #operationPrecedence1
           | left=expression (LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET) right=expression #operationPrecedence2
           | left=expression (LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | COMPARISON | NEGATION) right=expression #comparison
           | left=expression (AND | OR) right=expression #booleanOperation
-          | primaryExpression #expressionPrimaryExpression
-          // | PLUS expression #plusExpression
-          // | MINUS expression #minusExpression
+          | MINUS expression #negativeExpression
+          | PLUS expression #positiveExpression
           | NOT expression #notExpression
           | CARET expression #caretExpression
           ;
@@ -223,7 +224,6 @@ RAWSTRINGLITERAL: '`'(.)*?'`';
 ESCAPEDSEQUENCES: ('\\n'|'\\r'|'\\t'|'\\v');
 RUNELITERAL: '\'' ([a-zA-Z]|ESCAPEDSEQUENCES) '\'';
 
-FLOATLITERAL: '-'?[0-9]+ '.' [0-9]+;
 NOT: '!';
 OR: '||';
 AND: '&&';
@@ -247,8 +247,9 @@ TIMES: '*';
 LEFTCURLYBRACE: '{';
 RIGHTCURLYBRACE: '}';
 STRUCT: 'struct';
-INTLITERAL: '-'?[0-9]+;
-HEXINTLITERAL: '-'?'0'[xX][0-9a-fA-F]+;
+INTLITERAL: [0-9]+;
+HEXINTLITERAL: '0'[xX][0-9a-fA-F]+;
+FLOATLITERAL: [0-9]+ '.' [0-9]+;
 LEFTBRACKET: '[';
 RIGHTBRACKET: ']';
 COMMA: ',';
