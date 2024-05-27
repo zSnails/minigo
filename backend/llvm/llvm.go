@@ -1382,11 +1382,17 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			alloca := blk.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
-		case *ir.Global:
-			alloca := blk.NewAlloca(argument.Type())
-			load := blk.NewLoad(argument.Type(), argument)
-			blk.NewStore(load, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
+			switch arg := argument.ContentType.(type) {
+			case *types.ArrayType:
+				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
+				l.moduleSymbolTable.AddSymbol(name, ptr)
+			default:
+				alloca := blk.NewAlloca(argument.Type())
+				load := blk.NewLoad(argument.Type(), argument)
+				blk.NewStore(load, alloca)
+				l.moduleSymbolTable.AddSymbol(name, alloca)
+			}
 		case *ir.InstGetElementPtr:
 			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
 				l.moduleSymbolTable.AddSymbol(name, argument)
@@ -1430,11 +1436,17 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 			alloca := blk.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
-		case *ir.Global:
-			alloca := blk.NewAlloca(argument.Type())
-			load := blk.NewLoad(argument.Type(), argument)
-			blk.NewStore(load, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
+			switch arg := argument.ContentType.(type) {
+			case *types.ArrayType:
+				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
+				l.moduleSymbolTable.AddSymbol(name, ptr)
+			default:
+				alloca := blk.NewAlloca(argument.Type())
+				load := blk.NewLoad(argument.Type(), argument)
+				blk.NewStore(load, alloca)
+				l.moduleSymbolTable.AddSymbol(name, alloca)
+			}
 		case *ir.InstGetElementPtr:
 			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
 				l.moduleSymbolTable.AddSymbol(name, argument)
@@ -1493,11 +1505,26 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 			alloca := blk.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
-		case *ir.Global:
-			alloca := blk.NewAlloca(argument.Type())
-			load := blk.NewLoad(argument.Type(), argument)
-			blk.NewStore(load, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
+			switch arg := argument.ContentType.(type) {
+			case *types.ArrayType:
+				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
+				l.moduleSymbolTable.AddSymbol(name, ptr)
+			default:
+				alloca := blk.NewAlloca(argument.Type())
+				load := blk.NewLoad(argument.Type(), argument)
+				blk.NewStore(load, alloca)
+				l.moduleSymbolTable.AddSymbol(name, alloca)
+			}
+			// if f, ok := argument.ContentType.(*types.ArrayType); ok {
+			// 	ptr := blk.NewGetElementPtr(f.ElemType, argument, zero)
+			// 	l.moduleSymbolTable.AddSymbol(name, ptr)
+			// } else {
+			// 	alloca := blk.NewAlloca(argument.Type())
+			// 	load := blk.NewLoad(argument.Type(), argument)
+			// 	blk.NewStore(load, alloca)
+			// 	l.moduleSymbolTable.AddSymbol(name, alloca)
+			// }
 		case *ir.InstGetElementPtr:
 			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
 				l.moduleSymbolTable.AddSymbol(name, argument)
