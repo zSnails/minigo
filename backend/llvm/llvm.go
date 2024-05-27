@@ -1105,7 +1105,18 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 
 // VisitRawStringLiteral implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitRawStringLiteral(ctx *grammar.RawStringLiteralContext) interface{} {
-	panic("unimplemented")
+	res := strings.Trim(ctx.RAWSTRINGLITERAL().GetText(), "`")
+	return l.module.NewGlobalDef("", constant.NewCharArrayFromString(makeCstr(res)))
+}
+
+// VisitInterpretedStringLiteral implements grammar.MinigoVisitor.
+func (l *LlvmBackend) VisitInterpretedStringLiteral(ctx *grammar.InterpretedStringLiteralContext) interface{} {
+	unquoted, err := strconv.Unquote(ctx.GetText())
+	if err != nil {
+		panic(err)
+	}
+	car := constant.NewCharArrayFromString(makeCstr(unquoted))
+	return l.module.NewGlobalDef("", car)
 }
 
 // VisitReturnStatement implements grammar.MinigoVisitor.
