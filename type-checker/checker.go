@@ -352,7 +352,10 @@ func (t *TypeChecker) VisitThreePartFor(ctx *grammar.ThreePartForContext) interf
 	t.Visit(first)
 	t.Visit(last)
 	expr := ctx.Expression()
-	_type := t.Visit(expr).(*symboltable.Symbol)
+	_type, ok := t.Visit(expr).(*symboltable.Symbol)
+	if !ok {
+		return nil
+	}
 	if getType(_type) != symboltable.Bool {
 		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as boolean expression", getType(_type)))
 	}
