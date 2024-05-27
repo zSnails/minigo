@@ -1317,28 +1317,32 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
 
 		switch argument := expr.(type) {
-		case *ir.InstGetElementPtr, *ir.Global:
-			if blk != nil {
+		case *ir.InstAlloca:
+			load := blk.NewLoad(argument.ElemType, expr)
+			alloca := blk.NewAlloca(argument.ElemType)
+			blk.NewStore(load, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.Global:
+			alloca := blk.NewAlloca(argument.Type())
+			load := blk.NewLoad(argument.Type(), argument)
+			blk.NewStore(load, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.InstGetElementPtr:
+			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
+				l.moduleSymbolTable.AddSymbol(name, argument)
+			} else {
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
 				l.moduleSymbolTable.AddSymbol(name, ptr)
-			} else {
-				l.moduleSymbolTable.AddSymbol(name, argument)
 			}
-		case ir.Instruction:
-			if blk != nil {
-				// alloca := blk.NewAlloca(expr.Type())
-				// blk.NewStore(expr, alloca)
-				l.moduleSymbolTable.AddSymbol(name, expr)
-			}
-			l.moduleSymbolTable.AddSymbol(name, expr)
 		case constant.Constant:
 			if blk != nil {
 				alloca := blk.NewAlloca(expr.Type())
 				blk.NewStore(expr, alloca)
 				l.moduleSymbolTable.AddSymbol(name, alloca)
+			} else {
+				def := l.module.NewGlobalDef("", argument)
+				l.moduleSymbolTable.AddSymbol(name, def)
 			}
-			def := l.module.NewGlobalDef("", argument)
-			l.moduleSymbolTable.AddSymbol(name, def)
 		default:
 			fmt.Printf("argument: %v\n", argument)
 			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
@@ -1361,28 +1365,32 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
 
 		switch argument := expr.(type) {
-		case *ir.InstGetElementPtr, *ir.Global:
+		case *ir.InstAlloca:
+			load := blk.NewLoad(argument.ElemType, expr)
+			alloca := blk.NewAlloca(argument.ElemType)
+			blk.NewStore(load, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.Global:
+			alloca := blk.NewAlloca(argument.Type())
+			load := blk.NewLoad(argument.Type(), argument)
+			blk.NewStore(load, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.InstGetElementPtr:
 			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
 				l.moduleSymbolTable.AddSymbol(name, argument)
 			} else {
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
 				l.moduleSymbolTable.AddSymbol(name, ptr)
 			}
-		case ir.Instruction:
-			if blk != nil {
-				// alloca := blk.NewAlloca(expr.Type())
-				// blk.NewStore(expr, alloca)
-				l.moduleSymbolTable.AddSymbol(name, expr)
-			}
-			l.moduleSymbolTable.AddSymbol(name, expr)
 		case constant.Constant:
 			if blk != nil {
 				alloca := blk.NewAlloca(expr.Type())
 				blk.NewStore(expr, alloca)
 				l.moduleSymbolTable.AddSymbol(name, alloca)
+			} else {
+				def := l.module.NewGlobalDef("", argument)
+				l.moduleSymbolTable.AddSymbol(name, def)
 			}
-			def := l.module.NewGlobalDef("", argument)
-			l.moduleSymbolTable.AddSymbol(name, def)
 		default:
 			fmt.Printf("argument: %v\n", argument)
 			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
@@ -1415,17 +1423,37 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 		name := ident.GetText()
 		expr := l.Visit(ctx.GetRight().Expression(idx)).(value.Value)
 
+		fmt.Printf("expr: %v\n", expr)
+		fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(expr).String())
+		fmt.Printf("name: %v\n", name)
+
 		switch argument := expr.(type) {
-		case *ir.InstGetElementPtr, *ir.Global:
-			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-			l.moduleSymbolTable.AddSymbol(name, ptr)
-		case constant.Constant, ir.Instruction:
+		case *ir.InstAlloca:
+			load := blk.NewLoad(argument.ElemType, expr)
+			alloca := blk.NewAlloca(argument.ElemType)
+			blk.NewStore(load, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.Global:
+			alloca := blk.NewAlloca(argument.Type())
+			load := blk.NewLoad(argument.Type(), argument)
+			blk.NewStore(load, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.InstGetElementPtr:
+			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
+				l.moduleSymbolTable.AddSymbol(name, argument)
+			} else {
+				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+				l.moduleSymbolTable.AddSymbol(name, ptr)
+			}
+		case constant.Constant:
 			alloca := blk.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
+		case *ir.InstLoad, *ir.InstCall, *ir.InstAdd:
+			l.moduleSymbolTable.AddSymbol(name, expr)
 		default:
-			fmt.Printf("argument: %v\n", argument)
-			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
+			fmt.Printf("expr: %v\n", argument)
+			fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(argument).String())
 			panic("unimplemented")
 		}
 	}
