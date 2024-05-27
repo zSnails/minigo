@@ -1285,7 +1285,56 @@ func (l *LlvmBackend) VisitTerminal(node antlr.TerminalNode) interface{} {
 
 // VisitThreePartFor implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitThreePartFor(ctx *grammar.ThreePartForContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	l.Visit(ctx.GetFirst())
+
+	_for := fn.NewBlock("")
+	end := ir.NewBlock("")
+
+	blk.NewBr(_for)
+
+	l.blockStack.Push(_for)
+	l.loopStack.Push(end)
+
+	l.Visit(ctx.Block())
+	l.Visit(ctx.GetLast())
+
+	l.loopStack.Pop()
+
+	expr := l.Visit(ctx.Expression()).(value.Value)
+
+	got, _ := l.blockStack.Peek()
+	if got.Term == nil {
+		// if types.IsPointer(expr.Type()) {
+		// 	expr = blk.NewLoad(types.I1, expr)
+		// }
+		got.NewCondBr(expr, _for, end)
+	}
+
+	end.Parent = fn.Func
+	fn.Blocks = append(fn.Blocks, end)
+
+	l.blockStack.Push(end)
+
+	return nil
+	// fn, _ := l.funcStack.Peek()
+	// blk, _ := l.blockStack.Peek()
+
+	// l.Visit(ctx.GetFirst())
+
+	// _for := fn.NewBlock("_infinite_for" + ctx.GetStart().String())
+	// end := fn.NewBlock("_infinite_for_end" + ctx.GetStart().String())
+	// blk.NewBr(_for)
+	// _for.NewBr(end)
+
+	// // This should run before the for
+	// l.Visit(ctx.Expression())
+	// // Add to final block
+	// l.Visit(ctx.GetLast())
+
+	// return nil
 }
 
 // VisitTopDeclarationList implements grammar.MinigoVisitor.
