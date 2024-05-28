@@ -1409,6 +1409,10 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 				def := l.module.NewGlobalDef("", argument)
 				l.moduleSymbolTable.AddSymbol(name, def)
 			}
+		case ir.Instruction:
+			alloca := blk.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
 		default:
 			fmt.Printf("argument: %v\n", argument)
 			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
@@ -1463,6 +1467,11 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 				def := l.module.NewGlobalDef("", argument)
 				l.moduleSymbolTable.AddSymbol(name, def)
 			}
+
+		case ir.Instruction:
+			alloca := blk.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
 		default:
 			fmt.Printf("argument: %v\n", argument)
 			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
@@ -1536,8 +1545,10 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 			alloca := blk.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
-		case *ir.InstLoad, *ir.InstCall, *ir.InstAdd:
-			l.moduleSymbolTable.AddSymbol(name, expr)
+		case ir.Instruction:
+			alloca := blk.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
 		default:
 			fmt.Printf("expr: %v\n", argument)
 			fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(argument).String())
