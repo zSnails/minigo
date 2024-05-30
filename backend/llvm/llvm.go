@@ -1129,9 +1129,9 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 					load := blk.NewLoad(v.Type(), v)
 					blk.NewCall(puts, load)
 				}
-            case *types.IntType:
-                load := blk.NewLoad(v.ElemType, v)
-                blk.NewCall(printf, basicBool, load)
+			case *types.IntType:
+				load := blk.NewLoad(v.ElemType, v)
+				blk.NewCall(printf, basicBool, load)
 			default:
 				fmt.Printf("reflect.TypeOf(v.ElemType): %v\n", reflect.TypeOf(v.ElemType))
 				fmt.Printf("v.ElemType: %v\n", v.ElemType)
