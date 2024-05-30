@@ -332,7 +332,7 @@ func (l *LlvmBackend) VisitEmptyTypeDeclaration(ctx *grammar.EmptyTypeDeclaratio
 
 // VisitEmptyVariableDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitEmptyVariableDeclaration(ctx *grammar.EmptyVariableDeclarationContext) interface{} {
-	panic("unimplemented")
+	return nil
 }
 
 // VisitErrorNode implements grammar.MinigoVisitor.
