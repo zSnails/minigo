@@ -518,7 +518,14 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 
 // VisitIdentifierDeclType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIdentifierDeclType(ctx *grammar.IdentifierDeclTypeContext) interface{} {
-	panic("unimplemented")
+	typeName := ctx.IDENTIFIER().GetText()
+
+	got, ok := typeMap[typeName]
+	if !ok {
+		panic("unreachable")
+	}
+
+	return got.(types.Type)
 }
 
 // VisitIdentifierList implements grammar.MinigoVisitor.
