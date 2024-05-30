@@ -124,15 +124,17 @@ func (l *LlvmBackend) addBuiltIns() {
 	putchar = l.module.NewFunc("putchar", types.I8, ir.NewParam("", types.I8))
 	printf = l.module.NewFunc("printf", types.I64, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I64))
 	strcat = l.module.NewFunc("strcat", types.I8Ptr, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
+	strcmp = l.module.NewFunc("strcmp", types.I64, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
 
 	l.moduleSymbolTable.AddSymbol("printf", printf)
 	l.moduleSymbolTable.AddSymbol("putchar", putchar)
 	l.moduleSymbolTable.AddSymbol("puts", puts)
 	l.moduleSymbolTable.AddSymbol("strcat", strcat)
+	l.moduleSymbolTable.AddSymbol("strcmp", strcmp)
 
-	basicInt = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%d\x00"))
-	basicFloat = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%f\x00"))
-	basicBool = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%t\x00"))
+	basicInt = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%lld\n\x00"))
+	basicFloat = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%lf\n\x00"))
+	basicBool = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%b\n\x00"))
 
 }
 
