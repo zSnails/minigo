@@ -336,6 +336,8 @@ func (l *LlvmBackend) VisitExpressionPostDec(ctx *grammar.ExpressionPostDecConte
 	var temp value.Value
 	if types.IsPointer(expr.Type()) {
 		temp = blk.NewLoad(types.I64, expr)
+	} else {
+		temp = expr
 	}
 
 	result := blk.NewSub(temp, constant.NewInt(types.I64, 1))
