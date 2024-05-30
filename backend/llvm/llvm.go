@@ -1066,47 +1066,45 @@ var newline = constant.NewInt(types.I8, 0x0A)
 
 // VisitPrintlnStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext) interface{} {
-	// panic("TODO: fix println statement")
 	blk, _ := l.blockStack.Peek()
 
 	for _, expr := range ctx.ExpressionList().AllExpression() {
-		// innerString := l.Visit(expr).(value.Named)
-		// blk.NewCall(puts, innerString)
 		val := l.Visit(expr).(value.Value)
-		switch val := val.(type) {
-		case *ir.InstGetElementPtr, *ir.Global:
-			ptr := blk.NewGetElementPtr(types.I8, val, zero)
-			blk.NewCall(puts, ptr)
-		case *constant.Int:
-			blk.NewCall(printf, basicInt, val)
-			blk.NewCall(putchar, newline)
-		case *constant.Float:
-			blk.NewCall(printf, basicFloat, val)
-			blk.NewCall(putchar, newline)
-		case *ir.InstCall:
-			switch val.Type() {
-			case types.I1, types.I8, types.I64:
-				blk.NewCall(printf, basicInt, val)
-			case types.Double:
-				blk.NewCall(printf, basicFloat, val)
+		fmt.Printf("reflect.TypeOf(val).String(): %v\n", reflect.TypeOf(val).String())
+		switch v := val.(type) {
+		case *ir.Global:
+			blk.NewCall(puts, val)
+		case *ir.InstGetElementPtr:
+			blk.NewCall(puts, val)
+		case *ir.InstAlloca:
+			switch d := v.ElemType.(type) {
+			case *types.FloatType:
+				blk.NewCall(printf, basicFloat, v)
+			case *types.PointerType:
+				switch d.ElemType {
+				case types.I8:
+					load := blk.NewLoad(v.Type(), v)
+					blk.NewCall(puts, load)
+				}
+            case *types.IntType:
+                load := blk.NewLoad(v.ElemType, v)
+                blk.NewCall(printf, basicBool, load)
 			default:
-				fmt.Printf("val.Type(): %v\n", val.Type())
+				fmt.Printf("reflect.TypeOf(v.ElemType): %v\n", reflect.TypeOf(v.ElemType))
+				fmt.Printf("v.ElemType: %v\n", v.ElemType)
 				panic("unimplemented")
 			}
-
-			blk.NewCall(putchar, newline)
-		case *ir.InstAlloca:
-			load := blk.NewLoad(val.ElemType, val)
-			switch val.ElemType {
-			case types.I8, types.I64, types.I1:
-				blk.NewCall(printf, basicInt, load)
-			case types.Double:
-				blk.NewCall(printf, basicFloat, load)
-			}
-			blk.NewCall(putchar, newline)
-
+		case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
+			blk.NewCall(printf, basicFloat, val)
+		case *ir.InstAdd, *ir.InstSub, *ir.InstMul, *ir.InstSDiv, *ir.InstAnd, *ir.InstXor, *ir.InstOr:
+			blk.NewCall(printf, basicInt, val)
+		case *constant.Int:
+			blk.NewCall(printf, basicInt, val)
+		case *constant.Float:
+			blk.NewCall(printf, basicFloat, val)
 		default:
 			fmt.Printf("val: %v\n", val)
+			fmt.Printf("v: %v\n", v)
 			fmt.Printf("reflect.TypeOf(val).String(): %v\n", reflect.TypeOf(val).String())
 			panic("unimplemented")
 
