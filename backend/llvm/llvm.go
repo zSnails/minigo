@@ -392,17 +392,17 @@ func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 	l.moduleSymbolTable.AddSymbol(fn.Name(), fn)
 
 	_ = l.funcStack.Push(fn)
-	// l.blockStack = stack.NewStack[*ir.Block](100)
-	l.blockStack.Push(fn.body)
 	l.moduleSymbolTable.EnterScope()
 	l.Visit(ctx.Block())
 
-	if name := fn.Func.Name(); name != "main" {
+	name := fn.Func.Name()
+	if name != "main" && !unicode.IsUpper(rune(name[0])) {
 		fn.Func.Linkage = enum.LinkagePrivate
-	} else if fn.Func.Sig.RetType == types.Void && name != "main" {
+	}
+	if fn.Func.Sig.RetType == types.Void && name != "main" {
 		blk, _ := l.blockStack.Peek()
 		blk.NewRet(nil)
-	} else {
+	} else if name == "main" {
 		fn.Func.Sig.RetType = types.I64
 		l := len(fn.Blocks)
 		if l > 0 {
@@ -456,35 +456,45 @@ func (t *OpaquePointerType) BitSize() int64 {
 
 var opaquePtr types.Type = &OpaquePointerType{}
 
+var isdef = false
+
 // VisitFuncFrontDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) interface{} {
-	symbol, found := l.symbolTable.GetSymbol(ctx.IDENTIFIER().GetText())
-	if !found {
-		panic("unreachable")
-	}
-
-	var _type types.Type
-
-	if symbol.Type != nil {
-		_type = symbol.Type.LlvmType
-	} else {
-		_type = types.Void
-	}
+	funcName := ctx.IDENTIFIER().GetText()
 
 	var params []*ir.Param
-	for _, argument := range symbol.Members {
-		param := ir.NewParam(argument.Name, argument.Type.LlvmType)
-		l.moduleSymbolTable.AddSymbol(argument.Name, param)
-		params = append(params, param)
+	if fargs := ctx.FuncArgsDecls(); fargs != nil {
+		for _, param := range fargs.AllSingleVarDeclNoExps() {
+			for _, ident := range param.IdentifierList().AllIDENTIFIER() {
+				_type := l.Visit(param.DeclType()).(types.Type)
+				params = append(params, ir.NewParam(ident.GetText(), _type))
+			}
+		}
 	}
 
-	fn := l.module.NewFunc(symbol.Name, _type, params...)
-	entry := fn.NewBlock("")
+	var rt types.Type = types.Void
+	if typ := ctx.DeclType(); typ != nil {
+		rt = l.Visit(typ).(types.Type)
+	}
+
+	fn := l.module.NewFunc(funcName, rt, params...)
+
+	var entry *ir.Block
+	if !isdef {
+		entry = fn.NewBlock("")
+		for _, param := range params {
+			alloca := entry.NewAlloca(param.Type())
+			entry.NewStore(param, alloca)
+			// l.moduleSymbolTable.Replace(param.Name(), alloca)
+			l.moduleSymbolTable.AddSymbol(param.Name(), alloca)
+		}
+
+		l.blockStack.Push(entry)
+	}
 
 	return &Func{
 		Func: fn,
 		body: entry,
-		// idents: map[string]value.Value{},
 	}
 }
 
