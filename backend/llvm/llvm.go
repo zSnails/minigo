@@ -229,7 +229,10 @@ func (l *LlvmBackend) VisitChildren(node antlr.RuleNode) interface{} {
 
 	var result any // Always remember that this will just return the top level
 	for _, child := range children {
-		result = l.Visit(child.(antlr.ParseTree))
+		r := l.Visit(child.(antlr.ParseTree))
+		if r != nil {
+			result = r
+		}
 	}
 
 	return result
