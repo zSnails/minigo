@@ -1148,14 +1148,20 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 
 	if expr := ctx.Expression(); expr != nil {
 		expr := l.Visit(expr).(value.Value)
-		if types.IsPointer(expr.Type()) {
-
-			l.blockStack.Push(lk)
-			load := nblk.NewLoad(fn.Sig.RetType, expr)
+		switch expr := expr.(type) {
+		case *ir.Global:
+			ptr := nblk.NewGetElementPtr(expr.ContentType, expr, zero)
+			return nblk.NewRet(ptr)
+		case *ir.InstAlloca:
+			load := nblk.NewLoad(expr.ElemType, expr)
 			return nblk.NewRet(load)
+		case *ir.InstGetElementPtr:
+			return nblk.NewRet(expr)
+		case constant.Constant:
+			return nblk.NewRet(expr)
+		default:
+			fmt.Printf("reflect.TypeOf(expr): %v\n", reflect.TypeOf(expr))
 		}
-		l.blockStack.Push(lk)
-		return nblk.NewRet(expr)
 	}
 
 	return nblk.NewRet(nil)
