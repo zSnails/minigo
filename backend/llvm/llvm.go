@@ -1359,22 +1359,6 @@ func (l *LlvmBackend) VisitThreePartFor(ctx *grammar.ThreePartForContext) interf
 	l.blockStack.Push(end)
 
 	return nil
-	// fn, _ := l.funcStack.Peek()
-	// blk, _ := l.blockStack.Peek()
-
-	// l.Visit(ctx.GetFirst())
-
-	// _for := fn.NewBlock("_infinite_for" + ctx.GetStart().String())
-	// end := fn.NewBlock("_infinite_for_end" + ctx.GetStart().String())
-	// blk.NewBr(_for)
-	// _for.NewBr(end)
-
-	// // This should run before the for
-	// l.Visit(ctx.Expression())
-	// // Add to final block
-	// l.Visit(ctx.GetLast())
-
-	// return nil
 }
 
 // VisitTopDeclarationList implements grammar.MinigoVisitor.
