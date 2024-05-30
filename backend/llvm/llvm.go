@@ -355,10 +355,13 @@ func (l *LlvmBackend) VisitExpressionPostInc(ctx *grammar.ExpressionPostIncConte
 	var sex value.Value
 	if types.IsPointer(expr.Type()) {
 		sex = blk.NewLoad(types.I64, expr)
+		result := blk.NewAdd(sex, constant.NewInt(types.I64, 1))
+		blk.NewStore(result, expr)
+	} else {
+		sex = expr
+		blk.NewAdd(sex, constant.NewInt(types.I64, 1))
 	}
 
-	result := blk.NewAdd(sex, constant.NewInt(types.I64, 1))
-	blk.NewStore(result, expr)
 	return nil
 }
 
