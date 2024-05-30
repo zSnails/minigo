@@ -528,14 +528,13 @@ func (l *LlvmBackend) VisitIdentifierList(ctx *grammar.IdentifierListContext) in
 
 // VisitIdentifierOperand implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIdentifierOperand(ctx *grammar.IdentifierOperandContext) interface{} {
-	// Check if it's one of the built in types
 	name := ctx.IDENTIFIER().GetText()
 
 	switch name {
 	case "int":
 		return zero
 	case "float":
-		return constant.NewFloat(types.Double, 0.0)
+		return zerof
 	case "rune":
 		return constant.NewInt(types.I8, 0)
 	case "string":
