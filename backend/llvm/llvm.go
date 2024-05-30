@@ -25,68 +25,81 @@ const GLOBAL_SCOPE = 0
 type LlvmBackend struct {
 	listener          antlr.ErrorListener
 	module            *ir.Module
-	symbolTable       *symboltable.SymbolTable
 	moduleSymbolTable *llTable
-	// loopQueue *arrayqueue.Queue[*ir.Block]
-	loopStack  *stack.Stack[*ir.Block]
-	blockStack *stack.Stack[*ir.Block]
-	funcStack  *stack.Stack[*Func]
-	// TODO: figure out the correct type for stack values
-	// symbolStack *stack.Stack[]
+	loopStack         *stack.Stack[*ir.Block]
+	blockStack        *stack.Stack[*ir.Block]
+	funcStack         *stack.Stack[*Func]
 }
 
 // VisitNegativeExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionContext) interface{} {
 	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
 	expr := l.Visit(ctx.Expression()).(value.Value)
 	switch expr.(type) {
 	case *constant.Float:
-		return blk.NewFSub(zerof, expr)
+		{
+			alloca := fn.body.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			sub := blk.NewFSub(zerof, expr)
+			blk.NewStore(sub, alloca)
+			return alloca
+		}
+	case *constant.Int:
+		{
+			alloca := fn.body.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			sub := blk.NewSub(zero, expr)
+			blk.NewStore(sub, alloca)
+			return alloca
+		}
+	default:
+		panic("unreachable")
 	}
-	return blk.NewSub(zero, expr)
 }
 
 // VisitPositiveExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitPositiveExpression(ctx *grammar.PositiveExpressionContext) interface{} {
 	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
 	expr := l.Visit(ctx.Expression()).(value.Value)
 	switch expr.(type) {
 	case *constant.Float:
-		return blk.NewFAdd(zerof, expr)
+		{
+			alloca := fn.body.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			sub := blk.NewFAdd(zerof, expr)
+			blk.NewStore(sub, alloca)
+			return alloca
+		}
+	case *constant.Int:
+		{
+			alloca := fn.body.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+			sub := blk.NewAdd(zero, expr)
+			blk.NewStore(sub, alloca)
+			return alloca
+		}
+	default:
+		panic("unreachable")
 	}
-	return blk.NewSub(zero, expr)
 }
 
 // VisitFuncDef implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitFuncDef(ctx *grammar.FuncDefContext) interface{} {
-	symbol, found := l.symbolTable.GetSymbol(ctx.FuncFrontDecl().IDENTIFIER().GetText())
-	if !found {
-		panic("unreachable")
-	}
 
-	var _type types.Type
+	isdef = true
+	fn := l.Visit(ctx.FuncFrontDecl()).(*Func)
+	isdef = false
 
-	if symbol.Type != nil {
-		_type = symbol.Type.LlvmType
-	} else {
-		_type = types.Void
-	}
+	l.moduleSymbolTable.AddSymbol(fn.Name(), fn)
 
-	var params []*ir.Param
-	for _, argument := range symbol.Members {
-		param := ir.NewParam(argument.Name, argument.Type.LlvmType)
-		l.moduleSymbolTable.AddSymbol(argument.Name, param)
-		params = append(params, param)
-	}
-	fn := l.module.NewFunc(symbol.Name, _type, params...)
-	l.moduleSymbolTable.AddSymbol(symbol.Name, fn)
 	return fn
 }
 
 type Func struct {
 	*ir.Func
 	body *ir.Block
-	// idents map[string]value.Value
 }
 
 func (l *LlvmBackend) String() string {
@@ -1228,22 +1241,40 @@ func (l *LlvmBackend) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) in
 
 // VisitSingleVarDeclNoExps implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsContext) interface{} {
-	panic("unimplemented")
+
+	// blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	expr := l.Visit(ctx.DeclType()).(types.Type)
+
+	for _, ident := range ctx.IdentifierList().AllIDENTIFIER() {
+		name := ident.GetText()
+		if fn.body != nil {
+			alloca := fn.body.NewAlloca(expr)
+			l.moduleSymbolTable.AddSymbol(name, alloca)
+		} else {
+			def := l.module.NewGlobalDef("", constant.NewZeroInitializer(expr))
+			l.moduleSymbolTable.Replace(name, def)
+		}
+	}
+
+	return expr
 }
 
 // VisitSingleVarDeclsNoExpsDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSingleVarDeclsNoExpsDecl(ctx *grammar.SingleVarDeclsNoExpsDeclContext) interface{} {
-	panic("unimplemented")
+	return l.VisitChildren(ctx)
 }
 
 // VisitSliceDeclType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSliceDeclType(ctx *grammar.SliceDeclTypeContext) interface{} {
-	panic("unimplemented")
+	_type := l.Visit(ctx.DeclType()).(types.Type)
+	return types.NewArray(0, _type)
 }
 
 // VisitSliceType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSliceType(ctx *grammar.SliceTypeContext) interface{} {
-	panic("unimplemented")
+	return l.VisitChildren(ctx)
 }
 
 // VisitStatementList implements grammar.MinigoVisitor.
@@ -1377,7 +1408,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 		switch argument := expr.(type) {
 		case *ir.InstAlloca:
 			load := blk.NewLoad(argument.ElemType, expr)
-			alloca := blk.NewAlloca(argument.ElemType)
+			alloca := fn.body.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
 		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
@@ -1386,7 +1417,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
 				l.moduleSymbolTable.AddSymbol(name, ptr)
 			default:
-				alloca := blk.NewAlloca(argument.Type())
+				alloca := fn.body.NewAlloca(argument.Type())
 				load := blk.NewLoad(argument.Type(), argument)
 				blk.NewStore(load, alloca)
 				l.moduleSymbolTable.AddSymbol(name, alloca)
@@ -1400,7 +1431,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			}
 		case constant.Constant:
 			if blk != nil {
-				alloca := blk.NewAlloca(expr.Type())
+				alloca := fn.body.NewAlloca(expr.Type())
 				blk.NewStore(expr, alloca)
 				l.moduleSymbolTable.AddSymbol(name, alloca)
 			} else {
@@ -1408,7 +1439,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 				l.moduleSymbolTable.AddSymbol(name, def)
 			}
 		case ir.Instruction:
-			alloca := blk.NewAlloca(expr.Type())
+			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
 		default:
@@ -1435,7 +1466,7 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 		switch argument := expr.(type) {
 		case *ir.InstAlloca:
 			load := blk.NewLoad(argument.ElemType, expr)
-			alloca := blk.NewAlloca(argument.ElemType)
+			alloca := fn.body.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
 		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
@@ -1444,7 +1475,7 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
 				l.moduleSymbolTable.AddSymbol(name, ptr)
 			default:
-				alloca := blk.NewAlloca(argument.Type())
+				alloca := fn.body.NewAlloca(argument.Type())
 				load := blk.NewLoad(argument.Type(), argument)
 				blk.NewStore(load, alloca)
 				l.moduleSymbolTable.AddSymbol(name, alloca)
@@ -1458,16 +1489,15 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 			}
 		case constant.Constant:
 			if blk != nil {
-				alloca := blk.NewAlloca(expr.Type())
+				alloca := fn.body.NewAlloca(expr.Type())
 				blk.NewStore(expr, alloca)
 				l.moduleSymbolTable.AddSymbol(name, alloca)
 			} else {
 				def := l.module.NewGlobalDef("", argument)
 				l.moduleSymbolTable.AddSymbol(name, def)
 			}
-
 		case ir.Instruction:
-			alloca := blk.NewAlloca(expr.Type())
+			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
 		default:
@@ -1493,23 +1523,19 @@ func (l *LlvmBackend) VisitVariableDeclaration(ctx *grammar.VariableDeclarationC
 
 // VisitWalrusDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationContext) interface{} {
-	var blk *ir.Block
-	if l.blockStack != nil {
-		blk, _ = l.blockStack.Peek()
-	}
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
 
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 		name := ident.GetText()
+
 		expr := l.Visit(ctx.GetRight().Expression(idx)).(value.Value)
 
-		fmt.Printf("expr: %v\n", expr)
-		fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(expr).String())
-		fmt.Printf("name: %v\n", name)
-
+		fmt.Printf("reflect.TypeOf(expr): %v\n", reflect.TypeOf(expr))
 		switch argument := expr.(type) {
 		case *ir.InstAlloca:
 			load := blk.NewLoad(argument.ElemType, expr)
-			alloca := blk.NewAlloca(argument.ElemType)
+			alloca := fn.body.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
 		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
@@ -1518,33 +1544,33 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
 				l.moduleSymbolTable.AddSymbol(name, ptr)
 			default:
-				alloca := blk.NewAlloca(argument.Type())
+				alloca := fn.body.NewAlloca(argument.Type())
 				load := blk.NewLoad(argument.Type(), argument)
 				blk.NewStore(load, alloca)
 				l.moduleSymbolTable.AddSymbol(name, alloca)
 			}
-			// if f, ok := argument.ContentType.(*types.ArrayType); ok {
-			// 	ptr := blk.NewGetElementPtr(f.ElemType, argument, zero)
-			// 	l.moduleSymbolTable.AddSymbol(name, ptr)
-			// } else {
-			// 	alloca := blk.NewAlloca(argument.Type())
-			// 	load := blk.NewLoad(argument.Type(), argument)
-			// 	blk.NewStore(load, alloca)
-			// 	l.moduleSymbolTable.AddSymbol(name, alloca)
-			// }
 		case *ir.InstGetElementPtr:
 			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
 				l.moduleSymbolTable.AddSymbol(name, argument)
 			} else {
-				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-				l.moduleSymbolTable.AddSymbol(name, ptr)
+				switch e := argument.ElemType.(type) {
+				case *types.ArrayType:
+					ptr := blk.NewGetElementPtr(argument.ElemType, argument, zero)
+					alloca := fn.body.NewAlloca(e.ElemType)
+					load := blk.NewLoad(e.ElemType, ptr)
+					blk.NewStore(load, alloca)
+					l.moduleSymbolTable.AddSymbol(name, alloca)
+				default:
+					fmt.Printf("reflect.TypeOf(argument.ElemType): %v\n", reflect.TypeOf(argument.ElemType))
+					panic("unimplemented")
+				}
 			}
 		case constant.Constant:
-			alloca := blk.NewAlloca(expr.Type())
+			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
 		case ir.Instruction:
-			alloca := blk.NewAlloca(expr.Type())
+			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.moduleSymbolTable.AddSymbol(name, alloca)
 		default:
