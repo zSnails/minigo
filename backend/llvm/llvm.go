@@ -1543,6 +1543,10 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 					load := blk.NewLoad(e.ElemType, ptr)
 					blk.NewStore(load, alloca)
 					l.moduleSymbolTable.AddSymbol(name, alloca)
+				case *types.IntType:
+					alloca := fn.body.NewAlloca(expr.Type())
+					blk.NewStore(expr, alloca)
+					l.moduleSymbolTable.AddSymbol(name, alloca)
 				default:
 					fmt.Printf("reflect.TypeOf(argument.ElemType): %v\n", reflect.TypeOf(argument.ElemType))
 					panic("unimplemented")
