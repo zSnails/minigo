@@ -1003,14 +1003,13 @@ func (l *LlvmBackend) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 		return blk.NewSDiv(leftNode, rightNode)
 	case ctx.MOD() != nil:
 		if leftNode.Type() == types.Double {
-			// TODO: find a way of getting the modulo return blk.NewFDiv(leftNode, rightNode)
+			return blk.NewFRem(leftNode, rightNode)
 		}
-		// TODO: find a way of getting the modulo return blk.NewSDiv(leftNode, rightNode)
+
+		return blk.NewSRem(leftNode, rightNode)
 	default:
 		panic("unreachable")
 	}
-
-	return nil
 }
 
 // VisitOperationPrecedence2 implements grammar.MinigoVisitor.
