@@ -80,7 +80,7 @@ func main() {
 	}
 
 	// Backend code production
-	backend := llvm.New(typeChecker.SymbolTable, r.(antlr.ErrorListener))
+	backend := llvm.New(r.(antlr.ErrorListener))
 	backend.Visit(ctx)
 	backend.GetModule().SourceFilename = filename
 
