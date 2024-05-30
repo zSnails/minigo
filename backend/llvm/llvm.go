@@ -495,21 +495,37 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 	callee := l.Visit(ctx.PrimaryExpression()).(value.Named)
 	var args []value.Value
 
-	for _, expr := range ctx.Arguments().ExpressionList().AllExpression() {
-		argument := l.Visit(expr).(value.Value)
-		switch argument := argument.(type) {
-		case *ir.InstGetElementPtr, *ir.Global:
-			ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-			args = append(args, ptr)
-		case *ir.InstAlloca:
-			load := blk.NewLoad(argument.ElemType, argument)
-			args = append(args, load)
-		case constant.Constant, ir.Instruction: // BUG: this might cause a bug
-			args = append(args, argument)
-		default:
-			fmt.Printf("argument: %v\n", argument)
-			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
-			panic("unimplemented")
+	if exprL := ctx.Arguments().ExpressionList(); exprL != nil {
+		for _, expr := range exprL.AllExpression() {
+			argument := l.Visit(expr).(value.Value)
+			switch argument := argument.(type) {
+			case *ir.Global:
+				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
+				args = append(args, ptr)
+			case *ir.InstGetElementPtr:
+				switch argument.Type().(type) {
+				case *types.PointerType:
+					switch argument.ElemType {
+					case types.I8:
+						args = append(args, argument)
+					default:
+						load := blk.NewLoad(argument.ElemType, argument)
+						args = append(args, load)
+					}
+				default:
+					load := blk.NewLoad(argument.ElemType, argument) // BUG: this might cause yet another bug
+					args = append(args, load)
+				}
+			case *ir.InstAlloca: // BUG: there's a bug with this piece of shit, I'll check it out tomorrow
+				load := blk.NewLoad(argument.ElemType, argument)
+				args = append(args, load)
+			case constant.Constant, *ir.Param, ir.Instruction: // BUG: this might cause a bug
+				args = append(args, argument)
+			default:
+				fmt.Printf("argument: %v\n", argument)
+				fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
+				panic("unimplemented")
+			}
 		}
 	}
 
