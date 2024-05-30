@@ -267,7 +267,6 @@ func (l *LlvmBackend) VisitChildren(node antlr.RuleNode) interface{} {
 
 // VisitComparison implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{} {
-	// LESSTHAN | GREATERTHAN | LESSTHANEQUAL | GREATERTHANEQUAL | COMPARISON | NEGATION
 	fn, _ := l.blockStack.Peek()
 	blk, _ := l.blockStack.Peek()
 
