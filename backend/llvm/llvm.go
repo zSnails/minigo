@@ -8,7 +8,6 @@ import (
 
 	"github.com/antlr4-go/antlr/v4"
 
-	// "github.com/JimWen/gods-generic/queues/arrayqueue"
 	_ "github.com/llir/llvm"
 	"github.com/llir/llvm/ir"
 	"github.com/llir/llvm/ir/constant"
@@ -17,7 +16,6 @@ import (
 	"github.com/llir/llvm/ir/value"
 	"github.com/zSnails/minigo/grammar"
 	"github.com/zSnails/minigo/stack"
-	symboltable "github.com/zSnails/minigo/symbol-table"
 )
 
 const GLOBAL_SCOPE = 0
