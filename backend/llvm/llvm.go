@@ -836,24 +836,27 @@ func makeCstr(input string) string {
 	return fmt.Sprintf("%s\x00", input)
 }
 
-// VisitInterpretedStringLiteral implements grammar.MinigoVisitor.
-func (l *LlvmBackend) VisitInterpretedStringLiteral(ctx *grammar.InterpretedStringLiteralContext) interface{} {
-	unquoted, err := strconv.Unquote(ctx.GetText())
-	if err != nil {
-		panic(err)
-	}
-	car := constant.NewCharArrayFromString(makeCstr(unquoted))
-	return l.module.NewGlobalDef("", car)
-}
-
 // VisitLenCall implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitLenCall(ctx *grammar.LenCallContext) interface{} {
-	panic("unimplemented")
+	return l.Visit(ctx.LengthExpression())
 }
 
 // VisitLengthExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitLengthExpression(ctx *grammar.LengthExpressionContext) interface{} {
-	panic("unimplemented")
+	expr := l.Visit(ctx.Expression()).(value.Value)
+	switch expr := expr.(type) {
+	case *ir.InstAlloca:
+		switch expr := expr.ElemType.(type) {
+		case *types.ArrayType:
+			return constant.NewInt(types.I64, int64(expr.Len))
+		default:
+			panic("unimplemented")
+		}
+	default:
+		panic("unimplemented")
+	}
+
+	return nil
 }
 
 // VisitLiteralOperand implements grammar.MinigoVisitor.
