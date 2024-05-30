@@ -124,6 +124,8 @@ func (t *SymbolTable) addPrimitives() {
 
 	printf := ir.NewFunc("printf", types.I32, ir.NewParam("", types.I8Ptr))
 	printf.Sig.Variadic = true
+	putchar := ir.NewFunc("putchar", types.Void, ir.NewParam("", types.I64))
+    _ = t.AddSymbol("putchar", putchar)
 	_ = t.AddSymbol("printf", printf)
 }
 
