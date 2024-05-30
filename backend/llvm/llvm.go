@@ -273,6 +273,8 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 	left := l.Visit(ctx.GetLeft()).(value.Value)
 	right := l.Visit(ctx.GetRight()).(value.Value)
 
+	// TODO: Figure out how to do string comparison
+
 	if types.IsPointer(left.Type()) {
 		left = fn.NewLoad(right.Type(), left)
 	}
