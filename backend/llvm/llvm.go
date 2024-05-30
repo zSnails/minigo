@@ -1389,17 +1389,14 @@ func (l *LlvmBackend) VisitTypeDeclStatement(ctx *grammar.TypeDeclStatementConte
 
 // VisitTypeDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitTypeDeclaration(ctx *grammar.TypeDeclarationContext) interface{} {
-	panic("unimplemented")
+	return l.VisitChildren(ctx)
 }
 
 // VisitTypedVarDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interface{} {
 
-	var blk *ir.Block
-
-	if l.blockStack != nil {
-		blk, _ = l.blockStack.Peek()
-	}
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
 
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
@@ -1454,10 +1451,8 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 
 // VisitUntypedVarDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) interface{} {
-	var blk *ir.Block
-	if l.blockStack != nil {
-		blk, _ = l.blockStack.Peek()
-	}
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
 
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
