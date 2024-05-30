@@ -908,21 +908,55 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 	rhs := ctx.GetRight()
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 
-		name := ident.GetText()
-		symbol, found := l.GetSymbol(name)
-		if !found {
-			panic("unreachable")
-		}
-
+		symbol := l.Visit(ident).(value.Value)
 		expr := l.Visit(rhs.Expression(idx)).(value.Value)
 		switch expr := expr.(type) {
-		case *ir.InstAdd, *ir.InstCall, ir.Instruction:
+		case *ir.InstAlloca:
+			load := blk.NewLoad(expr.ElemType, expr)
+			blk.NewStore(load, symbol)
+		case *ir.InstAdd, *ir.InstSDiv, *ir.InstSub:
+			if types.IsPointer(expr.Type()) {
+				load := blk.NewLoad(expr.Type(), expr)
+				blk.NewStore(load, symbol)
+			} else {
+				blk.NewStore(expr, symbol)
+			}
+		case *ir.InstMul, *ir.InstCall, *ir.InstLShr, *ir.InstShl:
 			blk.NewStore(expr, symbol)
 		case *ir.Global:
 			ptr := blk.NewGetElementPtr(types.I8, expr, zero)
-			l.moduleSymbolTable.Replace(name, ptr)
+			l.moduleSymbolTable.Replace(symbol.Ident(), ptr)
+		case constant.Constant:
+			blk.NewStore(expr, symbol)
+		case *ir.InstGetElementPtr:
+			switch exp := expr.Type().(type) {
+			case *types.PointerType:
+				switch e := exp.ElemType.(type) {
+				case *types.ArrayType:
+					load := blk.NewLoad(e.ElemType, expr)
+					blk.NewStore(load, symbol)
+				case *types.PointerType:
+					// BUG: this is prolly the cause of the current bug
+					load := blk.NewLoad(e, expr)
+					blk.NewStore(load, symbol)
+				case *types.IntType:
+					load := blk.NewLoad(e, expr)
+					blk.NewStore(load, symbol)
+				case constant.Constant:
+					blk.NewStore(expr, symbol)
+				default:
+					fmt.Printf("reflect.TypeOf(exp): %v\n", reflect.TypeOf(exp.ElemType))
+					panic("unimplemented")
+				}
+			case *types.IntType:
+				load := blk.NewLoad(expr.ElemType, expr)
+				blk.NewStore(load, symbol)
+			default:
+				a := exp.(*types.IntType)
+				fmt.Printf("a: %v\n", a)
+				blk.NewStore(expr, symbol)
+			}
 		default:
-			fmt.Printf("symbol: %v\n", symbol)
 			fmt.Printf("expr: %v\n", expr)
 			fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(expr).String())
 			panic("unimplemented")
