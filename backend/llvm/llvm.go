@@ -488,8 +488,8 @@ func (t *OpaquePointerType) Equal(u types.Type) bool {
 
 // BitSize returns the size in bits of the type.
 func (t *OpaquePointerType) BitSize() int64 {
-	// Opaque pointers do not have a specified bit size, but we can use the typical
-	// size for pointers (e.g., 64 bits on most platforms).
+	// Opaque pointers do not have a specified bit size, but we can use the
+	// typical size for pointers (e.g., 64 bits on most platforms).
 	return 64
 }
 
