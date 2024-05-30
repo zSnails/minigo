@@ -1299,7 +1299,20 @@ func (l *LlvmBackend) VisitStructType(ctx *grammar.StructTypeContext) interface{
 
 // VisitSubIndex implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+
+	expr := l.Visit(ctx.PrimaryExpression()).(value.Value)
+	index := ctx.Index()
+	idx := l.Visit(index).(value.Value)
+
+	exprt := expr.Type().(*types.PointerType)
+
+	if id, ok := idx.Type().(*types.PointerType); ok {
+		idx = blk.NewLoad(id.ElemType, idx)
+	}
+
+	gep := blk.NewGetElementPtr(exprt.ElemType, expr, zero, idx)
+	return gep
 }
 
 // VisitSwitchCaseBranch implements grammar.MinigoVisitor.
