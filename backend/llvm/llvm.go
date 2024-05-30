@@ -3,6 +3,8 @@ package llvm
 import (
 	"fmt"
 	"reflect"
+	"strings"
+	"unicode"
 
 	"strconv"
 
