@@ -283,6 +283,8 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 			return blk.NewFCmp(enum.FPredONE, left, right)
 		}
 		return blk.NewICmp(enum.IPredNE, left, right)
+	default:
+		panic("unimplemented")
 	}
 
 	panic("unreachable")
