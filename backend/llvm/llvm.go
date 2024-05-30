@@ -114,6 +114,7 @@ var putchar *ir.Func
 var puts *ir.Func
 var printf *ir.Func
 var strcat *ir.Func
+var strcmp *ir.Func
 
 var basicInt *ir.Global
 var basicFloat *ir.Global
