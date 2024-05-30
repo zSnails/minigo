@@ -1347,9 +1347,6 @@ func (l *LlvmBackend) VisitThreePartFor(ctx *grammar.ThreePartForContext) interf
 
 	got, _ := l.blockStack.Peek()
 	if got.Term == nil {
-		// if types.IsPointer(expr.Type()) {
-		// 	expr = blk.NewLoad(types.I1, expr)
-		// }
 		got.NewCondBr(expr, _for, end)
 	}
 
