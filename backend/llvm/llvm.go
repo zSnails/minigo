@@ -175,30 +175,23 @@ func (l *LlvmBackend) VisitArguments(ctx *grammar.ArgumentsContext) interface{} 
 
 // VisitArrayDeclType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitArrayDeclType(ctx *grammar.ArrayDeclTypeContext) interface{} {
-	panic("unimplemented")
+	_type := l.Visit(ctx.DeclType()).(types.Type)
+
+	got, err := strconv.ParseUint(ctx.INTLITERAL().GetText(), 0, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	return types.NewArray(got, _type)
 }
 
 // VisitArrayType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitArrayType(ctx *grammar.ArrayTypeContext) interface{} {
-	panic("unimplemented")
+	return l.VisitChildren(ctx)
 }
 
 // VisitAssignmentSimpleStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitAssignmentSimpleStatement(ctx *grammar.AssignmentSimpleStatementContext) interface{} {
-	// fn, err := l.funcStack.Peek()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // %4 = alloca i32, align 4
-	// // store i32 %1, ptr %4, align 4
-	// // store i32 5, ptr %4, align 4
-
-	// current := fn.NewBlock("")
-	// l.
-	// current.NewAlloca()
-
-	// return nil
 	return l.Visit(ctx.AssignmentStatement())
 }
 
@@ -712,7 +705,6 @@ func (l *LlvmBackend) VisitIfSimpleElseIf(ctx *grammar.IfSimpleElseIfContext) in
 
 	blk.NewCondBr(expr, True, False)
 	if True.Term == nil {
-		// True.NewBr(Done)
 		True.NewBr(got)
 	}
 
@@ -723,7 +715,6 @@ func (l *LlvmBackend) VisitIfSimpleElseIf(ctx *grammar.IfSimpleElseIfContext) in
 	if ifBlock != nil && ifBlock.Term == nil {
 		ifBlock.NewBr(got)
 	}
-	// l.blockStack.Push(Done)
 
 	return nil
 }
