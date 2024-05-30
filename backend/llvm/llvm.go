@@ -798,18 +798,90 @@ func (l *LlvmBackend) VisitIfStatementStatement(ctx *grammar.IfStatementStatemen
 
 // VisitInPlaceAssignment implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	left := l.Visit(ctx.GetLeft()).(value.Value)
+	right := l.Visit(ctx.GetRight()).(value.Value)
+
+	var leftValue value.Value
+	if l, ok := left.Type().(*types.PointerType); ok {
+		leftValue = blk.NewLoad(l.ElemType, left)
+	} else {
+		leftValue = left
+	}
+
+	var rightValue value.Value
+	if r, ok := right.Type().(*types.PointerType); ok {
+		rightValue = blk.NewLoad(r.ElemType, right)
+	} else {
+		rightValue = right
+	}
+
+	switch {
+	case ctx.IDIV() != nil:
+		{
+			var div value.Value
+			if leftValue.Type().Equal(types.Double) {
+				div = blk.NewFDiv(leftValue, rightValue)
+			} else {
+				div = blk.NewSDiv(leftValue, rightValue)
+			}
+			return blk.NewStore(div, left)
+		}
+	case ctx.ISUB() != nil:
+		{
+			var sub value.Value
+			if leftValue.Type().Equal(types.Double) {
+				sub = blk.NewFSub(leftValue, rightValue)
+			} else {
+				sub = blk.NewSub(leftValue, rightValue)
+			}
+			return blk.NewStore(sub, left)
+		}
+	case ctx.IADD() != nil:
+		{
+			var add value.Value
+			if leftValue.Type().Equal(types.Double) {
+				add = blk.NewFAdd(leftValue, rightValue)
+			} else {
+				add = blk.NewAdd(leftValue, rightValue)
+			}
+			return blk.NewStore(add, left)
+		}
+	case ctx.IMUL() != nil:
+		{
+			var mul value.Value
+			if leftValue.Type().Equal(types.Double) {
+				mul = blk.NewFMul(leftValue, rightValue)
+			} else {
+				mul = blk.NewMul(leftValue, rightValue)
+			}
+			return blk.NewStore(mul, left)
+		}
+	case ctx.IRIGHTSHIFT() != nil:
+		{
+			shift := blk.NewLShr(leftValue, rightValue)
+			if leftValue.Type().Equal(types.Double) {
+				panic("unreachable")
+			}
+
+			return blk.NewStore(shift, left)
+		}
+		// case ctx.
+	default:
+		panic("unimplemented")
+	}
+	return nil
 }
 
 // VisitIndex implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIndex(ctx *grammar.IndexContext) interface{} {
-	panic("unimplemented")
+	return l.Visit(ctx.Expression())
 }
 
 // VisitBreakStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitBreakStatement(ctx *grammar.BreakStatementContext) interface{} {
 	blk, _ := l.blockStack.Peek()
-	loop, err := l.loopStack.Pop()
+	loop, err := l.loopStack.Peek()
 	if err != nil {
 		panic(err)
 	}
