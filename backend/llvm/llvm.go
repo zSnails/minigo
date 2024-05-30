@@ -205,7 +205,34 @@ func (l *LlvmBackend) VisitBlockStatement(ctx *grammar.BlockStatementContext) in
 
 // VisitBooleanOperation implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitBooleanOperation(ctx *grammar.BooleanOperationContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+
+	left := l.Visit(ctx.GetLeft()).(value.Value)
+	right := l.Visit(ctx.GetRight()).(value.Value)
+
+	var leftValue value.Value
+	if l, ok := left.Type().(*types.PointerType); ok {
+		leftValue = blk.NewLoad(l.ElemType, left)
+	} else {
+		leftValue = left
+	}
+
+	var rightValue value.Value
+	if r, ok := right.Type().(*types.PointerType); ok {
+		rightValue = blk.NewLoad(r.ElemType, left)
+	} else {
+		rightValue = right
+	}
+
+	switch {
+	case ctx.AND() != nil:
+		return blk.NewAnd(leftValue, rightValue)
+	case ctx.OR() != nil:
+		return blk.NewOr(leftValue, rightValue)
+	default:
+		panic("unreachable")
+	}
+	return nil
 }
 
 // VisitCapCall implements grammar.MinigoVisitor.
