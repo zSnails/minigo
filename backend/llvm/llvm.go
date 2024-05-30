@@ -1043,6 +1043,16 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 			return blk.NewFSub(leftNode, rightNode)
 		}
 		return blk.NewSub(leftNode, rightNode)
+	case ctx.AMPERSAND() != nil:
+		return blk.NewAnd(leftNode, rightNode)
+	case ctx.RIGHTSHIFT() != nil:
+		return blk.NewLShr(leftNode, rightNode)
+	case ctx.LEFTSHIFT() != nil:
+		return blk.NewShl(leftNode, rightNode)
+	case ctx.CARET() != nil:
+		return blk.NewXor(leftNode, rightNode)
+	case ctx.PIPE() != nil:
+		return blk.NewOr(leftNode, rightNode)
 	default:
 		panic("unimplemented")
 	}
