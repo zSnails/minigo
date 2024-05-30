@@ -1580,9 +1580,6 @@ func (l *LlvmBackend) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 
 	got, _ := l.blockStack.Peek()
 	if got.Term == nil {
-		// if types.IsPointer(expr.Type()) {
-		// 	expr = blk.NewLoad(types.I1, expr)
-		// }
 		got.NewCondBr(expr, _for, end)
 	}
 
@@ -1599,8 +1596,8 @@ func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interfac
 	blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
 
-	_for := fn.NewBlock("for")
-	end := ir.NewBlock("end")
+	_for := fn.NewBlock("")
+	end := ir.NewBlock("")
 
 	blk.NewBr(_for)
 
@@ -1615,8 +1612,6 @@ func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interfac
 	if got.Term == nil {
 		got.NewBr(_for)
 	}
-
-	// l.loopStack.Peek()
 
 	end.Parent = fn.Func
 	fn.Blocks = append(fn.Blocks, end)
