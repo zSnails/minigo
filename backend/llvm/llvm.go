@@ -1164,44 +1164,30 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 var typeMap = map[string]types.Type{
 	"string": types.I8Ptr,
 	"int":    types.I64,
-	"float":  types.Float,
+	"float":  types.Double,
 	"bool":   types.I1,
 	"rune":   types.I8,
 }
 
 // VisitRoot implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitRoot(ctx *grammar.RootContext) interface{} {
-	// First, we declare all types and variables
 
-	for _, fn := range ctx.TopDeclarationList().AllFuncDef() {
-		l.Visit(fn)
+	for _, _type := range ctx.TopDeclarationList().AllTypeDecl() {
+		l.Visit(_type)
 	}
 
 	for _, decl := range ctx.TopDeclarationList().AllVariableDecl() {
 		l.Visit(decl)
 	}
 
+	for _, fn := range ctx.TopDeclarationList().AllFuncDef() {
+		l.Visit(fn)
+	}
+
 	for _, fn := range ctx.TopDeclarationList().AllFuncDecl() {
 		l.Visit(fn)
 	}
 
-	// l.symbolTable.Symbols.ForEachReverse(func(s *symboltable.Symbol) {
-
-	// 	if s.SymbolType&symboltable.PrimitiveTypeSymbol != 0 {
-	// 		return
-	// 	}
-
-	// 	if s.SymbolType&symboltable.TypeSymbol != 0 {
-	// // TODO: implement type symbols
-	// return
-	// 	}
-	// })
-
-	// // For now I'll just be visiting global func declarations
-
-	// for _, fun := range ctx.TopDeclarationList().AllFuncDecl() {
-	// 	l.Visit(fun)
-	// }
 	return nil
 }
 
