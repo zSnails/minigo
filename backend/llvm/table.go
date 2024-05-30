@@ -32,11 +32,11 @@ func (l *llTable) EnterScope() {
 }
 
 func (l *llTable) Replace(name string, symbol value.Value) {
-    l.Symbols.ForEach(func(ls *llSymbol) {
-        if ls.Name == name {
-            ls.Symbol = symbol
-        }
-    })
+	l.Symbols.ForEach(func(ls *llSymbol) {
+		if ls.Name == name {
+			ls.Symbol = symbol
+		}
+	})
 }
 
 func (l *llTable) ExitScope() {
