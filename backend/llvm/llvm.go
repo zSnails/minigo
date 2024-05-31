@@ -1386,7 +1386,9 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 			return nblk.NewRet(exp)
 		case constant.Constant:
 			return nblk.NewRet(exp)
-		case *ir.InstAdd, *ir.InstMul, *ir.InstSDiv, *ir.InstOr, *ir.InstAnd, *ir.InstXor, *ir.InstCall:
+		case *ir.InstAdd, *ir.InstMul, *ir.InstSDiv, *ir.InstFMul,
+			*ir.InstOr, *ir.InstAnd, *ir.InstXor, *ir.InstCall,
+			*ir.InstFDiv, *ir.InstFSub, *ir.InstFAdd:
 			return nblk.NewRet(expr)
 		default:
 			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
