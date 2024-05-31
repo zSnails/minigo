@@ -22,10 +22,10 @@ func TestPopSizeZero(t *testing.T) {
 
 func TestPop(t *testing.T) {
 	s := NewStack[int](10)
-	s.Push(1)
-	s.Push(12)
-	s.Push(29)
-	s.Push(90)
+	_ = s.Push(1)
+	_ = s.Push(12)
+	_ = s.Push(29)
+	_ = s.Push(90)
 
 	val, err := s.Pop()
 	if err != nil {
@@ -38,11 +38,11 @@ func TestPop(t *testing.T) {
 
 func TestPush(t *testing.T) {
 	s := NewStack[int](5)
-	s.Push(1)
-	s.Push(2)
-	s.Push(3)
-	s.Push(4)
-	s.Push(5)
+	_ = s.Push(1)
+	_ = s.Push(2)
+	_ = s.Push(3)
+	_ = s.Push(4)
+	_ = s.Push(5)
 	err := s.Push(5)
 	if err == nil {
 		t.Fatalf("expected err to not be nil")
@@ -51,23 +51,23 @@ func TestPush(t *testing.T) {
 
 func TestPop2(t *testing.T) {
 	s := NewStack[int](5)
-	s.Push(1)
-	s.Push(2)
-	s.Push(3)
-	s.Push(4)
-	s.Push(5)
+	_ = s.Push(1)
+	_ = s.Push(2)
+	_ = s.Push(3)
+	_ = s.Push(4)
+	_ = s.Push(5)
 	err := s.Push(6)
 	if err == nil {
 		t.Fatalf("expected err to not be nil")
 	}
 
-    s.Pop()
-    s.Pop()
-    s.Pop()
-    s.Pop()
-    s.Pop()
-    _, err = s.Pop()
-    if err == nil {
+	_, _ = s.Pop()
+	_, _ = s.Pop()
+	_, _ = s.Pop()
+	_, _ = s.Pop()
+	_, _ = s.Pop()
+	_, err = s.Pop()
+	if err == nil {
 		t.Fatalf("expected err to not be nil")
-    }
+	}
 }

@@ -47,17 +47,11 @@ func (t *TypeTable) GetSymbol(name string) (*Type, bool) {
 }
 
 func (t *TypeTable) addBuiltins() {
-	// types.I1.SetName("bool")
-	// types.I64.SetName("int")
-	// types.Double.SetName("float")
-	// types.I8Ptr.SetName("string")
-	// types.I8.SetName("rune")
-
-	t.AddSymbol("int", types.I64)
-	t.AddSymbol("bool", types.I1)
-	t.AddSymbol("float", types.Double)
-	t.AddSymbol("string", types.I8Ptr)
-	t.AddSymbol("rune", types.I8)
+	_ = t.AddSymbol("int", types.I64)
+	_ = t.AddSymbol("bool", types.I1)
+	_ = t.AddSymbol("float", types.Double)
+	_ = t.AddSymbol("string", types.I8Ptr)
+	_ = t.AddSymbol("rune", types.I8)
 }
 
 func NewTypeTable() *TypeTable {
