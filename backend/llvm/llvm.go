@@ -1104,7 +1104,7 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 			}
 		default:
 			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("normal assignment is not defined for %s", expr), nil)
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("normal assignment is not defined for %s", reflect.TypeOf(expr)), nil)
 		}
 	}
 
