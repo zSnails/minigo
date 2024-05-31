@@ -10,7 +10,6 @@ import (
 
 	"github.com/antlr4-go/antlr/v4"
 
-	_ "github.com/llir/llvm"
 	"github.com/llir/llvm/ir"
 	"github.com/llir/llvm/ir/constant"
 	"github.com/llir/llvm/ir/enum"
@@ -18,17 +17,19 @@ import (
 	"github.com/llir/llvm/ir/value"
 	"github.com/zSnails/minigo/grammar"
 	"github.com/zSnails/minigo/stack"
+	symboltable "github.com/zSnails/minigo/symbol-table"
 )
 
 const GLOBAL_SCOPE = 0
 
 type LlvmBackend struct {
-	listener          antlr.ErrorListener
-	module            *ir.Module
-	moduleSymbolTable *llTable
-	loopStack         *stack.Stack[*ir.Block]
-	blockStack        *stack.Stack[*ir.Block]
-	funcStack         *stack.Stack[*Func]
+	listener    antlr.ErrorListener
+	module      *ir.Module
+	symbolTable *llTable
+	typeTable   *symboltable.TypeTable
+	loopStack   *stack.Stack[*ir.Block]
+	blockStack  *stack.Stack[*ir.Block]
+	funcStack   *stack.Stack[*Func]
 }
 
 // VisitNegativeExpression implements grammar.MinigoVisitor.
@@ -54,8 +55,11 @@ func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionCon
 			return alloca
 		}
 	default:
-		panic("unreachable")
+		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+		l.listener.SyntaxError(nil, ctx, line, column, "negation expressions are only implemented for constant values", nil)
 	}
+
+	return nil
 }
 
 // VisitPositiveExpression implements grammar.MinigoVisitor.
@@ -87,12 +91,11 @@ func (l *LlvmBackend) VisitPositiveExpression(ctx *grammar.PositiveExpressionCon
 
 // VisitFuncDef implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitFuncDef(ctx *grammar.FuncDefContext) interface{} {
-
 	isdef = true
 	fn := l.Visit(ctx.FuncFrontDecl()).(*Func)
 	isdef = false
 
-	l.moduleSymbolTable.AddSymbol(fn.Name(), fn)
+	l.symbolTable.AddSymbol(fn.Name(), fn)
 
 	return fn
 }
@@ -119,6 +122,7 @@ var strcmp *ir.Func
 var basicInt *ir.Global
 var basicFloat *ir.Global
 var basicBool *ir.Global
+var basicChar *ir.Global
 
 func (l *LlvmBackend) addBuiltIns() {
 	puts = l.module.NewFunc("puts", types.I32, ir.NewParam("", types.I8Ptr))
@@ -127,26 +131,28 @@ func (l *LlvmBackend) addBuiltIns() {
 	strcat = l.module.NewFunc("strcat", types.I8Ptr, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
 	strcmp = l.module.NewFunc("strcmp", types.I64, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
 
-	l.moduleSymbolTable.AddSymbol("printf", printf)
-	l.moduleSymbolTable.AddSymbol("putchar", putchar)
-	l.moduleSymbolTable.AddSymbol("puts", puts)
-	l.moduleSymbolTable.AddSymbol("strcat", strcat)
-	l.moduleSymbolTable.AddSymbol("strcmp", strcmp)
+	l.symbolTable.AddSymbol("printf", printf)
+	l.symbolTable.AddSymbol("putchar", putchar)
+	l.symbolTable.AddSymbol("puts", puts)
+	l.symbolTable.AddSymbol("strcat", strcat)
+	l.symbolTable.AddSymbol("strcmp", strcmp)
 
 	basicInt = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%lld\n\x00"))
 	basicFloat = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%lf\n\x00"))
 	basicBool = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%b\n\x00"))
+	basicChar = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%c\n\x00"))
 
 }
 
-func New(listener antlr.ErrorListener) *LlvmBackend {
+func NewLlvmBackend(listener antlr.ErrorListener) *LlvmBackend {
 	b := &LlvmBackend{
-		listener:          listener,
-		module:            ir.NewModule(),
-		moduleSymbolTable: NewTable(),
-		loopStack:         stack.NewStack[*ir.Block](100),
-		blockStack:        stack.NewStack[*ir.Block](100),
-		funcStack:         stack.NewStack[*Func](20),
+		listener:    listener,
+		module:      ir.NewModule(),
+		typeTable:   symboltable.NewTypeTable(),
+		symbolTable: NewTable(),
+		loopStack:   stack.NewStack[*ir.Block](100),
+		blockStack:  stack.NewStack[*ir.Block](100),
+		funcStack:   stack.NewStack[*Func](20),
 	}
 
 	b.module.TargetTriple = "x86_64-pc-linux-gnu"
@@ -161,17 +167,23 @@ func (l *LlvmBackend) Visit(tree antlr.ParseTree) interface{} {
 
 // VisitAppendCall implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitAppendCall(ctx *grammar.AppendCallContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "append calls are not yet implemented", nil)
+	return nil
 }
 
 // VisitAppendExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitAppendExpression(ctx *grammar.AppendExpressionContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "append expressions are not yet implemented", nil)
+	return nil
 }
 
 // VisitArguments implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitArguments(ctx *grammar.ArgumentsContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "arguments are not yet implemented", nil)
+	return nil
 }
 
 // VisitArrayDeclType implements grammar.MinigoVisitor.
@@ -203,7 +215,9 @@ func (l *LlvmBackend) VisitBlock(ctx *grammar.BlockContext) interface{} {
 
 // VisitBlockStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitBlockStatement(ctx *grammar.BlockStatementContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "blocks are not yet implemented", nil)
+	return nil
 }
 
 // VisitBooleanOperation implements grammar.MinigoVisitor.
@@ -235,22 +249,27 @@ func (l *LlvmBackend) VisitBooleanOperation(ctx *grammar.BooleanOperationContext
 	default:
 		panic("unreachable")
 	}
-	return nil
 }
 
 // VisitCapCall implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "cap calls are not yet implemented", nil)
+	return nil
 }
 
 // VisitCapExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitCapExpression(ctx *grammar.CapExpressionContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "cap expressions are not yet implemented", nil)
+	return nil
 }
 
 // VisitCaretExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitCaretExpression(ctx *grammar.CaretExpressionContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "caret expressions are not yet implemented", nil)
+	return nil
 }
 
 // VisitChildren implements grammar.MinigoVisitor.
@@ -318,7 +337,8 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 		}
 		return blk.NewICmp(enum.IPredNE, left, right)
 	default:
-		panic("unimplemented")
+		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
 	}
 
 	panic("unreachable")
@@ -326,12 +346,14 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 
 // VisitContinueStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitContinueStatement(ctx *grammar.ContinueStatementContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "continue statements are not yet implemented", nil)
+	return nil
 }
 
 // VisitEmptyTypeDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitEmptyTypeDeclaration(ctx *grammar.EmptyTypeDeclarationContext) interface{} {
-	panic("unimplemented")
+	return nil
 }
 
 // VisitEmptyVariableDeclaration implements grammar.MinigoVisitor.
@@ -346,17 +368,23 @@ func (l *LlvmBackend) VisitErrorNode(node antlr.ErrorNode) interface{} {
 
 // VisitExpressionCaseClause implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionCaseClause(ctx *grammar.ExpressionCaseClauseContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "case clauses are not yet implemented", nil)
+	return nil
 }
 
 // VisitExpressionCaseClauseList implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionCaseClauseList(ctx *grammar.ExpressionCaseClauseListContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "case clause lists are not yet implemented", nil)
+	return nil
 }
 
 // VisitExpressionList implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionList(ctx *grammar.ExpressionListContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "expression lists are not yet implemented", nil)
+	return nil
 }
 
 // VisitExpressionOperand implements grammar.MinigoVisitor.
@@ -428,10 +456,10 @@ func (l *LlvmBackend) VisitFuncArgsDecls(ctx *grammar.FuncArgsDeclsContext) inte
 func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 
 	fn := l.Visit(ctx.FuncFrontDecl()).(*Func)
-	l.moduleSymbolTable.AddSymbol(fn.Name(), fn)
+	l.symbolTable.AddSymbol(fn.Name(), fn)
 
 	_ = l.funcStack.Push(fn)
-	l.moduleSymbolTable.EnterScope()
+	l.symbolTable.EnterScope()
 	l.Visit(ctx.Block())
 
 	name := fn.Func.Name()
@@ -449,51 +477,12 @@ func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 		}
 	}
 
-	l.moduleSymbolTable.ExitScope()
+	l.symbolTable.ExitScope()
 	_, _ = l.blockStack.Pop()
 	_, _ = l.funcStack.Pop()
 
 	return nil
 }
-
-// OpaquePointerType is a custom type representing an opaque pointer.
-type OpaquePointerType struct{}
-
-var _ types.Type = &OpaquePointerType{}
-
-// LLString implements types.Type.
-func (t OpaquePointerType) LLString() string {
-	return "ptr"
-}
-
-// Name implements types.Type.
-func (t OpaquePointerType) Name() string {
-	return "ptr"
-}
-
-// SetName implements types.Type.
-func (t OpaquePointerType) SetName(name string) {
-}
-
-// String returns the LLVM syntax representation of the type.
-func (t *OpaquePointerType) String() string {
-	return "ptr"
-}
-
-// Equal reports whether t and u are of equal type.
-func (t *OpaquePointerType) Equal(u types.Type) bool {
-	_, ok := u.(*OpaquePointerType)
-	return ok
-}
-
-// BitSize returns the size in bits of the type.
-func (t *OpaquePointerType) BitSize() int64 {
-	// Opaque pointers do not have a specified bit size, but we can use the
-	// typical size for pointers (e.g., 64 bits on most platforms).
-	return 64
-}
-
-var opaquePtr types.Type = &OpaquePointerType{}
 
 var isdef = false
 
@@ -525,7 +514,7 @@ func (l *LlvmBackend) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) inte
 			alloca := entry.NewAlloca(param.Type())
 			entry.NewStore(param, alloca)
 			// l.moduleSymbolTable.Replace(param.Name(), alloca)
-			l.moduleSymbolTable.AddSymbol(param.Name(), alloca)
+			l.symbolTable.AddSymbol(param.Name(), alloca)
 		}
 
 		l.blockStack.Push(entry)
@@ -571,9 +560,8 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 			case constant.Constant, *ir.Param, ir.Instruction: // BUG: this might cause a bug
 				args = append(args, argument)
 			default:
-				fmt.Printf("argument: %v\n", argument)
-				fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
-				panic("unimplemented")
+				line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+				l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("function call not defined for argument of type %s", argument), nil)
 			}
 		}
 	}
@@ -585,17 +573,19 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 func (l *LlvmBackend) VisitIdentifierDeclType(ctx *grammar.IdentifierDeclTypeContext) interface{} {
 	typeName := ctx.IDENTIFIER().GetText()
 
-	got, ok := typeMap[typeName]
-	if !ok {
+	got, found := l.typeTable.GetSymbol(typeName)
+	if !found {
 		panic("unreachable")
 	}
 
-	return got.(types.Type)
+	return got.Type
 }
 
 // VisitIdentifierList implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIdentifierList(ctx *grammar.IdentifierListContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "identifier lists are not yet implemented", nil)
+	return nil
 }
 
 // VisitIdentifierOperand implements grammar.MinigoVisitor.
@@ -613,7 +603,7 @@ func (l *LlvmBackend) VisitIdentifierOperand(ctx *grammar.IdentifierOperandConte
 		return l.module.NewGlobalDef("", constant.NewCharArrayFromString(""))
 	}
 
-	symbol, found := l.moduleSymbolTable.GetSymbol(name)
+	symbol, found := l.symbolTable.GetSymbol(name)
 	if !found {
 		panic("unreachable")
 	}
@@ -853,8 +843,8 @@ func (l *LlvmBackend) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionCon
 
 // VisitIfStatementStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIfStatementStatement(ctx *grammar.IfStatementStatementContext) interface{} {
-	l.moduleSymbolTable.EnterScope()
-	defer l.moduleSymbolTable.ExitScope()
+	l.symbolTable.EnterScope()
+	defer l.symbolTable.ExitScope()
 	return l.Visit(ctx.IfStatement())
 }
 
@@ -930,7 +920,8 @@ func (l *LlvmBackend) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 		}
 		// case ctx.
 	default:
-		panic("unimplemented")
+		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
 	}
 	return nil
 }
@@ -953,12 +944,16 @@ func (l *LlvmBackend) VisitBreakStatement(ctx *grammar.BreakStatementContext) in
 
 // VisitInnerTypeDecls implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitInnerTypeDecls(ctx *grammar.InnerTypeDeclsContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "nested type declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitInnerVarDecls implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitInnerVarDecls(ctx *grammar.InnerVarDeclsContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "nested type declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitIntLiteral implements grammar.MinigoVisitor.
@@ -984,10 +979,12 @@ func (l *LlvmBackend) VisitLengthExpression(ctx *grammar.LengthExpressionContext
 		case *types.ArrayType:
 			return constant.NewInt(types.I64, int64(expr.Len))
 		default:
-			panic("unimplemented")
+			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("length expression is not defined for %s", expr), nil)
 		}
 	default:
-		panic("unimplemented")
+		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+		l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("length expression is not defined for %s", expr), nil)
 	}
 
 	return nil
@@ -1005,29 +1002,37 @@ func (l *LlvmBackend) VisitLoopStatement(ctx *grammar.LoopStatementContext) inte
 
 // VisitMemberAccessor implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitMemberAccessor(ctx *grammar.MemberAccessorContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "member accessors are not yet implemented", nil)
+	return nil
 }
 
 // VisitMultiTypeDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitMultiTypeDeclaration(ctx *grammar.MultiTypeDeclarationContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "multiple type declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitMultiVariableDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitMultiVariableDeclaration(ctx *grammar.MultiVariableDeclarationContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "multiple type declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitNestedType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNestedType(ctx *grammar.NestedTypeContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "nested type declarations are not yet implemented", nil)
+	return nil
 }
 
 var zero = constant.NewInt(types.I64, 0)
 var zerof = constant.NewFloat(types.Double, 0.0)
 
 func (l *LlvmBackend) GetSymbol(name string) (value.Value, bool) {
-	symbol, found := l.moduleSymbolTable.GetSymbol(name)
+	symbol, found := l.symbolTable.GetSymbol(name)
 	if !found {
 		return nil, false
 	}
@@ -1046,7 +1051,10 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 
 		symbol := l.Visit(ident).(value.Value)
-		expr := l.Visit(rhs.Expression(idx)).(value.Value)
+		expr, ok := l.Visit(rhs.Expression(idx)).(value.Value)
+		if !ok {
+			return nil
+		}
 		switch expr := expr.(type) {
 		case *ir.InstAlloca:
 			load := blk.NewLoad(expr.ElemType, expr)
@@ -1062,7 +1070,7 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 			blk.NewStore(expr, symbol)
 		case *ir.Global:
 			ptr := blk.NewGetElementPtr(types.I8, expr, zero)
-			l.moduleSymbolTable.Replace(symbol.Ident(), ptr)
+			l.symbolTable.Replace(symbol.Ident(), ptr)
 		case constant.Constant:
 			blk.NewStore(expr, symbol)
 		case *ir.InstGetElementPtr:
@@ -1082,21 +1090,18 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 				case constant.Constant:
 					blk.NewStore(expr, symbol)
 				default:
-					fmt.Printf("reflect.TypeOf(exp): %v\n", reflect.TypeOf(exp.ElemType))
-					panic("unimplemented")
+					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("normal assignment is not defined for %s", exp.ElemType), nil)
 				}
 			case *types.IntType:
 				load := blk.NewLoad(expr.ElemType, expr)
 				blk.NewStore(load, symbol)
 			default:
-				a := exp.(*types.IntType)
-				fmt.Printf("a: %v\n", a)
 				blk.NewStore(expr, symbol)
 			}
 		default:
-			fmt.Printf("expr: %v\n", expr)
-			fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(expr).String())
-			panic("unimplemented")
+			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("normal assignment is not defined for %s", expr), nil)
 		}
 	}
 
@@ -1105,17 +1110,28 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 
 // VisitNormalSwitch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNormalSwitch(ctx *grammar.NormalSwitchContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch statements are not yet implemented", nil)
+	return nil
 }
 
 // VisitNormalSwitchExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpressionContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch statements are not yet implemented", nil)
+	return nil
 }
 
 // VisitNotExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNotExpression(ctx *grammar.NotExpressionContext) interface{} {
-	panic("unimplemented")
+	blk, _ := l.blockStack.Peek()
+	expr := l.Visit(ctx.Expression()).(value.Value)
+
+	if p, ok := expr.Type().(*types.PointerType); ok {
+		expr = blk.NewLoad(p.ElemType, expr)
+	}
+
+	return blk.NewXor(expr, constant.True)
 }
 
 // VisitNumericIntLiteral implements grammar.MinigoVisitor.
@@ -1176,10 +1192,11 @@ func (l *LlvmBackend) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 		if leftNode.Type() == types.Double {
 			return blk.NewFRem(leftNode, rightNode)
 		}
-
 		return blk.NewSRem(leftNode, rightNode)
 	default:
-		panic("unreachable")
+		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
+		return nil
 	}
 }
 
@@ -1204,10 +1221,14 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 	switch {
 	// LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET
 	case ctx.PLUS() != nil:
-		if leftNode.Type() == types.Double {
-			return blk.NewFAdd(leftNode, rightNode)
+		if types.IsArray(leftNode.Type()) || leftNode.Type().Equal(types.I8Ptr) {
+			return blk.NewCall(strcat, leftNode, rightNode)
+		} else {
+			if leftNode.Type() == types.Double {
+				return blk.NewFAdd(leftNode, rightNode)
+			}
+			return blk.NewAdd(leftNode, rightNode)
 		}
-		return blk.NewAdd(leftNode, rightNode)
 	case ctx.MINUS() != nil:
 		if leftNode.Type() == types.Double {
 			return blk.NewFSub(leftNode, rightNode)
@@ -1224,7 +1245,8 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 	case ctx.PIPE() != nil:
 		return blk.NewOr(leftNode, rightNode)
 	default:
-		panic("unimplemented")
+		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+		l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("operation not defined"), nil)
 	}
 	return nil
 }
@@ -1250,12 +1272,17 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 
 	for _, expr := range ctx.ExpressionList().AllExpression() {
 		val := l.Visit(expr).(value.Value)
-		fmt.Printf("reflect.TypeOf(val).String(): %v\n", reflect.TypeOf(val).String())
+		reflect.TypeOf(val)
 		switch v := val.(type) {
 		case *ir.Global:
 			blk.NewCall(puts, val)
 		case *ir.InstGetElementPtr:
-			blk.NewCall(puts, val)
+			if types.IsArray(v.ElemType) {
+				load := blk.NewLoad(v.ElemType, val)
+				blk.NewCall(printf, basicChar, load)
+			} else {
+				blk.NewCall(puts, val)
+			}
 		case *ir.InstAlloca:
 			switch d := v.ElemType.(type) {
 			case *types.FloatType:
@@ -1268,11 +1295,18 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 				}
 			case *types.IntType:
 				load := blk.NewLoad(v.ElemType, v)
-				blk.NewCall(printf, basicBool, load)
+				switch v.ElemType {
+				case types.I64:
+					blk.NewCall(printf, basicInt, load)
+				case types.I1:
+					blk.NewCall(printf, basicBool, load)
+				default:
+					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
+				}
 			default:
-				fmt.Printf("reflect.TypeOf(v.ElemType): %v\n", reflect.TypeOf(v.ElemType))
-				fmt.Printf("v.ElemType: %v\n", v.ElemType)
-				panic("unimplemented")
+				line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+				l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
 			}
 		case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
 			blk.NewCall(printf, basicFloat, val)
@@ -1283,11 +1317,8 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 		case *constant.Float:
 			blk.NewCall(printf, basicFloat, val)
 		default:
-			fmt.Printf("val: %v\n", val)
-			fmt.Printf("v: %v\n", v)
-			fmt.Printf("reflect.TypeOf(val).String(): %v\n", reflect.TypeOf(val).String())
-			panic("unimplemented")
-
+			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", val), nil)
 		}
 	}
 
@@ -1328,32 +1359,35 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 
 	if expr := ctx.Expression(); expr != nil {
 		expr := l.Visit(expr).(value.Value)
-		switch expr := expr.(type) {
+		switch exp := expr.(type) {
 		case *ir.Global:
-			ptr := nblk.NewGetElementPtr(expr.ContentType, expr, zero)
+			ptr := nblk.NewGetElementPtr(exp.ContentType, exp, zero)
 			return nblk.NewRet(ptr)
 		case *ir.InstAlloca:
-			load := nblk.NewLoad(expr.ElemType, expr)
+			load := nblk.NewLoad(exp.ElemType, exp)
 			return nblk.NewRet(load)
 		case *ir.InstGetElementPtr:
-			return nblk.NewRet(expr)
+			return nblk.NewRet(exp)
 		case constant.Constant:
+			return nblk.NewRet(exp)
+		case *ir.InstAdd, *ir.InstMul, *ir.InstSDiv, *ir.InstOr, *ir.InstAnd, *ir.InstXor, *ir.InstCall:
 			return nblk.NewRet(expr)
 		default:
-			fmt.Printf("reflect.TypeOf(expr): %v\n", reflect.TypeOf(expr))
+			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("return expression not defined for instruction %s", reflect.TypeOf(expr)), nil)
 		}
 	}
 
-	return nblk.NewRet(nil)
+	return nil
 }
 
-var typeMap = map[string]types.Type{
-	"string": types.I8Ptr,
-	"int":    types.I64,
-	"float":  types.Double,
-	"bool":   types.I1,
-	"rune":   types.I8,
-}
+// var typeMap = map[string]types.Type{
+// 	"string": types.I8Ptr,
+// 	"int":    types.I64,
+// 	"float":  types.Double,
+// 	"bool":   types.I1,
+// 	"rune":   types.I8,
+// }
 
 // VisitRoot implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitRoot(ctx *grammar.RootContext) interface{} {
@@ -1388,7 +1422,9 @@ func (l *LlvmBackend) VisitRuneLiteral(ctx *grammar.RuneLiteralContext) interfac
 
 // VisitSelector implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSelector(ctx *grammar.SelectorContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "member selectors are not yet implemented", nil)
+	return nil
 }
 
 // VisitSimpleStatementStatement implements grammar.MinigoVisitor.
@@ -1398,17 +1434,23 @@ func (l *LlvmBackend) VisitSimpleStatementStatement(ctx *grammar.SimpleStatement
 
 // VisitSimpleStatementSwitch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSimpleStatementSwitch(ctx *grammar.SimpleStatementSwitchContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch expressions are not yet implemented", nil)
+	return nil
 }
 
 // VisitSimpleStatementSwitchExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSimpleStatementSwitchExpression(ctx *grammar.SimpleStatementSwitchExpressionContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch expressions are not yet implemented", nil)
+	return nil
 }
 
 // VisitSingleTypeDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "type declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitSingleVarDeclNoExps implements grammar.MinigoVisitor.
@@ -1423,10 +1465,10 @@ func (l *LlvmBackend) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsC
 		name := ident.GetText()
 		if fn.body != nil {
 			alloca := fn.body.NewAlloca(expr)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		} else {
 			def := l.module.NewGlobalDef("", constant.NewZeroInitializer(expr))
-			l.moduleSymbolTable.Replace(name, def)
+			l.symbolTable.Replace(name, def)
 		}
 	}
 
@@ -1456,17 +1498,23 @@ func (l *LlvmBackend) VisitStatementList(ctx *grammar.StatementListContext) inte
 
 // VisitStructDeclType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "struct type declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitStructMemDecls implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitStructMemDecls(ctx *grammar.StructMemDeclsContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "struct member declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitStructType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitStructType(ctx *grammar.StructTypeContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "struct type declarations are not yet implemented", nil)
+	return nil
 }
 
 // VisitSubIndex implements grammar.MinigoVisitor.
@@ -1489,17 +1537,23 @@ func (l *LlvmBackend) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 
 // VisitSwitchCaseBranch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSwitchCaseBranch(ctx *grammar.SwitchCaseBranchContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch case branches are not yet implemented", nil)
+	return nil
 }
 
 // VisitSwitchDefaultBranch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSwitchDefaultBranch(ctx *grammar.SwitchDefaultBranchContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch default branches are not yet implemented", nil)
+	return nil
 }
 
 // VisitSwitchStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSwitchStatement(ctx *grammar.SwitchStatementContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch statements are not yet implemented", nil)
+	return nil
 }
 
 // VisitTerminal implements grammar.MinigoVisitor.
@@ -1550,7 +1604,9 @@ func (l *LlvmBackend) VisitTopDeclarationList(ctx *grammar.TopDeclarationListCon
 
 // VisitTypeDeclStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitTypeDeclStatement(ctx *grammar.TypeDeclStatementContext) interface{} {
-	panic("unimplemented")
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "type decl statements are not yet implemented", nil)
+	return nil
 }
 
 // VisitTypeDeclaration implements grammar.MinigoVisitor.
@@ -1573,42 +1629,41 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			load := blk.NewLoad(argument.ElemType, expr)
 			alloca := fn.body.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
 			switch arg := argument.ContentType.(type) {
 			case *types.ArrayType:
 				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
-				l.moduleSymbolTable.AddSymbol(name, ptr)
+				l.symbolTable.AddSymbol(name, ptr)
 			default:
 				alloca := fn.body.NewAlloca(argument.Type())
 				load := blk.NewLoad(argument.Type(), argument)
 				blk.NewStore(load, alloca)
-				l.moduleSymbolTable.AddSymbol(name, alloca)
+				l.symbolTable.AddSymbol(name, alloca)
 			}
 		case *ir.InstGetElementPtr:
-			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
-				l.moduleSymbolTable.AddSymbol(name, argument)
+			if l.symbolTable.currentScope == GLOBAL_SCOPE {
+				l.symbolTable.AddSymbol(name, argument)
 			} else {
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-				l.moduleSymbolTable.AddSymbol(name, ptr)
+				l.symbolTable.AddSymbol(name, ptr)
 			}
 		case constant.Constant:
 			if blk != nil {
 				alloca := fn.body.NewAlloca(expr.Type())
 				blk.NewStore(expr, alloca)
-				l.moduleSymbolTable.AddSymbol(name, alloca)
+				l.symbolTable.AddSymbol(name, alloca)
 			} else {
 				def := l.module.NewGlobalDef("", argument)
-				l.moduleSymbolTable.AddSymbol(name, def)
+				l.symbolTable.AddSymbol(name, def)
 			}
 		case ir.Instruction:
 			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		default:
-			fmt.Printf("argument: %v\n", argument)
-			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
-			panic("unimplemented")
+			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("typed var decl not defined not defined for %s", argument), nil)
 		}
 	}
 
@@ -1629,42 +1684,41 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 			load := blk.NewLoad(argument.ElemType, expr)
 			alloca := fn.body.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
 			switch arg := argument.ContentType.(type) {
 			case *types.ArrayType:
 				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
-				l.moduleSymbolTable.AddSymbol(name, ptr)
+				l.symbolTable.AddSymbol(name, ptr)
 			default:
 				alloca := fn.body.NewAlloca(argument.Type())
 				load := blk.NewLoad(argument.Type(), argument)
 				blk.NewStore(load, alloca)
-				l.moduleSymbolTable.AddSymbol(name, alloca)
+				l.symbolTable.AddSymbol(name, alloca)
 			}
 		case *ir.InstGetElementPtr:
-			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
-				l.moduleSymbolTable.AddSymbol(name, argument)
+			if l.symbolTable.currentScope == GLOBAL_SCOPE {
+				l.symbolTable.AddSymbol(name, argument)
 			} else {
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-				l.moduleSymbolTable.AddSymbol(name, ptr)
+				l.symbolTable.AddSymbol(name, ptr)
 			}
 		case constant.Constant:
 			if blk != nil {
 				alloca := fn.body.NewAlloca(expr.Type())
 				blk.NewStore(expr, alloca)
-				l.moduleSymbolTable.AddSymbol(name, alloca)
+				l.symbolTable.AddSymbol(name, alloca)
 			} else {
 				def := l.module.NewGlobalDef("", argument)
-				l.moduleSymbolTable.AddSymbol(name, def)
+				l.symbolTable.AddSymbol(name, def)
 			}
 		case ir.Instruction:
 			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		default:
-			fmt.Printf("argument: %v\n", argument)
-			fmt.Printf("reflect.TypeOf(argument).String(): %v\n", reflect.TypeOf(argument).String())
-			panic("unimplemented")
+			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("untyped var decl not defined not defined for %s", argument), nil)
 		}
 	}
 
@@ -1690,29 +1744,31 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 		name := ident.GetText()
 
-		expr := l.Visit(ctx.GetRight().Expression(idx)).(value.Value)
+		expr, ok := l.Visit(ctx.GetRight().Expression(idx)).(value.Value)
+		if !ok {
+			return nil
+		}
 
-		fmt.Printf("reflect.TypeOf(expr): %v\n", reflect.TypeOf(expr))
 		switch argument := expr.(type) {
 		case *ir.InstAlloca:
 			load := blk.NewLoad(argument.ElemType, expr)
 			alloca := fn.body.NewAlloca(argument.ElemType)
 			blk.NewStore(load, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
 			switch arg := argument.ContentType.(type) {
 			case *types.ArrayType:
 				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
-				l.moduleSymbolTable.AddSymbol(name, ptr)
+				l.symbolTable.AddSymbol(name, ptr)
 			default:
 				alloca := fn.body.NewAlloca(argument.Type())
 				load := blk.NewLoad(argument.Type(), argument)
 				blk.NewStore(load, alloca)
-				l.moduleSymbolTable.AddSymbol(name, alloca)
+				l.symbolTable.AddSymbol(name, alloca)
 			}
 		case *ir.InstGetElementPtr:
-			if l.moduleSymbolTable.currentScope == GLOBAL_SCOPE {
-				l.moduleSymbolTable.AddSymbol(name, argument)
+			if l.symbolTable.currentScope == GLOBAL_SCOPE {
+				l.symbolTable.AddSymbol(name, argument)
 			} else {
 				switch e := argument.ElemType.(type) {
 				case *types.ArrayType:
@@ -1720,28 +1776,27 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 					alloca := fn.body.NewAlloca(e.ElemType)
 					load := blk.NewLoad(e.ElemType, ptr)
 					blk.NewStore(load, alloca)
-					l.moduleSymbolTable.AddSymbol(name, alloca)
+					l.symbolTable.AddSymbol(name, alloca)
 				case *types.IntType:
 					alloca := fn.body.NewAlloca(expr.Type())
 					blk.NewStore(expr, alloca)
-					l.moduleSymbolTable.AddSymbol(name, alloca)
+					l.symbolTable.AddSymbol(name, alloca)
 				default:
-					fmt.Printf("reflect.TypeOf(argument.ElemType): %v\n", reflect.TypeOf(argument.ElemType))
-					panic("unimplemented")
+					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("walrus declaration not defined not defined for %s", argument.ElemType), nil)
 				}
 			}
 		case constant.Constant:
 			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		case ir.Instruction:
 			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
-			l.moduleSymbolTable.AddSymbol(name, alloca)
+			l.symbolTable.AddSymbol(name, alloca)
 		default:
-			fmt.Printf("expr: %v\n", argument)
-			fmt.Printf("reflect.TypeOf(expr).String(): %v\n", reflect.TypeOf(argument).String())
-			panic("unimplemented")
+			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("walrus declaration not defined not defined for %s", argument), nil)
 		}
 	}
 
