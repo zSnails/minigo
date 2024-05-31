@@ -1,0 +1,9 @@
+linters:
+  enable:
+    - usestdlibvars
+    - forcetypeassert
+    - unconvert
+    - unparam
+    - execinquery
+  disable:
+    - ineffassign
