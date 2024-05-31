@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -10,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
+	"github.com/teris-io/cli"
 	"github.com/zSnails/minigo/backend/llvm"
 	"github.com/zSnails/minigo/grammar"
 	"github.com/zSnails/minigo/reporter"
@@ -19,36 +19,65 @@ import (
 const (
 	CompilerError = iota + 1
 	InternalError
+	ExternalError
 )
 
-var (
-	filename string
-	isJson   bool
-	tmp      = os.TempDir()
-)
-
-func init() {
-	flag.StringVar(&filename, "file", "", "The file to parse")
-	flag.BoolVar(&isJson, "json-output", false, "Whether or not to show json output")
-	flag.Parse()
-}
+var tmp = os.TempDir()
 
 func getFileName(input string) string {
 	return strings.TrimSuffix(input, filepath.Ext(input))
 }
 
 func main() {
-	if filename == "" {
-		fmt.Fprintln(os.Stderr, "`file` can't be empty")
-		os.Exit(InternalError)
+	app := cli.New("minigo compiler")
+	json := cli.NewOption("json", "wheter or not to report errors as json").WithType(cli.TypeBool)
+	app.WithCommand(cli.NewCommand("build", "build source code into an executable").
+		WithArg(cli.NewArg("file", "the source file to be built")).
+		WithOption(json).
+		WithAction(build))
+	app.WithCommand(cli.NewCommand("run", "build and run source code into an executable").
+		WithOption(json).
+		WithArg(cli.NewArg("file", "the source file to be built and run")).
+		WithAction(func(args []string, options map[string]string) int {
+			code := build(args, options)
+			if code != 0 {
+				return code
+			}
+			filename := path.Clean(args[0])
+			executable := getFileName(path.Base(filename))
+			return run(executable)
+		}))
+
+	code := app.Run(os.Args, os.Stdout)
+	os.Exit(code)
+}
+
+func run(executable string) int {
+	path, err := filepath.Abs(executable)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return InternalError
+	}
+	cmd := exec.Command(path)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return ExternalError
 	}
 
-	filename = path.Clean(filename)
+	return 0
+}
+
+func build(args []string, options map[string]string) int {
+	filename := path.Clean(args[0])
 
 	fileStream, err := antlr.NewFileStream(filename)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(InternalError)
+		return InternalError
 	}
 	lexer := grammar.NewMinigoLexer(fileStream)
 	lexer.RemoveErrorListeners()
@@ -58,7 +87,9 @@ func main() {
 	var r reporter.Reporter
 	parser.RemoveErrorListeners()
 
-	if isJson {
+	_, json := options["json"]
+
+	if json {
 		r = reporter.NewJsonReporter(fileStream.GetSourceName())
 	} else {
 		r = reporter.NewReporter(fileStream.GetSourceName())
@@ -69,31 +100,31 @@ func main() {
 	ctx := parser.Root()
 	if r.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
-		os.Exit(CompilerError)
+		return CompilerError
 	}
 
 	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName(), r.(antlr.ErrorListener))
 	typeChecker.Visit(ctx)
 	if r.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
-		os.Exit(CompilerError)
+		return CompilerError
 	}
 
-	// Backend code production
-	backend := llvm.New(r.(antlr.ErrorListener))
+	backend := llvm.NewLlvmBackend(r.(antlr.ErrorListener))
 	backend.Visit(ctx)
+	if r.HasErrors() {
+		fmt.Fprintf(os.Stderr, "%s", r.String())
+		return CompilerError
+	}
 	backend.GetModule().SourceFilename = filename
 
 	base := filepath.Base(filename)
 	out, err := os.CreateTemp(tmp, base+"*.ll")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s", err)
-		os.Exit(CompilerError)
+		return CompilerError
 	}
-
 	defer out.Close()
-
-	fmt.Printf("backend.GetModule().String(): %v\n", backend.GetModule().String())
 
 	cmd := exec.Command("clang", out.Name(), "-o", getFileName(base))
 	cmd.Stderr = os.Stderr
@@ -102,11 +133,18 @@ func main() {
 	_, err = backend.GetModule().WriteTo(out)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s", err)
-		os.Exit(CompilerError)
+		return CompilerError
 	}
 
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "%s", err)
-		os.Exit(CompilerError)
+		return CompilerError
 	}
+
+	if err := os.Remove(out.Name()); err != nil {
+		fmt.Fprintf(os.Stderr, "%s", err)
+		return CompilerError
+	}
+
+	return 0
 }
