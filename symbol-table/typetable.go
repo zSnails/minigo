@@ -23,7 +23,7 @@ func (t *TypeTable) AddSymbol(name string, value types.Type) error {
 	})
 
 	if added {
-		return fmt.Errorf("symbol '%s' already defined in the current scope", value.Name())
+		return fmt.Errorf("type '%s' already defined in the current scope", value.Name())
 	}
 
 	t.Symbols.Add(&Type{
