@@ -1273,57 +1273,70 @@ var newline = constant.NewInt(types.I8, 0x0A)
 func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 
-	for _, expr := range ctx.ExpressionList().AllExpression() {
-		val := l.Visit(expr).(value.Value)
-		reflect.TypeOf(val)
-		switch v := val.(type) {
-		case *ir.Global:
-			blk.NewCall(puts, val)
-		case *ir.InstGetElementPtr:
-			if types.IsArray(v.ElemType) {
-				load := blk.NewLoad(v.ElemType, val)
-				blk.NewCall(printf, basicChar, load)
-			} else {
-				blk.NewCall(puts, val)
-			}
-		case *ir.InstAlloca:
-			switch d := v.ElemType.(type) {
-			case *types.FloatType:
-				blk.NewCall(printf, basicFloat, v)
-			case *types.PointerType:
-				switch d.ElemType {
-				case types.I8:
-					load := blk.NewLoad(v.Type(), v)
-					blk.NewCall(puts, load)
-				}
-			case *types.IntType:
-				load := blk.NewLoad(v.ElemType, v)
-				switch v.ElemType {
-				case types.I64:
-					blk.NewCall(printf, basicInt, load)
-				case types.I1:
-					blk.NewCall(printf, basicBool, load)
-				default:
-					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
-				}
-			default:
-				line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-				l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
-			}
-		case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
-			blk.NewCall(printf, basicFloat, val)
-		case *ir.InstAdd, *ir.InstSub, *ir.InstMul, *ir.InstSDiv, *ir.InstAnd, *ir.InstXor, *ir.InstOr:
-			blk.NewCall(printf, basicInt, val)
-		case *constant.Int:
-			blk.NewCall(printf, basicInt, val)
-		case *constant.Float:
-			blk.NewCall(printf, basicFloat, val)
-		default:
-			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", val), nil)
-		}
-	}
+    if exprlist := ctx.ExpressionList(); exprlist != nil {
+        for _, expr := range exprlist.AllExpression() {
+            val := l.Visit(expr).(value.Value)
+            reflect.TypeOf(val)
+            switch v := val.(type) {
+            case *ir.Global:
+                blk.NewCall(puts, val)
+            case *ir.InstGetElementPtr:
+                if types.IsArray(v.ElemType) {
+                    load := blk.NewLoad(v.ElemType, val)
+                    blk.NewCall(printf, basicChar, load)
+                } else {
+                    blk.NewCall(puts, val)
+                }
+            case *ir.InstAlloca:
+                switch d := v.ElemType.(type) {
+                case *types.FloatType:
+                    load := blk.NewLoad(d, v)
+                    blk.NewCall(printf, basicFloat, load)
+                case *types.PointerType:
+                    switch d.ElemType {
+                    case types.I8:
+                        load := blk.NewLoad(v.Type(), v)
+                        blk.NewCall(puts, load)
+                    }
+                case *types.IntType:
+                    load := blk.NewLoad(v.ElemType, v)
+                    switch v.ElemType {
+                    case types.I64:
+                        blk.NewCall(printf, basicInt, load)
+                    case types.I1:
+                        blk.NewCall(printf, basicBool, load)
+                    default:
+                        line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+                        l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
+                    }
+                default:
+                    line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+                    l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(d)), nil)
+                }
+            case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
+                blk.NewCall(printf, basicFloat, val)
+            case *ir.InstAdd, *ir.InstSub, *ir.InstMul, *ir.InstSDiv, *ir.InstAnd, *ir.InstXor, *ir.InstOr:
+                blk.NewCall(printf, basicInt, val)
+            case *constant.Int:
+                blk.NewCall(printf, basicInt, val)
+            case *constant.Float:
+                blk.NewCall(printf, basicFloat, val)
+            case *ir.InstCall:
+                switch typ := v.Sig().RetType.(type) {
+                case *types.FloatType:
+                    blk.NewCall(printf, basicFloat, v)
+                default:
+                    line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+                    l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(typ)), nil)
+                }
+            default:
+                line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+                l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(v)), nil)
+            }
+        }
+    } else {
+        blk.NewCall(putchar, newline);
+    }
 
 	return nil
 }
