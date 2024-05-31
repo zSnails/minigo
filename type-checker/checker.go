@@ -227,7 +227,7 @@ func (t *TypeChecker) VisitExpressionPostInc(ctx *grammar.ExpressionPostIncConte
 
 	symbol = depointerize(symbol)
 
-	if symbol.Equal(types.I64) {
+	if !symbol.Equal(types.I64) {
 		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post increment statement", symbol))
 	}
 	return nil
