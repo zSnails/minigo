@@ -14,20 +14,19 @@ import (
 )
 
 type TypeChecker struct {
-	listener antlr.ErrorListener
-	filename string
-	// currentFunction *symboltable.Symbol
+	listener    antlr.ErrorListener
 	symbolStack *stack.Stack[*symboltable.Symbol]
 	typeStack   *stack.Stack[types.Type]
 	typeTable   *symboltable.TypeTable
 	nodeStack   *stack.Stack[antlr.TerminalNode]
-	SymbolTable *symboltable.SymbolTable
+	symbolTable *symboltable.SymbolTable
 }
 
 // VisitNegativeExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNegativeExpression(ctx *grammar.NegativeExpressionContext) interface{} {
 	expr := t.Visit(ctx.Expression()).(types.Type)
-	// typ := getShallowType(expr)
+
+	expr = depointerize(expr)
 	if !(expr.Equal(types.I64) || expr.Equal(types.Double)) {
 		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("cannot use expression of type '%s' as numeric expression", expr.Name()))
 		return nil
@@ -38,8 +37,7 @@ func (t *TypeChecker) VisitNegativeExpression(ctx *grammar.NegativeExpressionCon
 // VisitPositiveExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitPositiveExpression(ctx *grammar.PositiveExpressionContext) interface{} {
 	expr := t.Visit(ctx.Expression()).(types.Type)
-	// typ := getShallowType(expr)
-	// if !(typ != symboltable.Int || typ != symboltable.Float) {
+
 	if !(expr.Equal(types.I64) || expr.Equal(types.Double)) {
 		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("cannot use expression of type '%s' as numeric expression", expr.Name()))
 		return nil
@@ -81,16 +79,6 @@ func (t *TypeChecker) VisitArrayDeclType(ctx *grammar.ArrayDeclTypeContext) inte
 	}
 	size, _ := strconv.ParseUint(ctx.INTLITERAL().GetText(), 10, 64)
 	return types.NewArray(size, _symbol)
-	// return &symboltable.Symbol{
-	// 	SymbolType: symboltable.TypeSymbol | symboltable.ArraySymbol,
-	// 	LlvmType:   types.NewArray(size, _symbol.LlvmType),
-	// 	Token:      _symbol.Token,
-	// 	Size:       size,
-	// 	Scope:      t.SymbolTable.Scope,
-	// 	Name:       "<array>",
-	// 	Type:       _symbol,
-	// 	Members:    nil,
-	// }
 }
 
 // VisitSliceDeclType implements grammar.MinigoVisitor.
@@ -101,23 +89,12 @@ func (t *TypeChecker) VisitSliceDeclType(ctx *grammar.SliceDeclTypeContext) inte
 	}
 
 	return types.NewArray(0, _symbol)
-	// return &symboltable.Symbol{
-	// 	SymbolType: symboltable.TypeSymbol | symboltable.SliceSymbol,
-	// 	Token:      _symbol.Token,
-	// 	Size:       1,
-	// 	Scope:      t.SymbolTable.Scope,
-	// 	Name:       "<slice>",
-	// 	LlvmType:   types.NewVector(1, _symbol.LlvmType),
-	// 	Type:       _symbol,
-	// 	Members:    nil,
-	// }
 }
 
 var structMemberTable = map[string]map[string]int{}
 
 // VisitStructDeclType implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) interface{} {
-	// out := t.SymbolTable.NewStructType(ctx.GetStart(), "<struct>")
 	node, err := t.nodeStack.Pop()
 	if err != nil {
 		panic("unreachable")
@@ -132,10 +109,10 @@ func (t *TypeChecker) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) in
 		for _, decl := range decls {
 			idents := decl.IdentifierList().AllIDENTIFIER()
 			declType := decl.DeclType()
-			_type := t.Visit(declType).(types.Type)
-			// if !ok {
-			// 	continue
-			// }
+			_type, ok := t.Visit(declType).(types.Type)
+			if !ok {
+				continue
+			}
 			for _, ident := range idents {
 				name := ident.GetText()
 				if _, ok := structMemberTable[nodeName]; !ok {
@@ -149,8 +126,7 @@ func (t *TypeChecker) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) in
 	}
 
 	_struct := types.NewStruct(mems...)
-	_struct.Packed = true
-	_struct.Opaque = true
+	_struct.SetName(nodeName)
 	return _struct
 }
 
@@ -196,9 +172,6 @@ func (t *TypeChecker) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 		return nil // unrecoverable
 	}
 
-	// leftType = getShallowType(leftType)
-	// rightType = getShallowType(rightType)
-
 	leftType = depointerize(leftType)
 	rightType = depointerize(rightType)
 
@@ -215,18 +188,21 @@ func (t *TypeChecker) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(types.Type)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(types.Type)
 
-	if leftType == nil || rightType == nil {
-		return nil // unrecoverable
-	}
-
-	// leftType = getInnerMostType(leftType)
-	// rightType = getInnerMostType(rightType)
+	// if leftType == nil || rightType == nil {
+	// 	return nil // unrecoverable
+	// }
 
 	leftType = depointerize(leftType)
 	rightType = depointerize(rightType)
 
 	if (leftOk && rightOk) && (!leftType.Equal(rightType)) {
 		t.makeError(ctx.GetStart(), fmt.Errorf("mismatched types: '%s' and '%s'", leftType, rightType))
+	}
+
+	if ctx.PLUS() == nil && ctx.MINUS() == nil {
+		if (leftOk && rightOk) && !leftType.Equal(types.I64) {
+			t.makeError(ctx.GetStart(), fmt.Errorf("bitwise operations only support integer types"))
+		}
 	}
 
 	return leftType
@@ -236,7 +212,8 @@ func (t *TypeChecker) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 func (t *TypeChecker) VisitExpressionPostDec(ctx *grammar.ExpressionPostDecContext) interface{} {
 	expr := ctx.Expression()
 	symbol := t.Visit(expr).(types.Type)
-	// if getShallowType(symbol) != symboltable.Int {
+
+	symbol = depointerize(symbol)
 	if !symbol.Equal(types.I64) {
 		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post decrement statement", symbol))
 	}
@@ -247,9 +224,10 @@ func (t *TypeChecker) VisitExpressionPostDec(ctx *grammar.ExpressionPostDecConte
 func (t *TypeChecker) VisitExpressionPostInc(ctx *grammar.ExpressionPostIncContext) interface{} {
 	expr := ctx.Expression()
 	symbol := t.Visit(expr).(types.Type)
-	// if getShallowType(symbol) != symboltable.Int {
+
+	symbol = depointerize(symbol)
+
 	if symbol.Equal(types.I64) {
-		// t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post increment statement", getShallowType(symbol)))
 		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as int in post increment statement", symbol))
 	}
 	return nil
@@ -265,6 +243,7 @@ func (t *TypeChecker) VisitSwitchCaseBranch(ctx *grammar.SwitchCaseBranchContext
 
 	types := t.Visit(ctx.ExpressionList()).([]types.Type)
 	for _, _type := range types {
+		_type = depointerize(_type)
 		if !_type.Equal(currentType) {
 			t.makeError(ctx.GetStart(), fmt.Errorf("cannot use symbol of type '%s' as '%s' type in case statement", _type, currentType))
 		}
@@ -290,7 +269,6 @@ func (t *TypeChecker) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpre
 	if !ok {
 		return nil // unreachable
 	}
-	// symbolType := getShallowType(symbol)
 	err := t.typeStack.Push(_type)
 	if err != nil {
 		panic("unreachable")
@@ -362,7 +340,6 @@ func (t *TypeChecker) VisitIfSimpleNoElse(ctx *grammar.IfSimpleNoElseContext) in
 		return nil
 	}
 
-	// if _type := getInnerMostType(expr); _type != symboltable.Bool {
 	_type = depointerize(_type)
 	if !_type.Equal(types.I1) {
 		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("mismatched types '%s' and 'bool'", _type))
@@ -378,7 +355,6 @@ func (t *TypeChecker) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionCon
 		return nil
 	}
 
-	// if _type := getInnerMostType(expr); _type != symboltable.Bool {
 	_type = depointerize(_type)
 	if !_type.Equal(types.I1) {
 		t.makeError(ctx.Expression().GetStart(), fmt.Errorf("mismatched types '%s' and 'bool'", _type))
@@ -406,7 +382,6 @@ func (t *TypeChecker) VisitThreePartFor(ctx *grammar.ThreePartForContext) interf
 
 	_type = depointerize(_type)
 
-	// if getShallowType(_type) != symboltable.Bool {
 	if !_type.Equal(types.I1) {
 		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as boolean expression", _type))
 	}
@@ -420,7 +395,9 @@ func (t *TypeChecker) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 		return nil // unrecoverable
 	}
 
-	if _type.Equal(types.I1) {
+	_type = depointerize(_type)
+
+	if !_type.Equal(types.I1) {
 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use expression of type '%s' in for condition", _type))
 	}
 	return t.Visit(ctx.Block())
@@ -457,7 +434,7 @@ func (t *TypeChecker) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 
 		name := ident.GetText()
 		symbol := ir.NewGlobal(name, right)
-		err := t.SymbolTable.AddSymbol(name, symbol)
+		err := t.symbolTable.AddSymbol(name, symbol)
 		if err != nil {
 			t.makeError(ident.GetStart(), err)
 		}
@@ -474,7 +451,7 @@ func (t *TypeChecker) VisitExpressionOperand(ctx *grammar.ExpressionOperandConte
 func (t *TypeChecker) VisitIdentifierOperand(ctx *grammar.IdentifierOperandContext) interface{} {
 	if ident := ctx.IDENTIFIER(); ident != nil {
 
-		symbol, found := t.SymbolTable.GetSymbol(ident.GetText())
+		symbol, found := t.symbolTable.GetSymbol(ident.GetText())
 		if !found {
 			t.makeError(ctx.GetStart(), fmt.Errorf("unknown symbol: %s", ident.GetText()))
 			return nil
@@ -505,14 +482,17 @@ func (t *TypeChecker) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
 }
 
 func (t *TypeChecker) FindGlobalSymbol(name string) (*symboltable.Symbol, bool) {
-	return t.SymbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+	return t.symbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
 		return s.Scope == 0 && s.Name == name
 	})
 }
 
 // VisitFunctionCall implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interface{} {
-	fn := t.Visit(ctx.PrimaryExpression()).(*ir.Func)
+	fn, ok := t.Visit(ctx.PrimaryExpression()).(*ir.Func)
+	if !ok {
+		return nil
+	}
 
 	if fn.Name() == "main" {
 		t.makeError(ctx.GetStart(), fmt.Errorf("the main function cannot be called"))
@@ -560,11 +540,12 @@ func (t *TypeChecker) VisitMemberAccessor(ctx *grammar.MemberAccessorContext) in
 	if !ok {
 		return nil // unrecoverable
 	}
+
 	err := t.typeStack.Push(op)
 	if err != nil {
 		panic("unreachable")
 	}
-	return t.VisitChildren(ctx)
+	return t.Visit(ctx.Selector())
 }
 
 // VisitOperandExpression implements grammar.MinigoVisitor.
@@ -572,26 +553,24 @@ func (t *TypeChecker) VisitOperandExpression(ctx *grammar.OperandExpressionConte
 	return t.VisitChildren(ctx)
 }
 
-// func getInnerMostType(in *symboltable.Symbol) *symboltable.Symbol {
 // 	if in != nil && in.Type != nil {
 // 		if in.Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
 // 			return in
 // 		}
-// 		return getInnerMostType(in.Type)
 // 	}
 // 	return in
 // }
 
 // From this function I have to return the type of the value that's getting indexed
 func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
-	accessee, ok := t.Visit(ctx.PrimaryExpression()).(*symboltable.Symbol)
+	accessee, ok := t.Visit(ctx.PrimaryExpression()).(types.Type)
 	if !ok {
 		return nil
 	}
 
-	// if !getInnerMostType(accessee).Is(symboltable.ArraySymbol | symboltable.SliceSymbol) {
-	if !types.IsArray(accessee.Value.Type()) {
-		t.makeError(ctx.GetStart(), fmt.Errorf("symbol '%s' is not a slice or array type", accessee.Name))
+	accessee = depointerize(accessee)
+	if !types.IsArray(accessee) {
+		t.makeError(ctx.GetStart(), fmt.Errorf("symbol '%s' is not a slice or array type", accessee))
 		return nil // unrecoverable
 	}
 
@@ -600,13 +579,15 @@ func (t *TypeChecker) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 		return nil // unreachable
 	}
 
-	// if getShallowType(index) != symboltable.Int {
-	if index.Equal(types.I64) {
+	index = depointerize(index)
+
+	if !index.Equal(types.I64) {
 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use value of type '%s' as index selector", index))
 		return nil // unrecoverable
 	}
 
-	return accessee.Value.Type()
+	acc := accessee.(*types.ArrayType)
+	return acc.ElemType
 }
 
 // VisitInPlaceAssignment implements grammar.MinigoVisitor.
@@ -625,15 +606,14 @@ func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 		return nil // unrecoverable
 	}
 
-	// symbolType := getInnerMostType(symbol)
-	// rightType := getShallowType(right)
+	symbol = depointerize(symbol)
+	right = depointerize(right)
 
 	if !symbol.Equal(right) {
 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", right, symbol))
 	}
 
 	// if symbolType.Is(symboltable.ArraySymbol | symboltable.SliceSymbol) {
-	// 	if getShallowType(symbolType) != rightType {
 	// 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
 	// 	}
 	// } else {
@@ -650,7 +630,7 @@ func depointerize(a types.Type) types.Type {
 		if b.ElemType.Equal(types.I8) {
 			return a
 		}
-		return b.ElemType
+		return depointerize(b.ElemType)
 	}
 
 	return a
@@ -704,7 +684,6 @@ func (t *TypeChecker) VisitCaretExpression(ctx *grammar.CaretExpressionContext) 
 	}
 
 	_type = depointerize(_type)
-	// if getShallowType(symbol) != symboltable.Int {
 	if !_type.Equal(types.I64) {
 		t.makeError(expr.GetStart(), fmt.Errorf("cannot use expression of type '%s' as 'int' value", _type))
 	}
@@ -733,54 +712,10 @@ func (t *TypeChecker) VisitNotExpression(ctx *grammar.NotExpressionContext) inte
 	return nil // unrecoverable
 }
 
-// func secondToLastType(in *symboltable.Symbol) *symboltable.Symbol {
-// 	if in != nil {
-// 		if in.Is(symboltable.TypeSymbol) {
-// 			return secondToLastType(in.Type)
-// 		}
-
-// 		return in.Type
-// 	}
-
-// 	return in
-// }
-
-// func getShallowType(in *symboltable.Symbol) *symboltable.Symbol {
-
-// 	// if in.Type != nil && !in.Is(symboltable.SliceSymbol|symboltable.SliceSymbol) {
-// 	// 	return getType(in.Type)
-// 	// }
-
-// 	if in != nil && in.Type != nil {
-// 		// if in.Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
-// 		// 	return in
-// 		// }
-// 		return in.Type
-// 	}
-
-// 	return in
-
-// 	// if in != nil && (in.SymbolType&symboltable.TypeSymbol != 0) {
-// 	// 	if in.Type != nil {
-// 	// 		return in.Type
-// 	// 	}
-// 	// 	return in
-// 	// }
-
-// 	// // return getType(in.Type)
-// 	// return getType(in.Type)
-// }
-
 // VisitComparison implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitComparison(ctx *grammar.ComparisonContext) interface{} {
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(types.Type)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(types.Type)
-
-	// leftType = getType(leftType)
-	// rightType = getType(rightType)
-
-	// leftType = getInnerMostType(leftType)
-	// rightType = getInnerMostType(rightType)
 
 	if !(rightOk && leftOk) {
 		return nil // unrecoverable
@@ -800,8 +735,6 @@ func (t *TypeChecker) VisitComparison(ctx *grammar.ComparisonContext) interface{
 func (t *TypeChecker) VisitBooleanOperation(ctx *grammar.BooleanOperationContext) interface{} {
 	leftType, leftOk := t.Visit(ctx.GetLeft()).(types.Type)
 	rightType, rightOk := t.Visit(ctx.GetRight()).(types.Type)
-	// leftType = getShallowType(leftType)
-	// rightType = getShallowType(rightType)
 
 	if !(leftOk && rightOk) {
 		return nil
@@ -861,6 +794,7 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 		var rt types.Type = types.Void
 		if returnType := fun.DeclType(); returnType != nil {
 			rt = t.Visit(returnType).(types.Type)
+			rt = depointerize(rt)
 		}
 
 		if fun.IDENTIFIER().GetText() == "main" {
@@ -878,19 +812,15 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 					continue // unrecoverable
 				}
 				for _, identifier := range variable.IdentifierList().AllIDENTIFIER() {
-					// symbol := t.SymbolTable.NewVariable(identifier.GetSymbol(), identifier.GetText(), varType)
 					symbol := ir.NewParam(identifier.GetText(), varType)
-					// symbol = makeSlice(symbol, varType)
 					members = append(members, symbol)
 				}
 			}
 		}
 
-		// symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetSymbol(), fun.IDENTIFIER().GetText(), rt, members...)
 		name := fun.IDENTIFIER().GetText()
 		symbol := ir.NewFunc(name, rt, members...)
-		// symbol = makeSlice(symbol, rt)
-		err := t.SymbolTable.AddSymbol(name, symbol)
+		err := t.symbolTable.AddSymbol(name, symbol)
 		if err != nil {
 			t.makeError(ctx.GetStart(), err)
 			return nil
@@ -902,39 +832,35 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 		t.Visit(variable)
 	}
 
-	{
-		funcs := ctx.TopDeclarationList().AllFuncDef()
-		for _, fn := range funcs {
-			fun := fn.FuncFrontDecl()
-			fun.IDENTIFIER()
-			var rt types.Type
-			if returnType := fun.DeclType(); returnType != nil {
-				rt = t.Visit(returnType).(types.Type)
-			}
+	funcs2 := ctx.TopDeclarationList().AllFuncDef()
+	for _, fn := range funcs2 {
+		fun := fn.FuncFrontDecl()
+		fun.IDENTIFIER()
+		var rt types.Type
+		if returnType := fun.DeclType(); returnType != nil {
+			rt = t.Visit(returnType).(types.Type)
+		}
 
-			var members []*ir.Param = nil
-			if arguments := fun.FuncArgsDecls(); arguments != nil {
-				for _, variable := range arguments.AllSingleVarDeclNoExps() {
-					varType, ok := t.Visit(variable.DeclType()).(types.Type)
-					if !ok {
-						continue // unrecoverable
-					}
-					for _, identifier := range variable.IdentifierList().AllIDENTIFIER() {
-						symbol := ir.NewParam(identifier.GetText(), varType)
-						members = append(members, symbol)
-					}
+		var members []*ir.Param = nil
+		if arguments := fun.FuncArgsDecls(); arguments != nil {
+			for _, variable := range arguments.AllSingleVarDeclNoExps() {
+				varType, ok := t.Visit(variable.DeclType()).(types.Type)
+				if !ok {
+					continue // unrecoverable
+				}
+				for _, identifier := range variable.IdentifierList().AllIDENTIFIER() {
+					symbol := ir.NewParam(identifier.GetText(), varType)
+					members = append(members, symbol)
 				}
 			}
+		}
 
-			// symbol := t.SymbolTable.NewFunction(fun.IDENTIFIER().GetSymbol(), fun.IDENTIFIER().GetText(), rt, members...)
-			name := fun.IDENTIFIER().GetText()
-			symbol := ir.NewFunc(name, rt, members...)
-			// symbol = makeSlice(symbol, rt)
-			err := t.SymbolTable.AddSymbol(name, symbol)
-			if err != nil {
-				t.makeError(ctx.GetStart(), err)
-				return nil
-			}
+		name := fun.IDENTIFIER().GetText()
+		symbol := ir.NewFunc(name, rt, members...)
+		err := t.symbolTable.AddSymbol(name, symbol)
+		if err != nil {
+			t.makeError(ctx.GetStart(), err)
+			return nil
 		}
 	}
 
@@ -943,9 +869,6 @@ func (t *TypeChecker) VisitRoot(ctx *grammar.RootContext) interface{} {
 		t.Visit(_func)
 	}
 
-	// t.SymbolTable.EnterScope()
-	// defer t.SymbolTable.ExitScope()
-	// return t.VisitChildren(ctx)
 	return nil
 }
 
@@ -1001,9 +924,6 @@ func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			continue
 		}
 
-		// exprType := getInnerMostType(expressionType)
-		// symbolType := getInnerMostType(_type)
-
 		expressionType = depointerize(expressionType)
 		_type = depointerize(_type)
 
@@ -1011,20 +931,10 @@ func (t *TypeChecker) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			t.makeError(expression.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", expressionType, _type))
 			continue
 		}
-		// if !exprType.Equals(symbolType) {
-		// 	if exprType != symbolType {
-		// 		t.makeError(expression.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", exprType, symbolType))
-		// 		continue
-		// 	} else {
-		// 		t.makeError(expression.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", exprType, symbolType))
-		// 		continue
-		// 	}
-		// }
 
-		// symbol := t.SymbolTable.NewVariable(identifier.GetSymbol(), identifier.GetText(), getShallowType(expressionType))
 		name := identifier.GetText()
 		symbol := ir.NewGlobal(name, expressionType)
-		err := t.SymbolTable.AddSymbol(name, symbol)
+		err := t.symbolTable.AddSymbol(name, symbol)
 		if err != nil {
 			t.makeError(identifier.GetSymbol(), err)
 		}
@@ -1047,10 +957,9 @@ func (t *TypeChecker) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 		if !ok {
 			t.makeError(ctx.GetStart(), fmt.Errorf("invalid type"))
 		}
-		// symbol := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type)
 		name := ident.GetText()
 		symbol := ir.NewGlobal(name, _type)
-		err := t.SymbolTable.AddSymbol(name, symbol)
+		err := t.symbolTable.AddSymbol(name, symbol)
 		if err != nil {
 			t.makeError(ident.GetSymbol(), err)
 		}
@@ -1113,8 +1022,8 @@ func (t *TypeChecker) VisitBlock(ctx *grammar.BlockContext) interface{} {
 
 // VisitBlockStatement implements grammar.MinigoVisitor.o
 func (t *TypeChecker) VisitBlockStatement(ctx *grammar.BlockStatementContext) interface{} {
-	t.SymbolTable.EnterScope()
-	defer t.SymbolTable.ExitScope()
+	t.symbolTable.EnterScope()
+	defer t.symbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
@@ -1128,6 +1037,8 @@ func (t *TypeChecker) VisitCapExpression(ctx *grammar.CapExpressionContext) inte
 	expr := ctx.Expression()
 	symbol := t.Visit(expr).(types.Type)
 	// if symbol.Type.SymbolType&(symboltable.ArraySymbol|symboltable.SliceSymbol) == 0 {
+	symbol = depointerize(symbol)
+
 	if !types.IsArray(symbol) {
 		t.makeError(expr.GetStart(), fmt.Errorf("expression in cap call is not a slice or array type"))
 		return nil
@@ -1200,8 +1111,8 @@ func (t *TypeChecker) VisitFuncArgsDecls(ctx *grammar.FuncArgsDeclsContext) inte
 
 // VisitFuncDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
-	defer t.SymbolTable.ExitScope() // This will exit the scope created in the FuncFrontDecl
-	val, found := t.SymbolTable.GetSymbol(ctx.FuncFrontDecl().IDENTIFIER().GetText())
+	defer t.symbolTable.ExitScope() // This will exit the scope created in the FuncFrontDecl
+	val, found := t.symbolTable.GetSymbol(ctx.FuncFrontDecl().IDENTIFIER().GetText())
 	if !found {
 		panic("unreachable")
 	}
@@ -1218,7 +1129,7 @@ func (t *TypeChecker) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 
 // VisitFuncFrontDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) interface{} {
-	t.SymbolTable.EnterScope() // This will enter the function scope
+	t.symbolTable.EnterScope() // This will enter the function scope
 	if funcArgs := ctx.FuncArgsDecls(); funcArgs != nil {
 		t.Visit(funcArgs)
 	}
@@ -1232,8 +1143,8 @@ func (t *TypeChecker) VisitIdentifierList(ctx *grammar.IdentifierListContext) in
 
 // VisitIfStatementStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitIfStatementStatement(ctx *grammar.IfStatementStatementContext) interface{} {
-	t.SymbolTable.EnterScope()
-	defer t.SymbolTable.ExitScope()
+	t.symbolTable.EnterScope()
+	defer t.symbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
@@ -1264,7 +1175,6 @@ func (t *TypeChecker) VisitLengthExpression(ctx *grammar.LengthExpressionContext
 		return nil // unrecoverable
 	}
 
-	// if !getShallowType(symbol).Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
 	symbol = depointerize(symbol)
 	if !types.IsArray(symbol) {
 		t.makeError(ctx.LEFTPARENTHESIS().GetSymbol(), fmt.Errorf("cannot use symbol of type '%s' in len call", symbol))
@@ -1276,8 +1186,8 @@ func (t *TypeChecker) VisitLengthExpression(ctx *grammar.LengthExpressionContext
 
 // VisitLoopStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitLoopStatement(ctx *grammar.LoopStatementContext) interface{} {
-	t.SymbolTable.EnterScope()
-	defer t.SymbolTable.ExitScope()
+	t.symbolTable.EnterScope()
+	defer t.symbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
@@ -1330,13 +1240,6 @@ func (t *TypeChecker) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	return nil
 }
 
-// func getFirstWithMembers(in *symboltable.Symbol) *symboltable.Symbol {
-// 	if in.Type != nil {
-// 		return in.Type
-// 	}
-// 	return in
-// }
-
 // VisitSelector implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
 	symbol, err := t.typeStack.Pop()
@@ -1345,7 +1248,6 @@ func (t *TypeChecker) VisitSelector(ctx *grammar.SelectorContext) interface{} {
 	}
 	_struct := depointerize(symbol).(*types.StructType)
 	stru := structMemberTable[_struct.Name()]
-
 	memberName := ctx.IDENTIFIER().GetText()
 	idx, ok := stru[memberName]
 	if !ok {
@@ -1369,17 +1271,6 @@ func (t *TypeChecker) VisitSimpleStatementStatement(ctx *grammar.SimpleStatement
 // VisitSingleTypeDecl implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) interface{} {
 	name := ctx.IDENTIFIER()
-	// symbol := t.SymbolTable.NewAliasType(name.GetSymbol(), name.GetText(), nil)
-
-	// err := t.SymbolTable.AddSymbol(symbol)
-	// if err != nil {
-	// 	t.makeError(name.GetSymbol(), err)
-	// }
-
-	// err = t.symbolStack.Push(symbol)
-	// if err != nil {
-	// 	panic("unreachable")
-	// }
 	t.nodeStack.Push(name)
 
 	_type, ok := t.Visit(ctx.DeclType()).(types.Type)
@@ -1387,25 +1278,6 @@ func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) in
 		return nil //unreachable
 	}
 
-	// _, err := t.symbolStack.Pop()
-	// if err != nil {
-	// 	panic("unreachable")
-	// }
-
-	_type.SetName(name.GetText())
-
-	// // symbol = _type
-	// if _type.Is(symboltable.SliceSymbol | symboltable.ArraySymbol) {
-	// 	name := symbol.Name
-	// 	symbol.Name = name
-	// 	symbol.SymbolType = _type.SymbolType
-	// 	symbol.Members = _type.Members
-	// 	symbol.Size = _type.Size
-	// 	symbol.Scope = _type.Scope
-	// 	symbol.Type = _type.Type
-	// } else {
-	// 	symbol.Type = _type
-	// }
 	t.typeTable.AddSymbol(name.GetText(), _type)
 
 	return _type
@@ -1437,10 +1309,9 @@ func makeSlice(symbol *symboltable.Symbol, _ *symboltable.Symbol) *symboltable.S
 func (t *TypeChecker) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsContext) interface{} {
 	_type := t.Visit(ctx.DeclType()).(types.Type)
 	for _, ident := range ctx.IdentifierList().AllIDENTIFIER() {
-		// symbol := t.SymbolTable.NewVariable(ident.GetSymbol(), ident.GetText(), _type)
 		name := ident.GetText()
 		symbol := ir.NewGlobal(name, _type)
-		err := t.SymbolTable.AddSymbol(name, symbol)
+		err := t.symbolTable.AddSymbol(name, symbol)
 		if err != nil {
 			t.makeError(ident.GetSymbol(), err)
 			return nil
@@ -1461,8 +1332,8 @@ func (t *TypeChecker) VisitStructMemDecls(ctx *grammar.StructMemDeclsContext) in
 
 // VisitSwitchStatement implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitSwitchStatement(ctx *grammar.SwitchStatementContext) interface{} {
-	t.SymbolTable.EnterScope()
-	defer t.SymbolTable.ExitScope()
+	t.symbolTable.EnterScope()
+	defer t.symbolTable.ExitScope()
 	return t.VisitChildren(ctx)
 }
 
@@ -1512,11 +1383,10 @@ func (v *TypeChecker) VisitChildren(node antlr.RuleNode) interface{} {
 func NewTypeChecker(filename string, listener antlr.ErrorListener) *TypeChecker {
 	return &TypeChecker{
 		listener:    listener,
-		filename:    filename,
 		symbolStack: stack.NewStack[*symboltable.Symbol](100),
 		typeStack:   stack.NewStack[types.Type](100),
 		typeTable:   symboltable.NewTypeTable(),
 		nodeStack:   stack.NewStack[antlr.TerminalNode](20),
-		SymbolTable: symboltable.NewSymbolTable(),
+		symbolTable: symboltable.NewSymbolTable(),
 	}
 }
