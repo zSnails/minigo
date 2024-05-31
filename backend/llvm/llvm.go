@@ -535,7 +535,10 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 
 	if exprL := ctx.Arguments().ExpressionList(); exprL != nil {
 		for _, expr := range exprL.AllExpression() {
-			argument := l.Visit(expr).(value.Value)
+			argument, ok := l.Visit(expr).(value.Value)
+			if !ok {
+				return nil
+			}
 			switch argument := argument.(type) {
 			case *ir.Global:
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
