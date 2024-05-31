@@ -3,20 +3,13 @@ package main;
 type Persona struct {
     Nombre string;
     Edad int;
-    Amigos []Persona;
+    Amigos []int;
 };
 
 type Nombre string;
 type Apellido Nombre;
 
-type (
-    Hijo Persona;
-    Hijos []Hijo;
-);
-
-
 func a() {
     var aaron Persona;
     var samuel Persona;
-    aaron.Amigos[0] = samuel;
 };

@@ -1,22 +1,168 @@
 // The following code must be successfully parsed and not result in an error
 package main;
 
-var err string = "";
-
-func div(numerator, denominator int) int {
-    if denominator == 0 {
-        err = "can't divide by zero";
-        return 0;
-    };
-
-    return numerator / denominator;
+func TestHelloWorld() {
+    printf("Hello, World\n");
 };
 
-func panic(a string){};
+func TestBasicArithmetic() {
+    a := 5;
+    b := 3;
+    c := a + b;
+       printf("%lld\n", c);
+};
+
+func TestConditionalStatement() {
+    a := 5;
+    if a > 3 {
+       printf("a is greater than 3\n");
+    } else {
+       printf("a is not greater than 3\n");
+    };
+};
+
+func TestInfiniteForLoop() {
+ i := 0;
+ for {
+     if i >= 5 {
+         break;
+     };
+     printf("%lld\n", i);
+     i = i + 1;
+ };
+};
+
+ func TestForConditional() {
+     i := 0;
+     for i < 5 {
+         printf("%lld\n", i);
+         i = i + 1;
+     };
+ };
+
+ func TestForLoopClassic() {
+     for i := 0; i < 5; i = i + 1 {
+         printf("%lld\n", i);
+     };
+ };
+
+ func SumOfFirstNNaturalNumbers() {
+     sum := 0;
+     n := 10;
+     for i := 1; i <= n; i = i + 1 {
+         sum = sum + i;
+     };
+
+     printf("%lld\n", sum);
+ };
+
+ func Factorial() {
+     n := 5;
+     fact := 1;
+     for i := 1; i <= n; i = i + 1 {
+         fact = fact * i;
+     };
+
+     printf("%lld\n", fact);
+ };
+
+ func Fibonacci() {
+     n := 10;
+     a := 0;
+     b := 1;
+     printf("%lld\n", a);
+     printf("%lld\n", b);
+
+     for i := 2; i < n; i = i + 1 {
+         c := a + b;
+         printf("%lld\n", c);
+         a = b;
+         b = c;
+     };
+ };
+
+ func ArrayReversal() {
+     var arr [5]int;
+     arr[0] = 1;
+     arr[1] = 2;
+     arr[2] = 3;
+     arr[3] = 4;
+     arr[4] = 5;
+     n := 5;
+     for i := 0; i < (n/2); i = i + 1 {
+         temp := arr[i];
+         idx := n - i - 1;
+         arr[i] = arr[idx];
+         arr[idx] = temp;
+     };
+
+     for i := 0; i < len(arr); i++ {
+         printf("arr[%d] = %lld\n", i, arr[i]);
+     };
+ };
+
+ func BubbleSort() {
+     var arr [5]int;
+     arr[0] = 5;
+     arr[1] = 3;
+     arr[2] = 2;
+     arr[3] = 4;
+     arr[4] = 1;
+
+     for i := 0; i < len(arr); i++ {
+         printf("bubble sort before: %lld\n", arr[i]);
+     };
+
+     for i := 0; i < len(arr)-1; i = i + 1 {
+         for j := 0; j < len(arr)-i-1; j = j + 1 {
+             if arr[j] > arr[j+1] {
+                 temp := arr[j];
+                 arr[j] = arr[j+1];
+                 arr[j+1] = temp;
+             };
+         };
+     };
+
+     for i := 0; i < len(arr); i++ {
+         printf("bubble sort after: %lld\n", arr[i]);
+     };
+ };
+
+
+func BhaskarasApproximation(theta float) float {
+    var ret float = (4.0*theta * (180.0 - theta))/(40500.0 - theta * (180.0-theta));
+    return ret;
+};
+
+func sin(x float) float {
+    return (x / 100.0) * (2.0 - (x/100.0));
+};
+
+func cos(x float) float {
+    return 1.0 - ((x*x)/7000.0);
+};
+
+func tan(x float) float {
+    return (10.0 + x) / (100.0 - x);
+};
 
 func main() {
-    result := div(3, 0);
-    if err != "" {
-        panic(err);
-    };
+    TestHelloWorld();
+    TestBasicArithmetic();
+    TestConditionalStatement();
+    TestInfiniteForLoop();
+    TestForConditional();
+    TestForLoopClassic();
+    SumOfFirstNNaturalNumbers();
+    Factorial();
+    Fibonacci();
+    ArrayReversal();
+    BubbleSort();
+    // for idx := 0.0; idx <= 90.0; idx += 1.0 {
+    //     printf("bhask:sin(%.0lf) = %.3lf\n", idx, BhaskarasApproximation(idx));
+    //     printf("normal:sin(%.0lf) = %.3lf\n", idx, sin(idx));
+    //     printf("cos(%.0lf) = %.3lf\n", idx, cos(idx));
+    //     printf("tan(%.0lf) = %.3lf\n", idx, tan(idx));
+    //     println();
+    // };
 };

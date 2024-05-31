@@ -2,12 +2,16 @@
 package main;
 
 func main() {
-    var ages []int;
-    ages = append(ages, 1);
-    ages = append(ages, 2);
-    ages = append(ages, 3);
-    ages = append(ages, 4);
-    ages = append(ages, 5);
+    
+    va := 1;
+
+    var ages [5]rune;
+
+    ages[0] = 'a';
+    ages[1] = 'b';
+    ages[2] = 'c';
+    ages[3] = 'd';
+    ages[4] = 'e';
 
     for idx := 0; idx < len(ages); idx++ {
         println(ages[idx]);

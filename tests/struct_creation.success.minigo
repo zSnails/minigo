@@ -16,3 +16,7 @@ type Animal struct {
 type Dog struct {
     Animal Animal;
 };
+
+func main() {
+
+};

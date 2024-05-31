@@ -8,6 +8,8 @@ func div(a, b int) int {
     } else {
         return -1;
     };
+
+    return 0;
 };
 
 func greeting(name string) string {
@@ -16,6 +18,8 @@ func greeting(name string) string {
     } else if amigos := 20; amigos != 0 {
         return "bye";
     };
+
+    return "something";
 };
 
 func farewell(name string) string {
@@ -24,6 +28,8 @@ func farewell(name string) string {
     } else {
         return "hola";
     };
+
+    return "algo";
 };
 
 func checkValue(value string) int {
@@ -39,7 +45,8 @@ func checkValue(value string) int {
 
     var nombres []string;
     var a int;
-    nombres = append(nombres, "sds");
+
+    return a;
 };
 
 func canDrink(name string, age int) bool {
