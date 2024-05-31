@@ -1062,14 +1062,14 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		case *ir.InstAlloca:
 			load := blk.NewLoad(expr.ElemType, expr)
 			blk.NewStore(load, symbol)
-		case *ir.InstAdd, *ir.InstSDiv, *ir.InstSub:
+		case *ir.InstAdd, *ir.InstSDiv, *ir.InstSub, *ir.InstMul, *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
 			if types.IsPointer(expr.Type()) {
 				load := blk.NewLoad(expr.Type(), expr)
 				blk.NewStore(load, symbol)
 			} else {
 				blk.NewStore(expr, symbol)
 			}
-		case *ir.InstMul, *ir.InstCall, *ir.InstLShr, *ir.InstShl:
+		case *ir.InstCall, *ir.InstLShr, *ir.InstShl:
 			blk.NewStore(expr, symbol)
 		case *ir.Global:
 			ptr := blk.NewGetElementPtr(types.I8, expr, zero)
