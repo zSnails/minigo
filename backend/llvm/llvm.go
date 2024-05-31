@@ -36,7 +36,10 @@ type LlvmBackend struct {
 func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	switch expr.(type) {
 	case *constant.Float:
 		{
@@ -66,7 +69,10 @@ func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionCon
 func (l *LlvmBackend) VisitPositiveExpression(ctx *grammar.PositiveExpressionContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	switch expr.(type) {
 	case *constant.Float:
 		{
@@ -92,7 +98,10 @@ func (l *LlvmBackend) VisitPositiveExpression(ctx *grammar.PositiveExpressionCon
 // VisitFuncDef implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitFuncDef(ctx *grammar.FuncDefContext) interface{} {
 	isdef = true
-	fn := l.Visit(ctx.FuncFrontDecl()).(*Func)
+	fn, ok := l.Visit(ctx.FuncFrontDecl()).(*Func)
+	if !ok {
+		return nil
+	}
 	isdef = false
 
 	l.symbolTable.AddSymbol(fn.Name(), fn)
@@ -188,7 +197,10 @@ func (l *LlvmBackend) VisitArguments(ctx *grammar.ArgumentsContext) interface{} 
 
 // VisitArrayDeclType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitArrayDeclType(ctx *grammar.ArrayDeclTypeContext) interface{} {
-	_type := l.Visit(ctx.DeclType()).(types.Type)
+	_type, ok := l.Visit(ctx.DeclType()).(types.Type)
+	if !ok {
+		return nil
+	}
 
 	got, err := strconv.ParseUint(ctx.INTLITERAL().GetText(), 0, 64)
 	if err != nil {
@@ -224,8 +236,11 @@ func (l *LlvmBackend) VisitBlockStatement(ctx *grammar.BlockStatementContext) in
 func (l *LlvmBackend) VisitBooleanOperation(ctx *grammar.BooleanOperationContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 
-	left := l.Visit(ctx.GetLeft()).(value.Value)
-	right := l.Visit(ctx.GetRight()).(value.Value)
+	left, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
+	right, rightOk := l.Visit(ctx.GetRight()).(value.Value)
+	if !(leftOk && rightOk) {
+		return nil
+	}
 
 	var leftValue value.Value
 	if l, ok := left.Type().(*types.PointerType); ok {
@@ -278,7 +293,11 @@ func (l *LlvmBackend) VisitChildren(node antlr.RuleNode) interface{} {
 
 	var result any // Always remember that this will just return the top level
 	for _, child := range children {
-		r := l.Visit(child.(antlr.ParseTree))
+		c, ok := child.(antlr.ParseTree)
+		if !ok {
+			return nil
+		}
+		r := l.Visit(c)
 		if r != nil {
 			result = r
 		}
@@ -292,8 +311,12 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 	fn, _ := l.blockStack.Peek()
 	blk, _ := l.blockStack.Peek()
 
-	left := l.Visit(ctx.GetLeft()).(value.Value)
-	right := l.Visit(ctx.GetRight()).(value.Value)
+	left, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
+	right, rightOk := l.Visit(ctx.GetRight()).(value.Value)
+
+	if !(leftOk && rightOk) {
+		return nil
+	}
 
 	// TODO: Figure out how to do string comparison
 
@@ -395,7 +418,10 @@ func (l *LlvmBackend) VisitExpressionOperand(ctx *grammar.ExpressionOperandConte
 // VisitExpressionPostDec implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionPostDec(ctx *grammar.ExpressionPostDecContext) interface{} {
 	blk, _ := l.blockStack.Peek()
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 
 	var temp value.Value
 	if types.IsPointer(expr.Type()) {
@@ -412,7 +438,10 @@ func (l *LlvmBackend) VisitExpressionPostDec(ctx *grammar.ExpressionPostDecConte
 // VisitExpressionPostInc implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionPostInc(ctx *grammar.ExpressionPostIncContext) interface{} {
 	blk, _ := l.blockStack.Peek()
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 
 	var sex value.Value
 	if types.IsPointer(expr.Type()) {
@@ -455,7 +484,11 @@ func (l *LlvmBackend) VisitFuncArgsDecls(ctx *grammar.FuncArgsDeclsContext) inte
 // VisitFuncDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 
-	fn := l.Visit(ctx.FuncFrontDecl()).(*Func)
+	fn, ok := l.Visit(ctx.FuncFrontDecl()).(*Func)
+	if !ok {
+		return nil
+	}
+
 	l.symbolTable.AddSymbol(fn.Name(), fn)
 
 	_ = l.funcStack.Push(fn)
@@ -494,7 +527,10 @@ func (l *LlvmBackend) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) inte
 	if fargs := ctx.FuncArgsDecls(); fargs != nil {
 		for _, param := range fargs.AllSingleVarDeclNoExps() {
 			for _, ident := range param.IdentifierList().AllIDENTIFIER() {
-				_type := l.Visit(param.DeclType()).(types.Type)
+				_type, ok := l.Visit(param.DeclType()).(types.Type)
+				if !ok {
+					return nil
+				}
 				params = append(params, ir.NewParam(ident.GetText(), _type))
 			}
 		}
@@ -502,7 +538,11 @@ func (l *LlvmBackend) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) inte
 
 	var rt types.Type = types.Void
 	if typ := ctx.DeclType(); typ != nil {
-		rt = l.Visit(typ).(types.Type)
+		var ok bool
+		rt, ok = l.Visit(typ).(types.Type)
+		if !ok {
+			return nil
+		}
 	}
 
 	fn := l.module.NewFunc(funcName, rt, params...)
@@ -517,7 +557,7 @@ func (l *LlvmBackend) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) inte
 			l.symbolTable.AddSymbol(param.Name(), alloca)
 		}
 
-		l.blockStack.Push(entry)
+		_ = l.blockStack.Push(entry)
 	}
 
 	return &Func{
@@ -530,7 +570,10 @@ func (l *LlvmBackend) VisitFuncFrontDecl(ctx *grammar.FuncFrontDeclContext) inte
 func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 
-	callee := l.Visit(ctx.PrimaryExpression()).(value.Named)
+	callee, ok := l.Visit(ctx.PrimaryExpression()).(value.Named)
+	if !ok {
+		return nil
+	}
 	var args []value.Value
 
 	if exprL := ctx.Arguments().ExpressionList(); exprL != nil {
@@ -619,19 +662,23 @@ func (l *LlvmBackend) VisitIfElseBlock(ctx *grammar.IfElseBlockContext) interfac
 	blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
 
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
+
 	if types.IsPointer(expr.Type()) {
 		expr = blk.NewLoad(types.I1, expr)
 	}
 
 	True := fn.NewBlock("")
 
-	l.blockStack.Push(True)
+	_ = l.blockStack.Push(True)
 	l.Visit(ctx.GetFirstBlock())
 	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
-	l.blockStack.Push(False)
+	_ = l.blockStack.Push(False)
 
 	l.Visit(ctx.GetLastBlock())
 	elseBlock, _ := l.blockStack.Pop()
@@ -655,7 +702,7 @@ func (l *LlvmBackend) VisitIfElseBlock(ctx *grammar.IfElseBlockContext) interfac
 		False.NewBr(Done)
 	}
 
-	l.blockStack.Push(Done)
+	_ = l.blockStack.Push(Done)
 
 	return nil
 }
@@ -665,19 +712,22 @@ func (l *LlvmBackend) VisitIfElseIf(ctx *grammar.IfElseIfContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
 
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	if types.IsPointer(expr.Type()) {
 		expr = blk.NewLoad(types.I1, expr)
 	}
 
 	True := fn.NewBlock("")
 
-	l.blockStack.Push(True)
+	_ = l.blockStack.Push(True)
 	l.Visit(ctx.Block())
 	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
-	l.blockStack.Push(False)
+	_ = l.blockStack.Push(False)
 	l.Visit(ctx.IfStatement())
 	toConnect, _ := l.blockStack.Pop()
 
@@ -699,7 +749,7 @@ func (l *LlvmBackend) VisitIfElseIf(ctx *grammar.IfElseIfContext) interface{} {
 		False.NewBr(Done)
 	}
 
-	l.blockStack.Push(Done)
+	_ = l.blockStack.Push(Done)
 
 	return nil
 }
@@ -710,19 +760,23 @@ func (l *LlvmBackend) VisitIfSimpleElseBlock(ctx *grammar.IfSimpleElseBlockConte
 	fn, _ := l.funcStack.Peek()
 
 	l.Visit(ctx.SimpleStatement()) // This will probably never return anything
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
+
 	if types.IsPointer(expr.Type()) {
 		expr = blk.NewLoad(types.I1, expr)
 	}
 
 	True := fn.NewBlock("")
 
-	l.blockStack.Push(True)
+	_ = l.blockStack.Push(True)
 	l.Visit(ctx.GetFirstBlock())
 	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
-	l.blockStack.Push(False)
+	_ = l.blockStack.Push(False)
 	l.Visit(ctx.GetLastBlock())
 	elseBlock, _ := l.blockStack.Pop()
 
@@ -741,7 +795,7 @@ func (l *LlvmBackend) VisitIfSimpleElseBlock(ctx *grammar.IfSimpleElseBlockConte
 	if False.Term == nil {
 		False.NewBr(Done)
 	}
-	l.blockStack.Push(Done)
+	_ = l.blockStack.Push(Done)
 
 	return nil
 }
@@ -752,18 +806,21 @@ func (l *LlvmBackend) VisitIfSimpleElseIf(ctx *grammar.IfSimpleElseIfContext) in
 	fn, _ := l.funcStack.Peek()
 
 	l.Visit(ctx.SimpleStatement()) // This will probably never return anything
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	if types.IsPointer(expr.Type()) {
 		expr = blk.NewLoad(types.I1, expr)
 	}
 
 	True := fn.NewBlock("")
-	l.blockStack.Push(True)
+	_ = l.blockStack.Push(True)
 	l.Visit(ctx.Block())
 	ifBlock, _ := l.blockStack.Pop()
 
 	False := fn.NewBlock("")
-	l.blockStack.Push(False)
+	_ = l.blockStack.Push(False)
 	l.Visit(ctx.IfStatement())
 	got, _ := l.blockStack.Peek()
 
@@ -790,13 +847,16 @@ func (l *LlvmBackend) VisitIfSimpleNoElse(ctx *grammar.IfSimpleNoElseContext) in
 	fn, _ := l.funcStack.Peek()
 
 	l.Visit(ctx.SimpleStatement()) // This will probably never return anything
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	if types.IsPointer(expr.Type()) {
 		expr = blk.NewLoad(types.I1, expr)
 	}
 
 	True := fn.NewBlock("")
-	l.blockStack.Push(True)
+	_ = l.blockStack.Push(True)
 	l.Visit(ctx.Block())
 	s, _ := l.blockStack.Pop()
 	Done := fn.NewBlock("")
@@ -809,7 +869,7 @@ func (l *LlvmBackend) VisitIfSimpleNoElse(ctx *grammar.IfSimpleNoElseContext) in
 		True.NewBr(Done)
 	}
 
-	l.blockStack.Push(Done)
+	_ = l.blockStack.Push(Done)
 
 	return nil
 }
@@ -819,13 +879,16 @@ func (l *LlvmBackend) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionCon
 	fn, _ := l.funcStack.Peek()
 	blk, _ := l.blockStack.Peek()
 
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	if types.IsPointer(expr.Type()) {
 		expr = blk.NewLoad(types.I1, expr)
 	}
 
 	then := fn.NewBlock("")
-	l.blockStack.Push(then)
+	_ = l.blockStack.Push(then)
 	l.Visit(ctx.Block())
 	s, _ := l.blockStack.Pop()
 
@@ -839,7 +902,7 @@ func (l *LlvmBackend) VisitIfSingleExpression(ctx *grammar.IfSingleExpressionCon
 		then.NewBr(end)
 	}
 
-	l.blockStack.Push(end)
+	_ = l.blockStack.Push(end)
 
 	return nil
 }
@@ -854,8 +917,12 @@ func (l *LlvmBackend) VisitIfStatementStatement(ctx *grammar.IfStatementStatemen
 // VisitInPlaceAssignment implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentContext) interface{} {
 	blk, _ := l.blockStack.Peek()
-	left := l.Visit(ctx.GetLeft()).(value.Value)
-	right := l.Visit(ctx.GetRight()).(value.Value)
+	left, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
+	right, rightOk := l.Visit(ctx.GetRight()).(value.Value)
+
+	if !(leftOk && rightOk) {
+		return nil
+	}
 
 	var leftValue value.Value
 	if l, ok := left.Type().(*types.PointerType); ok {
@@ -975,7 +1042,10 @@ func (l *LlvmBackend) VisitLenCall(ctx *grammar.LenCallContext) interface{} {
 
 // VisitLengthExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitLengthExpression(ctx *grammar.LengthExpressionContext) interface{} {
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	switch expr := expr.(type) {
 	case *ir.InstAlloca:
 		switch expr := expr.ElemType.(type) {
@@ -1053,7 +1123,10 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 	rhs := ctx.GetRight()
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 
-		symbol := l.Visit(ident).(value.Value)
+		symbol, ok := l.Visit(ident).(value.Value)
+		if !ok {
+			return nil
+		}
 		expr, ok := l.Visit(rhs.Expression(idx)).(value.Value)
 		if !ok {
 			return nil
@@ -1128,7 +1201,10 @@ func (l *LlvmBackend) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpre
 // VisitNotExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNotExpression(ctx *grammar.NotExpressionContext) interface{} {
 	blk, _ := l.blockStack.Peek()
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 
 	if p, ok := expr.Type().(*types.PointerType); ok {
 		expr = blk.NewLoad(p.ElemType, expr)
@@ -1169,8 +1245,12 @@ func (l *LlvmBackend) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 		panic(err)
 	}
 
-	leftNode := l.Visit(ctx.GetLeft()).(value.Value)
-	rightNode := l.Visit(ctx.GetRight()).(value.Value)
+	leftNode, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
+	rightNode, rightOk := l.Visit(ctx.GetRight()).(value.Value)
+
+	if !(leftOk && rightOk) {
+		return nil
+	}
 
 	if ptr, ok := leftNode.Type().(*types.PointerType); ok {
 		leftNode = blk.NewLoad(ptr.ElemType, leftNode)
@@ -1210,8 +1290,11 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 		panic(err)
 	}
 
-	leftNode := l.Visit(ctx.GetLeft()).(value.Value)
-	rightNode := l.Visit(ctx.GetRight()).(value.Value)
+	leftNode, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
+	rightNode, rightOk := l.Visit(ctx.GetRight()).(value.Value)
+	if !(leftOk && rightOk) {
+		return nil
+	}
 
 	if ptr, ok := leftNode.Type().(*types.PointerType); ok {
 		leftNode = blk.NewLoad(ptr.ElemType, leftNode)
@@ -1249,22 +1332,25 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 		return blk.NewOr(leftNode, rightNode)
 	default:
 		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-		l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("operation not defined"), nil)
+		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
 	}
 	return nil
 }
 
 // VisitPrintStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitPrintStatement(ctx *grammar.PrintStatementContext) interface{} {
-	panic("TODO: fix print statement")
-	blk, _ := l.blockStack.Peek()
-
-	for _, expr := range ctx.ExpressionList().AllExpression() {
-		innerString := l.Visit(expr).(value.Named)
-		blk.NewCall(puts, innerString)
-	}
-
+	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+	l.listener.SyntaxError(nil, ctx, line, column, "print statements are not yet implemented", nil)
 	return nil
+	// panic("TODO: fix print statement")
+	// blk, _ := l.blockStack.Peek()
+
+	// for _, expr := range ctx.ExpressionList().AllExpression() {
+	// 	innerString := l.Visit(expr).(value.Named)
+	// 	blk.NewCall(puts, innerString)
+	// }
+
+	// return nil
 }
 
 var newline = constant.NewInt(types.I8, 0x0A)
@@ -1273,70 +1359,73 @@ var newline = constant.NewInt(types.I8, 0x0A)
 func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 
-    if exprlist := ctx.ExpressionList(); exprlist != nil {
-        for _, expr := range exprlist.AllExpression() {
-            val := l.Visit(expr).(value.Value)
-            reflect.TypeOf(val)
-            switch v := val.(type) {
-            case *ir.Global:
-                blk.NewCall(puts, val)
-            case *ir.InstGetElementPtr:
-                if types.IsArray(v.ElemType) {
-                    load := blk.NewLoad(v.ElemType, val)
-                    blk.NewCall(printf, basicChar, load)
-                } else {
-                    blk.NewCall(puts, val)
-                }
-            case *ir.InstAlloca:
-                switch d := v.ElemType.(type) {
-                case *types.FloatType:
-                    load := blk.NewLoad(d, v)
-                    blk.NewCall(printf, basicFloat, load)
-                case *types.PointerType:
-                    switch d.ElemType {
-                    case types.I8:
-                        load := blk.NewLoad(v.Type(), v)
-                        blk.NewCall(puts, load)
-                    }
-                case *types.IntType:
-                    load := blk.NewLoad(v.ElemType, v)
-                    switch v.ElemType {
-                    case types.I64:
-                        blk.NewCall(printf, basicInt, load)
-                    case types.I1:
-                        blk.NewCall(printf, basicBool, load)
-                    default:
-                        line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-                        l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
-                    }
-                default:
-                    line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-                    l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(d)), nil)
-                }
-            case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
-                blk.NewCall(printf, basicFloat, val)
-            case *ir.InstAdd, *ir.InstSub, *ir.InstMul, *ir.InstSDiv, *ir.InstAnd, *ir.InstXor, *ir.InstOr:
-                blk.NewCall(printf, basicInt, val)
-            case *constant.Int:
-                blk.NewCall(printf, basicInt, val)
-            case *constant.Float:
-                blk.NewCall(printf, basicFloat, val)
-            case *ir.InstCall:
-                switch typ := v.Sig().RetType.(type) {
-                case *types.FloatType:
-                    blk.NewCall(printf, basicFloat, v)
-                default:
-                    line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-                    l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(typ)), nil)
-                }
-            default:
-                line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-                l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(v)), nil)
-            }
-        }
-    } else {
-        blk.NewCall(putchar, newline);
-    }
+	if exprlist := ctx.ExpressionList(); exprlist != nil {
+		for _, expr := range exprlist.AllExpression() {
+			val, ok := l.Visit(expr).(value.Value)
+			if !ok {
+				return nil
+			}
+
+			switch v := val.(type) {
+			case *ir.Global:
+				blk.NewCall(puts, val)
+			case *ir.InstGetElementPtr:
+				if types.IsArray(v.ElemType) {
+					load := blk.NewLoad(v.ElemType, val)
+					blk.NewCall(printf, basicChar, load)
+				} else {
+					blk.NewCall(puts, val)
+				}
+			case *ir.InstAlloca:
+				switch d := v.ElemType.(type) {
+				case *types.FloatType:
+					load := blk.NewLoad(d, v)
+					blk.NewCall(printf, basicFloat, load)
+				case *types.PointerType:
+					switch d.ElemType {
+					case types.I8:
+						load := blk.NewLoad(v.Type(), v)
+						blk.NewCall(puts, load)
+					}
+				case *types.IntType:
+					load := blk.NewLoad(v.ElemType, v)
+					switch v.ElemType {
+					case types.I64:
+						blk.NewCall(printf, basicInt, load)
+					case types.I1:
+						blk.NewCall(printf, basicBool, load)
+					default:
+						line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+						l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
+					}
+				default:
+					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(d)), nil)
+				}
+			case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
+				blk.NewCall(printf, basicFloat, val)
+			case *ir.InstAdd, *ir.InstSub, *ir.InstMul, *ir.InstSDiv, *ir.InstAnd, *ir.InstXor, *ir.InstOr:
+				blk.NewCall(printf, basicInt, val)
+			case *constant.Int:
+				blk.NewCall(printf, basicInt, val)
+			case *constant.Float:
+				blk.NewCall(printf, basicFloat, val)
+			case *ir.InstCall:
+				switch typ := v.Sig().RetType.(type) {
+				case *types.FloatType:
+					blk.NewCall(printf, basicFloat, v)
+				default:
+					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(typ)), nil)
+				}
+			default:
+				line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
+				l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(v)), nil)
+			}
+		}
+	} else {
+		blk.NewCall(putchar, newline)
+	}
 
 	return nil
 }
@@ -1369,12 +1458,15 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	lk.NewBr(lk)
 
 	if fn.Name() == "main" {
-		l.blockStack.Push(lk)
+		_ = l.blockStack.Push(lk)
 		return nblk.NewRet(zero)
 	}
 
 	if expr := ctx.Expression(); expr != nil {
-		expr := l.Visit(expr).(value.Value)
+		expr, ok := l.Visit(expr).(value.Value)
+		if !ok {
+			return nil
+		}
 		switch exp := expr.(type) {
 		case *ir.Global:
 			ptr := nblk.NewGetElementPtr(exp.ContentType, exp, zero)
@@ -1477,7 +1569,10 @@ func (l *LlvmBackend) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsC
 	// blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
 
-	expr := l.Visit(ctx.DeclType()).(types.Type)
+	expr, ok := l.Visit(ctx.DeclType()).(types.Type)
+	if !ok {
+		return nil
+	}
 
 	for _, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
@@ -1500,7 +1595,10 @@ func (l *LlvmBackend) VisitSingleVarDeclsNoExpsDecl(ctx *grammar.SingleVarDeclsN
 
 // VisitSliceDeclType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSliceDeclType(ctx *grammar.SliceDeclTypeContext) interface{} {
-	_type := l.Visit(ctx.DeclType()).(types.Type)
+	_type, ok := l.Visit(ctx.DeclType()).(types.Type)
+	if !ok {
+		return nil
+	}
 	return types.NewArray(0, _type)
 }
 
@@ -1539,11 +1637,20 @@ func (l *LlvmBackend) VisitStructType(ctx *grammar.StructTypeContext) interface{
 func (l *LlvmBackend) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 
-	expr := l.Visit(ctx.PrimaryExpression()).(value.Value)
+	expr, ok := l.Visit(ctx.PrimaryExpression()).(value.Value)
+	if !ok {
+		return nil
+	}
 	index := ctx.Index()
-	idx := l.Visit(index).(value.Value)
+	idx, ok := l.Visit(index).(value.Value)
+	if !ok {
+		return nil
+	}
 
-	exprt := expr.Type().(*types.PointerType)
+	exprt, ok := expr.Type().(*types.PointerType)
+	if !ok {
+		return nil
+	}
 
 	if id, ok := idx.Type().(*types.PointerType); ok {
 		idx = blk.NewLoad(id.ElemType, idx)
@@ -1592,15 +1699,18 @@ func (l *LlvmBackend) VisitThreePartFor(ctx *grammar.ThreePartForContext) interf
 
 	blk.NewBr(_for)
 
-	l.blockStack.Push(_for)
-	l.loopStack.Push(end)
+	_ = l.blockStack.Push(_for)
+	_ = l.loopStack.Push(end)
 
 	l.Visit(ctx.Block())
 	l.Visit(ctx.GetLast())
 
-	l.loopStack.Pop()
+	_, _ = l.loopStack.Pop()
 
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 
 	got, _ := l.blockStack.Peek()
 	if got.Term == nil {
@@ -1610,7 +1720,7 @@ func (l *LlvmBackend) VisitThreePartFor(ctx *grammar.ThreePartForContext) interf
 	end.Parent = fn.Func
 	fn.Blocks = append(fn.Blocks, end)
 
-	l.blockStack.Push(end)
+	_ = l.blockStack.Push(end)
 
 	return nil
 }
@@ -1640,7 +1750,10 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
-		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
+		expr, ok := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
+		if !ok {
+			return nil
+		}
 
 		switch argument := expr.(type) {
 		case *ir.InstAlloca:
@@ -1695,7 +1808,10 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 
 	for idx, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
-		expr := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
+		expr, ok := l.Visit(ctx.ExpressionList().Expression(idx)).(value.Value)
+		if !ok {
+			return nil
+		}
 
 		switch argument := expr.(type) {
 		case *ir.InstAlloca:
@@ -1831,14 +1947,17 @@ func (l *LlvmBackend) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 
 	blk.NewBr(_for)
 
-	l.blockStack.Push(_for)
-	l.loopStack.Push(end)
+	_ = l.blockStack.Push(_for)
+	_ = l.loopStack.Push(end)
 
 	l.Visit(ctx.Block())
 
-	l.loopStack.Pop()
+	_, _ = l.loopStack.Pop()
 
-	expr := l.Visit(ctx.Expression()).(value.Value)
+	expr, ok := l.Visit(ctx.Expression()).(value.Value)
+	if !ok {
+		return nil
+	}
 
 	got, _ := l.blockStack.Peek()
 	if got.Term == nil {
@@ -1848,7 +1967,7 @@ func (l *LlvmBackend) VisitWhileFor(ctx *grammar.WhileForContext) interface{} {
 	end.Parent = fn.Func
 	fn.Blocks = append(fn.Blocks, end)
 
-	l.blockStack.Push(end)
+	_ = l.blockStack.Push(end)
 
 	return nil
 }
@@ -1863,12 +1982,12 @@ func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interfac
 
 	blk.NewBr(_for)
 
-	l.blockStack.Push(_for)
-	l.loopStack.Push(end)
+	_ = l.blockStack.Push(_for)
+	_ = l.loopStack.Push(end)
 
 	l.Visit(ctx.Block())
 
-	l.loopStack.Pop()
+	_, _ = l.loopStack.Pop()
 
 	got, _ := l.blockStack.Peek()
 	if got.Term == nil {
@@ -1878,7 +1997,7 @@ func (l *LlvmBackend) VisitInfiniteFor(ctx *grammar.InfiniteForContext) interfac
 	end.Parent = fn.Func
 	fn.Blocks = append(fn.Blocks, end)
 
-	l.blockStack.Push(end)
+	_ = l.blockStack.Push(end)
 
 	return nil
 }

@@ -94,23 +94,27 @@ func build(args []string, options map[string]string) int {
 	} else {
 		r = reporter.NewReporter(fileStream.GetSourceName())
 	}
+	listener, ok := r.(antlr.ErrorListener)
+	if !ok {
+		return InternalError
+	}
 
-	lexer.AddErrorListener(r.(antlr.ErrorListener))
-	parser.AddErrorListener(r.(antlr.ErrorListener))
+	lexer.AddErrorListener(listener)
+	parser.AddErrorListener(listener)
 	ctx := parser.Root()
 	if r.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		return CompilerError
 	}
 
-	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName(), r.(antlr.ErrorListener))
+	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName(), listener)
 	typeChecker.Visit(ctx)
 	if r.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
 		return CompilerError
 	}
 
-	backend := llvm.NewLlvmBackend(r.(antlr.ErrorListener))
+	backend := llvm.NewLlvmBackend(listener)
 	backend.Visit(ctx)
 	if r.HasErrors() {
 		fmt.Fprintf(os.Stderr, "%s", r.String())
