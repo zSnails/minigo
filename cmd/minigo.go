@@ -131,8 +131,10 @@ func build(args []string, options map[string]string) int {
 
 	defer func() {
 		err := os.Remove(out.Name())
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(CompilerError)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(CompilerError)
+		}
 	}()
 
 	defer out.Close()
