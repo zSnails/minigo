@@ -186,6 +186,11 @@ func (t *TypeChecker) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 		return nil
 	}
 
+	if ctx.MOD() != nil && leftType.Equal(types.Double) {
+		t.makeError(ctx.GetStart(), errors.New("modulo operation is not defined for floating point values"))
+		return nil
+	}
+
 	return leftType
 }
 
