@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+const EXTENSION = ""
+
 func run(executable string) int {
 	path, err := filepath.Abs(executable)
 	if err != nil {

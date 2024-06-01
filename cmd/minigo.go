@@ -120,7 +120,7 @@ func build(args []string, options map[string]string) int {
 
 	defer out.Close()
 
-	cmd := exec.Command("clang", out.Name(), "-o", getFileName(base))
+	cmd := exec.Command("clang", out.Name(), "-o", getFileName(base)+EXTENSION)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 
