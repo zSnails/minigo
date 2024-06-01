@@ -13,7 +13,7 @@ func run(executable string) int {
 		fmt.Fprintln(os.Stderr, err)
 		return InternalError
 	}
-	cmd := exec.Command("./" + path)
+	cmd := exec.Command(fmt.Sprintf("%s.exe", path))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
