@@ -128,6 +128,13 @@ func build(args []string, options map[string]string) int {
 		fmt.Fprintln(os.Stderr, err)
 		return CompilerError
 	}
+
+	defer func() {
+		err := os.Remove(out.Name())
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(CompilerError)
+	}()
+
 	defer out.Close()
 
 	cmd := exec.Command("clang", out.Name(), "-o", getFileName(base))
@@ -144,12 +151,6 @@ func build(args []string, options map[string]string) int {
 		fmt.Fprintln(os.Stderr, err)
 		return CompilerError
 	}
-
-	defer func() {
-		err := os.Remove(out.Name())
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(CompilerError)
-	}()
 
 	return 0
 }
