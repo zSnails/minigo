@@ -103,21 +103,21 @@ func build(args []string, options map[string]string) int {
 	parser.AddErrorListener(listener)
 	ctx := parser.Root()
 	if r.HasErrors() {
-		fmt.Fprintf(os.Stderr, "%s", r.String())
+		fmt.Fprintln(os.Stderr, r.String())
 		return CompilerError
 	}
 
 	typeChecker := checker.NewTypeChecker(fileStream.GetSourceName(), listener)
 	typeChecker.Visit(ctx)
 	if r.HasErrors() {
-		fmt.Fprintf(os.Stderr, "%s", r.String())
+		fmt.Fprintln(os.Stderr, r.String())
 		return CompilerError
 	}
 
 	backend := llvm.NewLlvmBackend(listener)
 	backend.Visit(ctx)
 	if r.HasErrors() {
-		fmt.Fprintf(os.Stderr, "%s", r.String())
+		fmt.Fprintln(os.Stderr, r.String())
 		return CompilerError
 	}
 	backend.GetModule().SourceFilename = filename
@@ -125,7 +125,7 @@ func build(args []string, options map[string]string) int {
 	base := filepath.Base(filename)
 	out, err := os.CreateTemp(tmp, base+"*.ll")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
+		fmt.Fprintln(os.Stderr, err)
 		return CompilerError
 	}
 	defer out.Close()
@@ -136,17 +136,17 @@ func build(args []string, options map[string]string) int {
 
 	_, err = backend.GetModule().WriteTo(out)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
+		fmt.Fprintln(os.Stderr, err)
 		return CompilerError
 	}
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
+		fmt.Fprintln(os.Stderr, err)
 		return CompilerError
 	}
 
 	if err := os.Remove(out.Name()); err != nil {
-		fmt.Fprintf(os.Stderr, "%s", err)
+		fmt.Fprintln(os.Stderr, err)
 		return CompilerError
 	}
 
