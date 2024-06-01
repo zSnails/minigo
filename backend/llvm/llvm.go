@@ -58,8 +58,7 @@ func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionCon
 			return alloca
 		}
 	default:
-		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-		l.listener.SyntaxError(nil, ctx, line, column, "negation expressions are only implemented for constant values", nil)
+		l.reportError(ctx.GetStart(), "negation expressions are only implemented for constant values")
 	}
 
 	return nil
@@ -176,22 +175,19 @@ func (l *LlvmBackend) Visit(tree antlr.ParseTree) interface{} {
 
 // VisitAppendCall implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitAppendCall(ctx *grammar.AppendCallContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "append calls are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "append calls are not yet implemented")
 	return nil
 }
 
 // VisitAppendExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitAppendExpression(ctx *grammar.AppendExpressionContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "append expressions are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "append expressions are not yet implemented")
 	return nil
 }
 
 // VisitArguments implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitArguments(ctx *grammar.ArgumentsContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "arguments are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "arguments are not yet implemented")
 	return nil
 }
 
@@ -227,8 +223,7 @@ func (l *LlvmBackend) VisitBlock(ctx *grammar.BlockContext) interface{} {
 
 // VisitBlockStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitBlockStatement(ctx *grammar.BlockStatementContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "blocks are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "blocks are not yet implemented")
 	return nil
 }
 
@@ -268,22 +263,19 @@ func (l *LlvmBackend) VisitBooleanOperation(ctx *grammar.BooleanOperationContext
 
 // VisitCapCall implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "cap calls are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "cap calls are not yet implemented")
 	return nil
 }
 
 // VisitCapExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitCapExpression(ctx *grammar.CapExpressionContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "cap expressions are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "cap expressions are not yet implemented")
 	return nil
 }
 
 // VisitCaretExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitCaretExpression(ctx *grammar.CaretExpressionContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "caret expressions are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "caret expressions are not yet implemented")
 	return nil
 }
 
@@ -360,8 +352,7 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 		}
 		return blk.NewICmp(enum.IPredNE, left, right)
 	default:
-		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
+		l.reportError(ctx.GetStart(), "operation not defined")
 	}
 
 	panic("unreachable")
@@ -369,8 +360,7 @@ func (l *LlvmBackend) VisitComparison(ctx *grammar.ComparisonContext) interface{
 
 // VisitContinueStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitContinueStatement(ctx *grammar.ContinueStatementContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "continue statements are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "continue statements are not yet implemented")
 	return nil
 }
 
@@ -391,22 +381,19 @@ func (l *LlvmBackend) VisitErrorNode(node antlr.ErrorNode) interface{} {
 
 // VisitExpressionCaseClause implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionCaseClause(ctx *grammar.ExpressionCaseClauseContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "case clauses are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "case clauses are not yet implemented")
 	return nil
 }
 
 // VisitExpressionCaseClauseList implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionCaseClauseList(ctx *grammar.ExpressionCaseClauseListContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "case clause lists are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "case clause lists are not yet implemented")
 	return nil
 }
 
 // VisitExpressionList implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitExpressionList(ctx *grammar.ExpressionListContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "expression lists are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "expression lists are not yet implemented")
 	return nil
 }
 
@@ -606,8 +593,7 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 			case constant.Constant, *ir.Param, ir.Instruction: // BUG: this might cause a bug
 				args = append(args, argument)
 			default:
-				line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-				l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("function call not defined for argument of type %s", argument), nil)
+				l.reportError(ctx.GetStart(), fmt.Sprintf("function call not defined for argument of type %s", argument))
 			}
 		}
 	}
@@ -629,8 +615,7 @@ func (l *LlvmBackend) VisitIdentifierDeclType(ctx *grammar.IdentifierDeclTypeCon
 
 // VisitIdentifierList implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIdentifierList(ctx *grammar.IdentifierListContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "identifier lists are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "identifier lists are not yet implemented")
 	return nil
 }
 
@@ -990,8 +975,7 @@ func (l *LlvmBackend) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 		}
 		// case ctx.
 	default:
-		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
+		l.reportError(ctx.GetStart(), "operation not defined")
 	}
 	return nil
 }
@@ -1014,15 +998,13 @@ func (l *LlvmBackend) VisitBreakStatement(ctx *grammar.BreakStatementContext) in
 
 // VisitInnerTypeDecls implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitInnerTypeDecls(ctx *grammar.InnerTypeDeclsContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "nested type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "nested type declarations are not yet implemented")
 	return nil
 }
 
 // VisitInnerVarDecls implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitInnerVarDecls(ctx *grammar.InnerVarDeclsContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "nested type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "nested type declarations are not yet implemented")
 	return nil
 }
 
@@ -1052,12 +1034,10 @@ func (l *LlvmBackend) VisitLengthExpression(ctx *grammar.LengthExpressionContext
 		case *types.ArrayType:
 			return constant.NewInt(types.I64, int64(expr.Len))
 		default:
-			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("length expression is not defined for %s", expr), nil)
+			l.reportError(ctx.GetStart(), fmt.Sprintf("length expression is not defined for %s", expr))
 		}
 	default:
-		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-		l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("length expression is not defined for %s", expr), nil)
+		l.reportError(ctx.GetStart(), fmt.Sprintf("length expression is not defined for %s", expr))
 	}
 
 	return nil
@@ -1075,29 +1055,25 @@ func (l *LlvmBackend) VisitLoopStatement(ctx *grammar.LoopStatementContext) inte
 
 // VisitMemberAccessor implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitMemberAccessor(ctx *grammar.MemberAccessorContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "member accessors are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "member accessors are not yet implemented")
 	return nil
 }
 
 // VisitMultiTypeDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitMultiTypeDeclaration(ctx *grammar.MultiTypeDeclarationContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "multiple type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "multiple type declarations are not yet implemented")
 	return nil
 }
 
 // VisitMultiVariableDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitMultiVariableDeclaration(ctx *grammar.MultiVariableDeclarationContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "multiple type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "multiple type declarations are not yet implemented")
 	return nil
 }
 
 // VisitNestedType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNestedType(ctx *grammar.NestedTypeContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "nested type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "nested type declarations are not yet implemented")
 	return nil
 }
 
@@ -1135,7 +1111,9 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		case *ir.InstAlloca:
 			load := blk.NewLoad(expr.ElemType, expr)
 			blk.NewStore(load, symbol)
-		case *ir.InstAdd, *ir.InstSDiv, *ir.InstSub, *ir.InstMul, *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
+		case *ir.InstAdd, *ir.InstSDiv, *ir.InstSub,
+			*ir.InstMul, *ir.InstFAdd, *ir.InstFSub,
+			*ir.InstFMul, *ir.InstFDiv, *ir.InstSRem, *ir.InstFRem:
 			if types.IsPointer(expr.Type()) {
 				load := blk.NewLoad(expr.Type(), expr)
 				blk.NewStore(load, symbol)
@@ -1166,8 +1144,7 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 				case constant.Constant:
 					blk.NewStore(expr, symbol)
 				default:
-					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("normal assignment is not defined for %s", exp.ElemType), nil)
+					l.reportError(ctx.GetStart(), fmt.Sprintf("normal assignment is not defined for %s", exp.ElemType))
 				}
 			case *types.IntType:
 				load := blk.NewLoad(expr.ElemType, expr)
@@ -1176,8 +1153,7 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 				blk.NewStore(expr, symbol)
 			}
 		default:
-			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("normal assignment is not defined for %s", reflect.TypeOf(expr)), nil)
+			l.reportError(ctx.GetStart(), fmt.Sprintf("normal assignment is not defined for %s", reflect.TypeOf(expr)))
 		}
 	}
 
@@ -1186,15 +1162,13 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 
 // VisitNormalSwitch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNormalSwitch(ctx *grammar.NormalSwitchContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch statements are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "switch statements are not yet implemented")
 	return nil
 }
 
 // VisitNormalSwitchExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpressionContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch statements are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "switch statements are not yet implemented")
 	return nil
 }
 
@@ -1272,15 +1246,16 @@ func (l *LlvmBackend) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 		}
 		return blk.NewSDiv(leftNode, rightNode)
 	case ctx.MOD() != nil:
-		if leftNode.Type() == types.Double {
-			return blk.NewFRem(leftNode, rightNode)
-		}
 		return blk.NewSRem(leftNode, rightNode)
 	default:
-		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
+		l.reportError(ctx.GetStart(), "operation not defined")
 		return nil
 	}
+}
+
+func (l *LlvmBackend) reportError(token antlr.Token, message string) {
+	line, column := token.GetLine(), token.GetColumn()
+	l.listener.SyntaxError(nil, token, line, column, message, nil)
 }
 
 // VisitOperationPrecedence2 implements grammar.MinigoVisitor.
@@ -1331,16 +1306,14 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 	case ctx.PIPE() != nil:
 		return blk.NewOr(leftNode, rightNode)
 	default:
-		line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-		l.listener.SyntaxError(nil, ctx, line, column, "operation not defined", nil)
+		l.reportError(ctx.GetStart(), "operation not defined")
 	}
 	return nil
 }
 
 // VisitPrintStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitPrintStatement(ctx *grammar.PrintStatementContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx, line, column, "print statements are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "print statements are not yet implemented")
 	return nil
 	// panic("TODO: fix print statement")
 	// blk, _ := l.blockStack.Peek()
@@ -1395,12 +1368,10 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 					case types.I1:
 						blk.NewCall(printf, basicBool, load)
 					default:
-						line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-						l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", v.ElemType), nil)
+						l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", v.ElemType))
 					}
 				default:
-					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(d)), nil)
+					l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(d)))
 				}
 			case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
 				blk.NewCall(printf, basicFloat, val)
@@ -1415,12 +1386,10 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 				case *types.FloatType:
 					blk.NewCall(printf, basicFloat, v)
 				default:
-					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(typ)), nil)
+					l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(typ)))
 				}
 			default:
-				line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-				l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(v)), nil)
+				l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(v)))
 			}
 		}
 	} else {
@@ -1483,8 +1452,7 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 			*ir.InstFDiv, *ir.InstFSub, *ir.InstFAdd:
 			return nblk.NewRet(expr)
 		default:
-			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("return expression not defined for instruction %s", reflect.TypeOf(expr)), nil)
+			l.reportError(ctx.GetStart(), fmt.Sprintf("return expression not defined for instruction %s", reflect.TypeOf(expr)))
 		}
 	}
 
@@ -1532,8 +1500,7 @@ func (l *LlvmBackend) VisitRuneLiteral(ctx *grammar.RuneLiteralContext) interfac
 
 // VisitSelector implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSelector(ctx *grammar.SelectorContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "member selectors are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "member selectors are not yet implemented")
 	return nil
 }
 
@@ -1544,22 +1511,19 @@ func (l *LlvmBackend) VisitSimpleStatementStatement(ctx *grammar.SimpleStatement
 
 // VisitSimpleStatementSwitch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSimpleStatementSwitch(ctx *grammar.SimpleStatementSwitchContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch expressions are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "switch expressions are not yet implemented")
 	return nil
 }
 
 // VisitSimpleStatementSwitchExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSimpleStatementSwitchExpression(ctx *grammar.SimpleStatementSwitchExpressionContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch expressions are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "switch expressions are not yet implemented")
 	return nil
 }
 
 // VisitSingleTypeDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "type declarations are not yet implemented")
 	return nil
 }
 
@@ -1614,22 +1578,19 @@ func (l *LlvmBackend) VisitStatementList(ctx *grammar.StatementListContext) inte
 
 // VisitStructDeclType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitStructDeclType(ctx *grammar.StructDeclTypeContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "struct type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "struct type declarations are not yet implemented")
 	return nil
 }
 
 // VisitStructMemDecls implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitStructMemDecls(ctx *grammar.StructMemDeclsContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "struct member declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "struct member declarations are not yet implemented")
 	return nil
 }
 
 // VisitStructType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitStructType(ctx *grammar.StructTypeContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "struct type declarations are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "struct type declarations are not yet implemented")
 	return nil
 }
 
@@ -1662,22 +1623,19 @@ func (l *LlvmBackend) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 
 // VisitSwitchCaseBranch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSwitchCaseBranch(ctx *grammar.SwitchCaseBranchContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch case branches are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "switch case branches are not yet implemented")
 	return nil
 }
 
 // VisitSwitchDefaultBranch implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSwitchDefaultBranch(ctx *grammar.SwitchDefaultBranchContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch default branches are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "switch default branches are not yet implemented")
 	return nil
 }
 
 // VisitSwitchStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitSwitchStatement(ctx *grammar.SwitchStatementContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "switch statements are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "switch statements are not yet implemented")
 	return nil
 }
 
@@ -1732,8 +1690,7 @@ func (l *LlvmBackend) VisitTopDeclarationList(ctx *grammar.TopDeclarationListCon
 
 // VisitTypeDeclStatement implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitTypeDeclStatement(ctx *grammar.TypeDeclStatementContext) interface{} {
-	line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-	l.listener.SyntaxError(nil, ctx.GetStart(), line, column, "type decl statements are not yet implemented", nil)
+	l.reportError(ctx.GetStart(), "type decl statements are not yet implemented")
 	return nil
 }
 
@@ -1793,8 +1750,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			blk.NewStore(expr, alloca)
 			l.symbolTable.AddSymbol(name, alloca)
 		default:
-			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("typed var decl not defined not defined for %s", argument), nil)
+			l.reportError(ctx.GetStart(), fmt.Sprintf("typed var decl not defined not defined for %s", argument))
 		}
 	}
 
@@ -1851,8 +1807,7 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 			blk.NewStore(expr, alloca)
 			l.symbolTable.AddSymbol(name, alloca)
 		default:
-			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("untyped var decl not defined not defined for %s", argument), nil)
+			l.reportError(ctx.GetStart(), fmt.Sprintf("untyped var decl not defined not defined for %s", argument))
 		}
 	}
 
@@ -1916,8 +1871,7 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 					blk.NewStore(expr, alloca)
 					l.symbolTable.AddSymbol(name, alloca)
 				default:
-					line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-					l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("walrus declaration not defined not defined for %s", argument.ElemType), nil)
+					l.reportError(ctx.GetStart(), fmt.Sprintf("walrus declaration not defined not defined for %s", argument.ElemType))
 				}
 			}
 		case constant.Constant:
@@ -1929,8 +1883,7 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 			blk.NewStore(expr, alloca)
 			l.symbolTable.AddSymbol(name, alloca)
 		default:
-			line, column := ctx.GetStart().GetLine(), ctx.GetStart().GetColumn()
-			l.listener.SyntaxError(nil, ctx, line, column, fmt.Sprintf("walrus declaration not defined not defined for %s", argument), nil)
+			l.reportError(ctx.GetStart(), fmt.Sprintf("walrus declaration not defined not defined for %s", argument))
 		}
 	}
 
