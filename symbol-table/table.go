@@ -31,44 +31,6 @@ func (t SymbolTable) String() string {
 	return sb.String()
 }
 
-type SymbolType int
-
-const (
-	TypeSymbol SymbolType = 1 << iota
-	PrimitiveTypeSymbol
-	VariableSymbol
-	FunctionSymbol
-	SliceSymbol
-	ArraySymbol
-	StructSymbol
-	ConstantSymbol
-)
-
-func (s SymbolType) String() string {
-	sb := strings.Builder{}
-	var bit SymbolType
-	cp := s
-	for bit = 0; bit < 32; bit++ {
-		curr := cp >> bit
-		if (curr & 1) == 0 {
-			continue
-		}
-		var k SymbolType = 1 << bit
-		fmt.Fprintf(&sb, "%s ", symbolTypeTable[k])
-	}
-	return sb.String()
-}
-
-var symbolTypeTable = map[SymbolType]string{
-	TypeSymbol:          "Type",
-	PrimitiveTypeSymbol: "Primitive",
-	VariableSymbol:      "Variable",
-	FunctionSymbol:      "Function",
-	SliceSymbol:         "Slice",
-	ArraySymbol:         "Array",
-	StructSymbol:        "Struct",
-}
-
 type Symbol struct {
 	Scope int8
 	Name  string
