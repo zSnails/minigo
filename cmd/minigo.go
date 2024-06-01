@@ -145,10 +145,11 @@ func build(args []string, options map[string]string) int {
 		return CompilerError
 	}
 
-	if err := os.Remove(out.Name()); err != nil {
+	defer func() {
+		err := os.Remove(out.Name())
 		fmt.Fprintln(os.Stderr, err)
-		return CompilerError
-	}
+		os.Exit(CompilerError)
+	}()
 
 	return 0
 }
