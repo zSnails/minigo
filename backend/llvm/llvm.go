@@ -25,7 +25,7 @@ const GLOBAL_SCOPE = 0
 type LlvmBackend struct {
 	listener    antlr.ErrorListener
 	module      *ir.Module
-	symbolTable *llTable
+	symbolTable *LlvmSymbolTable
 	typeTable   *symboltable.TypeTable
 	loopStack   *stack.Stack[*ir.Block]
 	blockStack  *stack.Stack[*ir.Block]

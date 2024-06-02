@@ -6,13 +6,13 @@ import (
 	"github.com/zSnails/minigo/linked-list/single"
 )
 
-type llTable struct {
+type LlvmSymbolTable struct {
 	currentScope int
 	Symbols      *single.LinkedList[*llSymbol]
 }
 
-func NewTable() *llTable {
-	table := &llTable{
+func NewTable() *LlvmSymbolTable {
+	table := &LlvmSymbolTable{
 		currentScope: 0,
 		Symbols:      single.NewLinkedList[*llSymbol](),
 	}
@@ -27,11 +27,11 @@ type llSymbol struct {
 	Symbol value.Value
 }
 
-func (l *llTable) EnterScope() {
+func (l *LlvmSymbolTable) EnterScope() {
 	l.currentScope++
 }
 
-func (l *llTable) Replace(name string, symbol value.Value) {
+func (l *LlvmSymbolTable) Replace(name string, symbol value.Value) {
 	l.Symbols.ForEach(func(ls *llSymbol) {
 		if ls.Name == name {
 			ls.Symbol = symbol
@@ -39,14 +39,14 @@ func (l *llTable) Replace(name string, symbol value.Value) {
 	})
 }
 
-func (l *llTable) ExitScope() {
+func (l *LlvmSymbolTable) ExitScope() {
 	l.Symbols.RemoveIf(func(ls *llSymbol) bool {
 		return ls.Scope == l.currentScope
 	})
 	l.currentScope--
 }
 
-func (l *llTable) AddSymbol(name string, val value.Value) {
+func (l *LlvmSymbolTable) AddSymbol(name string, val value.Value) {
 	v := &llSymbol{
 		Name:   name,
 		Scope:  l.currentScope,
@@ -55,7 +55,7 @@ func (l *llTable) AddSymbol(name string, val value.Value) {
 	l.Symbols.Add(v)
 }
 
-func (l *llTable) GetSymbol(name string) (*llSymbol, bool) {
+func (l *LlvmSymbolTable) GetSymbol(name string) (*llSymbol, bool) {
 	symbol, found := l.Symbols.FindFirst(func(ls *llSymbol) bool {
 		return ls.Name == name
 	})
