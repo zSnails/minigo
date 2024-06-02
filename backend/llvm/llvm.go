@@ -607,7 +607,7 @@ func (l *LlvmBackend) VisitIdentifierDeclType(ctx *grammar.IdentifierDeclTypeCon
 
 	got, found := l.typeTable.GetSymbol(typeName)
 	if !found {
-		panic("unreachable")
+		return nil
 	}
 
 	return got.Type
@@ -636,7 +636,7 @@ func (l *LlvmBackend) VisitIdentifierOperand(ctx *grammar.IdentifierOperandConte
 
 	symbol, found := l.symbolTable.GetSymbol(name)
 	if !found {
-		panic("unreachable")
+		return nil
 	}
 
 	return symbol.Symbol
