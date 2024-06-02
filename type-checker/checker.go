@@ -539,6 +539,11 @@ func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 				}
 			}
 		}
+	} else {
+		if expectedMembers > 0 {
+			t.makeError(ctx.GetStart(), fmt.Errorf("expected at least %d arguments but got zero", expectedMembers))
+			return nil
+		}
 	}
 
 	return fn.Sig.RetType
