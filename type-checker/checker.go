@@ -285,6 +285,7 @@ func (t *TypeChecker) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpre
 	if !ok {
 		return nil // unreachable
 	}
+    _type = depointerize(_type)
 	err := t.typeStack.Push(_type)
 	if err != nil {
 		panic("unreachable")
@@ -562,6 +563,7 @@ func (t *TypeChecker) VisitMemberAccessor(ctx *grammar.MemberAccessorContext) in
 		return nil // unrecoverable
 	}
 
+    op = depointerize(op)
 	err := t.typeStack.Push(op)
 	if err != nil {
 		panic("unreachable")
@@ -679,6 +681,8 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 			return nil // unrecoverable
 		}
 
+        symbol = depointerize(symbol)
+
 		_ = t.typeStack.Push(symbol)
 		right, ok := t.Visit(expression).(types.Type)
 		if !ok {
@@ -686,7 +690,6 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		}
 		_, _ = t.typeStack.Pop()
 
-		symbol = depointerize(symbol)
 		right = depointerize(right)
 
 		if !symbol.Equal(right) {
