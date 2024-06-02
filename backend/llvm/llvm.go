@@ -464,6 +464,8 @@ func (l *LlvmBackend) VisitFuncArgsDecls(ctx *grammar.FuncArgsDeclsContext) inte
 	panic("unimplemented")
 }
 
+const MAINFUNCNAME = "main"
+
 // VisitFuncDecl implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 
@@ -479,13 +481,13 @@ func (l *LlvmBackend) VisitFuncDecl(ctx *grammar.FuncDeclContext) interface{} {
 	l.Visit(ctx.Block())
 
 	name := fn.Func.Name()
-	if name != "main" && !unicode.IsUpper(rune(name[0])) {
+	if name != MAINFUNCNAME && !unicode.IsUpper(rune(name[0])) {
 		fn.Func.Linkage = enum.LinkagePrivate
 	}
-	if fn.Func.Sig.RetType == types.Void && name != "main" {
+	if fn.Func.Sig.RetType == types.Void && name != MAINFUNCNAME {
 		blk, _ := l.blockStack.Peek()
 		blk.NewRet(nil)
-	} else if name == "main" {
+	} else if name == MAINFUNCNAME {
 		fn.Func.Sig.RetType = types.I64
 		l := len(fn.Blocks)
 		if l > 0 {
@@ -1331,6 +1333,8 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 					case types.I8:
 						load := blk.NewLoad(v.Type(), v)
 						blk.NewCall(puts, load)
+					default:
+						l.reportError(ctx.GetStart(), fmt.Sprintf("println statement is not defined for type %s", d.ElemType))
 					}
 				case *types.IntType:
 					load := blk.NewLoad(v.ElemType, v)
@@ -1400,7 +1404,7 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 	lk := fn.NewBlock("")
 	lk.NewBr(lk)
 
-	if fn.Name() == "main" {
+	if fn.Name() == MAINFUNCNAME {
 		_ = l.blockStack.Push(lk)
 		return nblk.NewRet(zero)
 	}
