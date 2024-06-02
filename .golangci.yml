@@ -5,5 +5,12 @@ linters:
     - unconvert
     - unparam
     - execinquery
+    - wastedassign
+    - exhaustive
+    - gosmopolitan
+    - goconst
+    - gocritic
+    - gosimple
+    - govet
   disable:
     - ineffassign
