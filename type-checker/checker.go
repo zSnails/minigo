@@ -285,7 +285,7 @@ func (t *TypeChecker) VisitNormalSwitchExpression(ctx *grammar.NormalSwitchExpre
 	if !ok {
 		return nil // unreachable
 	}
-    _type = depointerize(_type)
+	_type = depointerize(_type)
 	err := t.typeStack.Push(_type)
 	if err != nil {
 		panic("unreachable")
