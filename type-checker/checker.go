@@ -560,7 +560,7 @@ func (t *TypeChecker) VisitMemberAccessor(ctx *grammar.MemberAccessorContext) in
 		return nil // unrecoverable
 	}
 
-    op = depointerize(op)
+	op = depointerize(op)
 	err := t.typeStack.Push(op)
 	if err != nil {
 		panic("unreachable")
@@ -668,7 +668,7 @@ func (t *TypeChecker) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 			return nil // unrecoverable
 		}
 
-        symbol = depointerize(symbol)
+		symbol = depointerize(symbol)
 
 		_ = t.typeStack.Push(symbol)
 		right, ok := t.Visit(expression).(types.Type)
