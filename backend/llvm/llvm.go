@@ -1385,6 +1385,8 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 				switch typ := v.Sig().RetType.(type) {
 				case *types.FloatType:
 					blk.NewCall(printf, basicFloat, v)
+				case *types.IntType:
+					blk.NewCall(printf, basicInt, v)
 				default:
 					l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(typ)))
 				}
