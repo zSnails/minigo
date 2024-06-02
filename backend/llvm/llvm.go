@@ -1073,8 +1073,7 @@ func (l *LlvmBackend) VisitMultiVariableDeclaration(ctx *grammar.MultiVariableDe
 
 // VisitNestedType implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNestedType(ctx *grammar.NestedTypeContext) interface{} {
-	l.reportError(ctx.GetStart(), "nested type declarations are not yet implemented")
-	return nil
+	return l.Visit(ctx.DeclType())
 }
 
 var zero = constant.NewInt(types.I64, 0)
