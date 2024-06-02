@@ -201,7 +201,7 @@ func main() {
         rad := deg2rad(idx);
         printf("sin(%0.2lf) = %lf\n", rad, sin(rad));
         printf("cos(%0.2lf) = %lf\n", rad, cos(rad));
-        printf("tand(%.0lf) = %.3lf\n", idx, tan(idx));
+        printf("tand(%.0lf) = %.3lf\n", idx, tand(idx));
     };
 
     for i := 0; i < 10; i++ {
