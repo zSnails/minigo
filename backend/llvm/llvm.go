@@ -227,6 +227,13 @@ func (l *LlvmBackend) VisitBlockStatement(ctx *grammar.BlockStatementContext) in
 	return nil
 }
 
+func getPointerValue(block *ir.Block, val value.Value) value.Value {
+	if l, ok := val.Type().(*types.PointerType); ok {
+		return block.NewLoad(l.ElemType, val)
+	}
+	return val
+}
+
 // VisitBooleanOperation implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitBooleanOperation(ctx *grammar.BooleanOperationContext) interface{} {
 	blk, _ := l.blockStack.Peek()
@@ -237,25 +244,14 @@ func (l *LlvmBackend) VisitBooleanOperation(ctx *grammar.BooleanOperationContext
 		return nil
 	}
 
-	var leftValue value.Value
-	if l, ok := left.Type().(*types.PointerType); ok {
-		leftValue = blk.NewLoad(l.ElemType, left)
-	} else {
-		leftValue = left
-	}
-
-	var rightValue value.Value
-	if r, ok := right.Type().(*types.PointerType); ok {
-		rightValue = blk.NewLoad(r.ElemType, left)
-	} else {
-		rightValue = right
-	}
+	left = getPointerValue(blk, left)
+	right = getPointerValue(blk, right)
 
 	switch {
 	case ctx.AND() != nil:
-		return blk.NewAnd(leftValue, rightValue)
+		return blk.NewAnd(left, right)
 	case ctx.OR() != nil:
-		return blk.NewOr(leftValue, rightValue)
+		return blk.NewOr(left, right)
 	default:
 		panic("unreachable")
 	}
@@ -909,19 +905,8 @@ func (l *LlvmBackend) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 		return nil
 	}
 
-	var leftValue value.Value
-	if l, ok := left.Type().(*types.PointerType); ok {
-		leftValue = blk.NewLoad(l.ElemType, left)
-	} else {
-		leftValue = left
-	}
-
-	var rightValue value.Value
-	if r, ok := right.Type().(*types.PointerType); ok {
-		rightValue = blk.NewLoad(r.ElemType, right)
-	} else {
-		rightValue = right
-	}
+	leftValue := getPointerValue(blk, left)
+	rightValue := getPointerValue(blk, right)
 
 	switch {
 	case ctx.IDIV() != nil:
@@ -1179,9 +1164,7 @@ func (l *LlvmBackend) VisitNotExpression(ctx *grammar.NotExpressionContext) inte
 		return nil
 	}
 
-	if p, ok := expr.Type().(*types.PointerType); ok {
-		expr = blk.NewLoad(p.ElemType, expr)
-	}
+	expr = getPointerValue(blk, expr)
 
 	return blk.NewXor(expr, constant.True)
 }
@@ -1218,34 +1201,29 @@ func (l *LlvmBackend) VisitOperationPrecedence1(ctx *grammar.OperationPrecedence
 		panic(err)
 	}
 
-	leftNode, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
-	rightNode, rightOk := l.Visit(ctx.GetRight()).(value.Value)
+	left, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
+	right, rightOk := l.Visit(ctx.GetRight()).(value.Value)
 
 	if !(leftOk && rightOk) {
 		return nil
 	}
 
-	if ptr, ok := leftNode.Type().(*types.PointerType); ok {
-		leftNode = blk.NewLoad(ptr.ElemType, leftNode)
-	}
-
-	if ptr, ok := rightNode.Type().(*types.PointerType); ok {
-		rightNode = blk.NewLoad(ptr.ElemType, rightNode)
-	}
+	left = getPointerValue(blk, left)
+	right = getPointerValue(blk, right)
 
 	switch {
 	case ctx.TIMES() != nil:
-		if leftNode.Type() == types.Double {
-			return blk.NewFMul(leftNode, rightNode)
+		if left.Type() == types.Double {
+			return blk.NewFMul(left, right)
 		}
-		return blk.NewMul(leftNode, rightNode)
+		return blk.NewMul(left, right)
 	case ctx.DIV() != nil:
-		if leftNode.Type() == types.Double {
-			return blk.NewFDiv(leftNode, rightNode)
+		if left.Type() == types.Double {
+			return blk.NewFDiv(left, right)
 		}
-		return blk.NewSDiv(leftNode, rightNode)
+		return blk.NewSDiv(left, right)
 	case ctx.MOD() != nil:
-		return blk.NewSRem(leftNode, rightNode)
+		return blk.NewSRem(left, right)
 	default:
 		l.reportError(ctx.GetStart(), "operation not defined")
 		return nil
@@ -1264,46 +1242,41 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 		panic(err)
 	}
 
-	leftNode, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
-	rightNode, rightOk := l.Visit(ctx.GetRight()).(value.Value)
+	left, leftOk := l.Visit(ctx.GetLeft()).(value.Value)
+	right, rightOk := l.Visit(ctx.GetRight()).(value.Value)
 	if !(leftOk && rightOk) {
 		return nil
 	}
 
-	if ptr, ok := leftNode.Type().(*types.PointerType); ok {
-		leftNode = blk.NewLoad(ptr.ElemType, leftNode)
-	}
-
-	if ptr, ok := rightNode.Type().(*types.PointerType); ok {
-		rightNode = blk.NewLoad(ptr.ElemType, rightNode)
-	}
+	left = getPointerValue(blk, left)
+	right = getPointerValue(blk, right)
 
 	switch {
 	// LEFTSHIFT | RIGHTSHIFT | AMPERSAND | AMPERSANDCARET | PLUS | MINUS | PIPE | CARET
 	case ctx.PLUS() != nil:
-		if types.IsArray(leftNode.Type()) || leftNode.Type().Equal(types.I8Ptr) {
-			return blk.NewCall(strcat, leftNode, rightNode)
+		if types.IsArray(left.Type()) || left.Type().Equal(types.I8Ptr) {
+			return blk.NewCall(strcat, left, right)
 		} else {
-			if leftNode.Type() == types.Double {
-				return blk.NewFAdd(leftNode, rightNode)
+			if left.Type() == types.Double {
+				return blk.NewFAdd(left, right)
 			}
-			return blk.NewAdd(leftNode, rightNode)
+			return blk.NewAdd(left, right)
 		}
 	case ctx.MINUS() != nil:
-		if leftNode.Type() == types.Double {
-			return blk.NewFSub(leftNode, rightNode)
+		if left.Type() == types.Double {
+			return blk.NewFSub(left, right)
 		}
-		return blk.NewSub(leftNode, rightNode)
+		return blk.NewSub(left, right)
 	case ctx.AMPERSAND() != nil:
-		return blk.NewAnd(leftNode, rightNode)
+		return blk.NewAnd(left, right)
 	case ctx.RIGHTSHIFT() != nil:
-		return blk.NewLShr(leftNode, rightNode)
+		return blk.NewLShr(left, right)
 	case ctx.LEFTSHIFT() != nil:
-		return blk.NewShl(leftNode, rightNode)
+		return blk.NewShl(left, right)
 	case ctx.CARET() != nil:
-		return blk.NewXor(leftNode, rightNode)
+		return blk.NewXor(left, right)
 	case ctx.PIPE() != nil:
-		return blk.NewOr(leftNode, rightNode)
+		return blk.NewOr(left, right)
 	default:
 		l.reportError(ctx.GetStart(), "operation not defined")
 	}
@@ -1614,9 +1587,7 @@ func (l *LlvmBackend) VisitSubIndex(ctx *grammar.SubIndexContext) interface{} {
 		return nil
 	}
 
-	if id, ok := idx.Type().(*types.PointerType); ok {
-		idx = blk.NewLoad(id.ElemType, idx)
-	}
+	idx = getPointerValue(blk, idx)
 
 	gep := blk.NewGetElementPtr(exprt.ElemType, expr, zero, idx)
 	return gep
