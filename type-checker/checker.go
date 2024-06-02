@@ -625,7 +625,6 @@ func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 
 	right, ok := t.Visit(rhs).(types.Type)
 	if !ok {
-		//t.MakeError(ctx.GetStart(), errors.New("something went terribly wrong")))
 		return nil // unrecoverable
 	}
 
@@ -635,15 +634,6 @@ func (t *TypeChecker) VisitInPlaceAssignment(ctx *grammar.InPlaceAssignmentConte
 	if !symbol.Equal(right) {
 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", right, symbol))
 	}
-
-	// if symbolType.Is(symboltable.ArraySymbol | symboltable.SliceSymbol) {
-	// 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
-	// 	}
-	// } else {
-	// 	if symbolType != rightType {
-	// 		t.makeError(ctx.GetStart(), fmt.Errorf("cannot use '%s' as '%s' value in assignment", rightType, symbolType))
-	// 	}
-	// }
 
 	return nil
 }
@@ -921,7 +911,6 @@ func (t *TypeChecker) VisitMultiTypeDeclaration(ctx *grammar.MultiTypeDeclaratio
 
 func (t *TypeChecker) makeError(token antlr.Token, err error) {
 	t.listener.SyntaxError(nil, token, token.GetLine(), token.GetColumn(), err.Error(), nil)
-	//return fmt.Errorf("%s:%d:%d: %w", t.filename, token.GetLine(), token.GetColumn(), err)
 }
 
 // VisitSingleVarDeclsNoExpsDecl implements grammar.MinigoVisitor.
@@ -1322,7 +1311,7 @@ func (t *TypeChecker) VisitSingleTypeDecl(ctx *grammar.SingleTypeDeclContext) in
 
 	_type, ok := t.Visit(ctx.DeclType()).(types.Type)
 	if !ok {
-		return nil //unreachable
+		return nil // unreachable
 	}
 
 	_ = t.typeTable.AddSymbol(name.GetText(), _type)
