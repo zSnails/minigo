@@ -1,70 +1,60 @@
 // The following code must be successfully parsed and not result in an errorfun
 package main;
 
-// func TestHelloWorld() {
-//     printf("Hello, World\n");
-// };
+func TestHelloWorld() {
+    printf("Hello, World\n");
+};
 
-// func TestBasicArithmetic() {
-//     a := 5;
-//     b := 3;
-//     c := a + b;
-//        printf("%lld\n", c);
-// };
+func TestBasicArithmetic() {
+    a := 5;
+    b := 3;
+    c := a + b;
+       printf("%lld\n", c);
+};
 
-// func TestConditionalStatement() {
-//     a := 5;
-//     if a > 3 {
-//        printf("a is greater than 3\n");
-//     } else {
-//        printf("a is not greater than 3\n");
-//     };
-// };
+func TestConditionalStatement() {
+    a := 5;
+    if a > 3 {
+       printf("a is greater than 3\n");
+    } else {
+       printf("a is not greater than 3\n");
+    };
+};
 
-// func TestInfiniteForLoop() {
-//  i := 0;
-//  for {
-//      if i >= 5 {
-//          break;
-//      };
-//      printf("%lld\n", i);
-//      i = i + 1;
-//  };
-// };
+func TestInfiniteForLoop() {
+    i := 0;
+    for {
+        if i >= 5 {
+            break;
+        };
+        printf("%lld\n", i);
+        i = i + 1;
+    };
+};
 
-//  func TestForConditional() {
-//      i := 0;
-//      for i < 5 {
-//          printf("%lld\n", i);
-//          i = i + 1;
-//      };
-//  };
+ func TestForConditional() {
+     i := 0;
+     for i < 5 {
+         printf("%lld\n", i);
+         i = i + 1;
+     };
+ };
 
-//  func TestForLoopClassic() {
-//      for i := 0; i < 5; i = i + 1 {
-//          printf("%lld\n", i);
-//      };
-//  };
+ func TestForLoopClassic() {
+     for i := 0; i < 5; i = i + 1 {
+         printf("%lld\n", i);
+     };
+ };
 
-//  func SumOfFirstNNaturalNumbers() {
-//      sum := 0;
-//      n := 10;
-//      for i := 1; i <= n; i = i + 1 {
-//          sum = sum + i;
-//      };
+ func SumOfFirstNNaturalNumbers() {
+     sum := 0;
+     n := 10;
+     for i := 1; i <= n; i = i + 1 {
+         sum = sum + i;
+     };
 
-//      printf("%lld\n", sum);
-//  };
-
- // func Factorial() {
- //     n := 5;
- //     fact := 1;
- //     for i := 1; i <= n; i = i + 1 {
- //         fact = fact * i;
- //     };
-
-     // printf("%lld\n", fact);
- // };
+     printf("%lld\n", sum);
+ };
 
 func Fibonacci(n int) int {
 
@@ -84,52 +74,52 @@ func Fibonacci(n int) int {
     return c;
 };
 
- func ArrayReversal() {
-     var arr [5]int;
-     arr[0] = 1;
-     arr[1] = 2;
-     arr[2] = 3;
-     arr[3] = 4;
-     arr[4] = 5;
-     n := 5;
-     for i := 0; i < (n/2); i = i + 1 {
-         temp := arr[i];
-         idx := n - i - 1;
-         arr[i] = arr[idx];
-         arr[idx] = temp;
-     };
+func ArrayReversal() {
+    var arr [5]int;
+    arr[0] = 1;
+    arr[1] = 2;
+    arr[2] = 3;
+    arr[3] = 4;
+    arr[4] = 5;
+    n := 5;
+    for i := 0; i < (n/2); i = i + 1 {
+        temp := arr[i];
+        idx := n - i - 1;
+        arr[i] = arr[idx];
+        arr[idx] = temp;
+    };
 
-     for i := 0; i < len(arr); i++ {
-         printf("arr[%d] = %lld\n", i, arr[i]);
-     };
- };
+    for i := 0; i < len(arr); i++ {
+        printf("arr[%d] = %lld\n", i, arr[i]);
+    };
+};
 
-//  func BubbleSort() {
-//      var arr [5]int;
-//      arr[0] = 5;
-//      arr[1] = 3;
-//      arr[2] = 2;
-//      arr[3] = 4;
-//      arr[4] = 1;
+func BubbleSort() {
+    var arr [5]int;
+    arr[0] = 5;
+    arr[1] = 3;
+    arr[2] = 2;
+    arr[3] = 4;
+    arr[4] = 1;
 
-//      for i := 0; i < len(arr); i++ {
-//          printf("bubble sort before: %lld\n", arr[i]);
-//      };
+    for i := 0; i < len(arr); i++ {
+        printf("bubble sort before: %lld\n", arr[i]);
+    };
 
-//      for i := 0; i < len(arr)-1; i = i + 1 {
-//          for j := 0; j < len(arr)-i-1; j = j + 1 {
-//              if arr[j] > arr[j+1] {
-//                  temp := arr[j];
-//                  arr[j] = arr[j+1];
-//                  arr[j+1] = temp;
-//              };
-//          };
-//      };
+    for i := 0; i < len(arr)-1; i = i + 1 {
+        for j := 0; j < len(arr)-i-1; j = j + 1 {
+            if arr[j] > arr[j+1] {
+                temp := arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            };
+        };
+    };
 
-//      for i := 0; i < len(arr); i++ {
-//          printf("bubble sort after: %lld\n", arr[i]);
-//      };
-//  };
+    for i := 0; i < len(arr); i++ {
+        printf("bubble sort after: %lld\n", arr[i]);
+    };
+};
 
 
 var PIOVER180 = 0.01745329252;
@@ -143,17 +133,17 @@ func sind(theta float) float {
 };
 
 var PI = 3.141592653589793;
+var PISQUARED = 9.689604401;
 
 func sin(theta float) float {
     return (16.0 * theta * (PI - theta))/(5.0*PI*PI - (4.0*theta*(PI-theta)));
 };
 
-var PISQUARED = 9.689604401;
 func cos(theta float) float {
     return (PISQUARED - 4.0 * (theta*theta))/(PISQUARED + theta*theta);
 };
 
-func tan(x float) float {
+func tand(x float) float {
     return (10.0 + x) / (100.0 - x);
 };
 
@@ -167,35 +157,55 @@ func Factorial(n int) int {
     return fact;
 };
 
-func main() {
-    // TestHelloWorld();
-    // TestBasicArithmetic();
-    // TestConditionalStatement();
-    // TestInfiniteForLoop();
-    // TestForConditional();
-    // TestForLoopClassic();
-    // SumOfFirstNNaturalNumbers();
-    // Fibonacci();
-    // ArrayReversal();
-    // BubbleSort();
-    // for idx := 0.0; idx <= 90.0; idx += 1.0 {
-    //     println(idx);
-    //     printf("bhask:sin(%.0lf) = %.3lf\n", idx, BhaskarasApproximation(idx));
-    //     // printf("normal:sin(%.0lf) = %.3lf\n", idx, sin(idx));
-    //     // printf("cos(%.0lf) = %.3lf\n", idx, cos(idx));
-    //     // printf("tan(%.0lf) = %.3lf\n", idx, tan(idx));
-    //     println();
-    // };
-
-    for i := 0; i < 20; i++ {
-        println(Fibonacci(i));
+func FibonacciRec(n int) int {
+    if n == 0 {
+        return 0;
+    };
+    if n == 1 {
+        return 1;
     };
 
-    //println(Factorial(5));
-    // for idx := 0.0; idx < 180.0; idx += 1.0 {
-    //     rad := deg2rad(idx);
-    //     printf("sin(%0.2lf) = %lf\n", rad, sin(rad));
-    //     printf("cos(%0.2lf) = %lf\n", rad, cos(rad));
-    //     printf("tan(%.0lf) = %.3lf\n", idx, tan(idx));
-    // };
+    return FibonacciRec(n-1) + FibonacciRec(n-2);
+};
+
+func main() {
+    println("--- Hello World ---");
+    TestHelloWorld();
+    println("--- Basic Arithmetic ---");
+    TestBasicArithmetic();
+    println("--- Conditional ---");
+    TestConditionalStatement();
+    println("--- Infinite for ---");
+    TestInfiniteForLoop();
+    println("--- Conditional For ---");
+    TestForConditional();
+    println("--- Classic For ---");
+    TestForLoopClassic();
+    println("--- Sum of First N Natural Numbers ---");
+    SumOfFirstNNaturalNumbers();
+    println("--- Fibonacci(5) ---");
+    printf("Fibonacci(5) = %d\n", Fibonacci(5));
+    println("--- Reverse Array ---");
+    ArrayReversal();
+    println("--- Bubble Sort ---");
+    BubbleSort();
+    println("--- Fibonacci(0 through 20) ---");
+    for i := 0; i < 60; i++ {
+        printf("Fibonacci(%lld) = %lld\n", i, Fibonacci(i));
+    };
+
+    println("--- Factorial(5) ---");
+    println(Factorial(5));
+    println("--- sin, cos and tan ---");
+    for idx := 0.0; idx < 180.0; idx += 1.0 {
+        rad := deg2rad(idx);
+        printf("sin(%0.2lf) = %lf\n", rad, sin(rad));
+        printf("cos(%0.2lf) = %lf\n", rad, cos(rad));
+        printf("tand(%.0lf) = %.3lf\n", idx, tan(idx));
+    };
+
+    for i := 0; i < 10; i++ {
+        println(FibonacciRec(i));
+    };
+
 };
