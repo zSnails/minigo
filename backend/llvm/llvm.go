@@ -1542,7 +1542,7 @@ func (l *LlvmBackend) VisitSingleVarDeclNoExps(ctx *grammar.SingleVarDeclNoExpsC
 
 	for _, ident := range ctx.IdentifierList().AllIDENTIFIER() {
 		name := ident.GetText()
-		if fn.body != nil {
+		if fn != nil && fn.body != nil {
 			alloca := fn.body.NewAlloca(expr)
 			l.symbolTable.AddSymbol(name, alloca)
 		} else {
