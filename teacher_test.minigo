@@ -14,12 +14,12 @@ func ComputeFac(num (int)) int {
 };
 
 
-type arregloT []int;
+// type arregloT []int;
 
-var arreglo arregloT;
+var arreglo []int;
 
 func imprimir() int {
-	print("Este es el resultado: " + operaciones(arreglo[2],10)); 
+	printf("Este es el resultado: %d\n", operaciones(arreglo[2],10)); 
 	x := cap(arreglo);
 	print(`Valor de variable`);
     println(x);
