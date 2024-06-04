@@ -32,6 +32,39 @@ type LlvmBackend struct {
 	funcStack   *stack.Stack[*Func]
 }
 
+// VisitThreePartForNoExpression implements grammar.MinigoVisitor.
+func (l *LlvmBackend) VisitThreePartForNoExpression(ctx *grammar.ThreePartForNoExpressionContext) interface{} {
+	blk, _ := l.blockStack.Peek()
+	fn, _ := l.funcStack.Peek()
+
+	l.Visit(ctx.GetFirst())
+
+	_for := fn.NewBlock("")
+	end := ir.NewBlock("")
+
+	blk.NewBr(_for)
+
+	_ = l.blockStack.Push(_for)
+	_ = l.loopStack.Push(end)
+
+	l.Visit(ctx.Block())
+	l.Visit(ctx.GetLast())
+
+	_, _ = l.loopStack.Pop()
+
+	got, _ := l.blockStack.Peek()
+	if got.Term == nil {
+		got.NewBr(_for)
+	}
+
+	end.Parent = fn.Func
+	fn.Blocks = append(fn.Blocks, end)
+
+	_ = l.blockStack.Push(end)
+
+	return nil
+}
+
 // VisitNegativeExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionContext) interface{} {
 	blk, _ := l.blockStack.Peek()

@@ -22,6 +22,15 @@ type TypeChecker struct {
 	symbolTable *symboltable.SymbolTable
 }
 
+// VisitThreePartForNoExpression implements grammar.MinigoVisitor.
+func (t *TypeChecker) VisitThreePartForNoExpression(ctx *grammar.ThreePartForNoExpressionContext) interface{} {
+	first := ctx.GetFirst()
+	last := ctx.GetLast()
+	t.Visit(first)
+	t.Visit(last)
+	return t.Visit(ctx.Block())
+}
+
 // VisitNegativeExpression implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitNegativeExpression(ctx *grammar.NegativeExpressionContext) interface{} {
 	expr, ok := t.Visit(ctx.Expression()).(types.Type)
