@@ -2,7 +2,6 @@ package llvm
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 	"unicode"
 
@@ -74,28 +73,23 @@ func (l *LlvmBackend) VisitNegativeExpression(ctx *grammar.NegativeExpressionCon
 	if !ok {
 		return nil
 	}
-	switch expr.(type) {
-	case *constant.Float:
-		{
-			alloca := fn.body.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			sub := blk.NewFSub(zerof, expr)
-			blk.NewStore(sub, alloca)
-			return alloca
-		}
-	case *constant.Int:
-		{
-			alloca := fn.body.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			sub := blk.NewSub(zero, expr)
-			blk.NewStore(sub, alloca)
-			return alloca
-		}
-	default:
-		l.reportError(ctx.GetStart(), "negation expressions are only implemented for constant values")
+
+	expr = getPointerValue(blk, expr)
+
+	alloca := fn.body.NewAlloca(expr.Type())
+	blk.NewStore(expr, alloca)
+
+	var sub value.Value
+
+	switch expr.Type() {
+	case types.Double:
+		sub = blk.NewFSub(zerof, expr)
+	case types.I64:
+		sub = blk.NewSub(zero, expr)
 	}
 
-	return nil
+	blk.NewStore(sub, alloca)
+	return alloca
 }
 
 // VisitPositiveExpression implements grammar.MinigoVisitor.
@@ -106,26 +100,21 @@ func (l *LlvmBackend) VisitPositiveExpression(ctx *grammar.PositiveExpressionCon
 	if !ok {
 		return nil
 	}
-	switch expr.(type) {
-	case *constant.Float:
-		{
-			alloca := fn.body.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			sub := blk.NewFAdd(zerof, expr)
-			blk.NewStore(sub, alloca)
-			return alloca
-		}
-	case *constant.Int:
-		{
-			alloca := fn.body.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			sub := blk.NewAdd(zero, expr)
-			blk.NewStore(sub, alloca)
-			return alloca
-		}
-	default:
-		panic("unreachable")
+
+	expr = getPointerValue(blk, expr)
+	alloca := fn.body.NewAlloca(expr.Type())
+	blk.NewStore(expr, alloca)
+
+	var sub value.Value
+	switch expr.Type() {
+	case types.Double:
+		sub = blk.NewFAdd(zerof, expr)
+	case types.I64:
+		sub = blk.NewAdd(zero, expr)
 	}
+	blk.NewStore(sub, alloca)
+
+	return alloca
 }
 
 // VisitFuncDef implements grammar.MinigoVisitor.
@@ -159,6 +148,7 @@ var putchar *ir.Func
 var puts *ir.Func
 var printf *ir.Func
 var strcat *ir.Func
+var strlen *ir.Func
 var strcmp *ir.Func
 
 var basicInt *ir.Global
@@ -171,12 +161,16 @@ func (l *LlvmBackend) addBuiltIns() {
 	putchar = l.module.NewFunc("putchar", types.I8, ir.NewParam("", types.I8))
 	printf = l.module.NewFunc("printf", types.I64, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I64))
 	strcat = l.module.NewFunc("strcat", types.I8Ptr, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
+	strlen = l.module.NewFunc("strlen", types.I64, ir.NewParam("", types.I8Ptr))
 	strcmp = l.module.NewFunc("strcmp", types.I64, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
+	// l.module.NewTypeDef("string", String)
+	// l.typeTable.AddSymbol("string", String)
 
 	l.symbolTable.AddSymbol("printf", printf)
 	l.symbolTable.AddSymbol("putchar", putchar)
 	l.symbolTable.AddSymbol("puts", puts)
 	l.symbolTable.AddSymbol("strcat", strcat)
+	l.symbolTable.AddSymbol("strcat", strlen)
 	l.symbolTable.AddSymbol("strcmp", strcmp)
 
 	basicInt = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%lld\n\x00"))
@@ -600,32 +594,8 @@ func (l *LlvmBackend) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 			if !ok {
 				return nil
 			}
-			switch argument := argument.(type) {
-			case *ir.Global:
-				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-				args = append(args, ptr)
-			case *ir.InstGetElementPtr:
-				switch argument.Type().(type) {
-				case *types.PointerType:
-					switch argument.ElemType {
-					case types.I8:
-						args = append(args, argument)
-					default:
-						load := blk.NewLoad(argument.ElemType, argument)
-						args = append(args, load)
-					}
-				default:
-					load := blk.NewLoad(argument.ElemType, argument) // BUG: this might cause yet another bug
-					args = append(args, load)
-				}
-			case *ir.InstAlloca: // BUG: there's a bug with this piece of shit, I'll check it out tomorrow
-				load := blk.NewLoad(argument.ElemType, argument)
-				args = append(args, load)
-			case constant.Constant, *ir.Param, ir.Instruction: // BUG: this might cause a bug
-				args = append(args, argument)
-			default:
-				l.reportError(ctx.GetStart(), fmt.Sprintf("function call not defined for argument of type %s", argument))
-			}
+			argument = getPointerValue(blk, argument)
+			args = append(args, argument)
 		}
 	}
 
@@ -653,17 +623,6 @@ func (l *LlvmBackend) VisitIdentifierList(ctx *grammar.IdentifierListContext) in
 // VisitIdentifierOperand implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitIdentifierOperand(ctx *grammar.IdentifierOperandContext) interface{} {
 	name := ctx.IDENTIFIER().GetText()
-
-	switch name {
-	case "int":
-		return zero
-	case "float":
-		return zerof
-	case "rune":
-		return constant.NewInt(types.I8, 0)
-	case "string":
-		return l.module.NewGlobalDef("", constant.NewCharArrayFromString(""))
-	}
 
 	symbol, found := l.symbolTable.GetSymbol(name)
 	if !found {
@@ -1024,8 +983,7 @@ func (l *LlvmBackend) VisitInnerTypeDecls(ctx *grammar.InnerTypeDeclsContext) in
 
 // VisitInnerVarDecls implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitInnerVarDecls(ctx *grammar.InnerVarDeclsContext) interface{} {
-	l.reportError(ctx.GetStart(), "nested type declarations are not yet implemented")
-	return nil
+	return l.VisitChildren(ctx)
 }
 
 // VisitIntLiteral implements grammar.MinigoVisitor.
@@ -1044,23 +1002,23 @@ func (l *LlvmBackend) VisitLenCall(ctx *grammar.LenCallContext) interface{} {
 
 // VisitLengthExpression implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitLengthExpression(ctx *grammar.LengthExpressionContext) interface{} {
+	blk, _ := l.blockStack.Peek()
 	expr, ok := l.Visit(ctx.Expression()).(value.Value)
 	if !ok {
 		return nil
 	}
-	switch expr := expr.(type) {
-	case *ir.InstAlloca:
-		switch expr := expr.ElemType.(type) {
-		case *types.ArrayType:
-			return constant.NewInt(types.I64, int64(expr.Len))
-		default:
-			l.reportError(ctx.GetStart(), fmt.Sprintf("length expression is not defined for %s", expr))
-		}
-	default:
-		l.reportError(ctx.GetStart(), fmt.Sprintf("length expression is not defined for %s", expr))
-	}
 
-	return nil
+	expr = getPointerValue(blk, expr)
+	if arr, ok := expr.Type().(*types.ArrayType); ok {
+		return constant.NewInt(types.I64, int64(arr.Len))
+	}
+	switch expr.Type() {
+	case typetable.String:
+		return blk.NewCall(strlen, expr)
+	default:
+		l.reportError(ctx.GetStart(), fmt.Sprintf("length expression is not defined for %s", expr.Type()))
+		return nil
+	}
 }
 
 // VisitLiteralOperand implements grammar.MinigoVisitor.
@@ -1087,8 +1045,7 @@ func (l *LlvmBackend) VisitMultiTypeDeclaration(ctx *grammar.MultiTypeDeclaratio
 
 // VisitMultiVariableDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitMultiVariableDeclaration(ctx *grammar.MultiVariableDeclarationContext) interface{} {
-	l.reportError(ctx.GetStart(), "multiple type declarations are not yet implemented")
-	return nil
+	return l.Visit(ctx.InnerVarDecls())
 }
 
 // VisitNestedType implements grammar.MinigoVisitor.
@@ -1126,53 +1083,12 @@ func (l *LlvmBackend) VisitNormalAssignment(ctx *grammar.NormalAssignmentContext
 		if !ok {
 			return nil
 		}
-		switch expr := expr.(type) {
-		case *ir.InstAlloca:
-			load := blk.NewLoad(expr.ElemType, expr)
-			blk.NewStore(load, symbol)
-		case *ir.InstAdd, *ir.InstSDiv, *ir.InstSub,
-			*ir.InstMul, *ir.InstFAdd, *ir.InstFSub,
-			*ir.InstFMul, *ir.InstFDiv, *ir.InstSRem, *ir.InstFRem:
-			if types.IsPointer(expr.Type()) {
-				load := blk.NewLoad(expr.Type(), expr)
-				blk.NewStore(load, symbol)
-			} else {
-				blk.NewStore(expr, symbol)
-			}
-		case *ir.InstCall, *ir.InstLShr, *ir.InstShl:
+		expr = getPointerValue(blk, expr)
+
+		// NOTE: This does not allow string re assignment, I'll handle that
+		// later
+		if types.IsPointer(symbol.Type()) {
 			blk.NewStore(expr, symbol)
-		case *ir.Global:
-			ptr := blk.NewGetElementPtr(types.I8, expr, zero)
-			l.symbolTable.Replace(symbol.Ident(), ptr)
-		case constant.Constant:
-			blk.NewStore(expr, symbol)
-		case *ir.InstGetElementPtr:
-			switch exp := expr.Type().(type) {
-			case *types.PointerType:
-				switch e := exp.ElemType.(type) {
-				case *types.ArrayType:
-					load := blk.NewLoad(e.ElemType, expr)
-					blk.NewStore(load, symbol)
-				case *types.PointerType:
-					// BUG: this is prolly the cause of the current bug
-					load := blk.NewLoad(e, expr)
-					blk.NewStore(load, symbol)
-				case *types.IntType:
-					load := blk.NewLoad(e, expr)
-					blk.NewStore(load, symbol)
-				case constant.Constant:
-					blk.NewStore(expr, symbol)
-				default:
-					l.reportError(ctx.GetStart(), fmt.Sprintf("normal assignment is not defined for %s", exp.ElemType))
-				}
-			case *types.IntType:
-				load := blk.NewLoad(expr.ElemType, expr)
-				blk.NewStore(load, symbol)
-			default:
-				blk.NewStore(expr, symbol)
-			}
-		default:
-			l.reportError(ctx.GetStart(), fmt.Sprintf("normal assignment is not defined for %s", reflect.TypeOf(expr)))
 		}
 	}
 
@@ -1322,15 +1238,6 @@ func (l *LlvmBackend) VisitOperationPrecedence2(ctx *grammar.OperationPrecedence
 func (l *LlvmBackend) VisitPrintStatement(ctx *grammar.PrintStatementContext) interface{} {
 	l.reportError(ctx.GetStart(), "print statements are not yet implemented")
 	return nil
-	// panic("TODO: fix print statement")
-	// blk, _ := l.blockStack.Peek()
-
-	// for _, expr := range ctx.ExpressionList().AllExpression() {
-	// 	innerString := l.Visit(expr).(value.Named)
-	// 	blk.NewCall(puts, innerString)
-	// }
-
-	// return nil
 }
 
 var newline = constant.NewInt(types.I8, 0x0A)
@@ -1346,61 +1253,17 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 				return nil
 			}
 
-			switch v := val.(type) {
-			case *ir.Global:
+			val = getPointerValue(blk, val)
+
+			switch val.Type() {
+			case types.Double:
+				blk.NewCall(printf, basicFloat, val)
+			case types.I64, types.I1:
+				blk.NewCall(printf, basicInt, val)
+			case types.I8:
+				blk.NewCall(printf, basicChar, val)
+			case typetable.String:
 				blk.NewCall(puts, val)
-			case *ir.InstGetElementPtr:
-				if types.IsArray(v.ElemType) {
-					load := blk.NewLoad(v.ElemType, val)
-					blk.NewCall(printf, basicChar, load)
-				} else {
-					blk.NewCall(puts, val)
-				}
-			case *ir.InstAlloca:
-				switch d := v.ElemType.(type) {
-				case *types.FloatType:
-					load := blk.NewLoad(d, v)
-					blk.NewCall(printf, basicFloat, load)
-				case *types.PointerType:
-					switch d.ElemType {
-					case types.I8:
-						load := blk.NewLoad(v.Type(), v)
-						blk.NewCall(puts, load)
-					default:
-						l.reportError(ctx.GetStart(), fmt.Sprintf("println statement is not defined for type %s", d.ElemType))
-					}
-				case *types.IntType:
-					load := blk.NewLoad(v.ElemType, v)
-					switch v.ElemType {
-					case types.I64:
-						blk.NewCall(printf, basicInt, load)
-					case types.I1:
-						blk.NewCall(printf, basicBool, load)
-					default:
-						l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", v.ElemType))
-					}
-				default:
-					l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(d)))
-				}
-			case *ir.InstFAdd, *ir.InstFSub, *ir.InstFMul, *ir.InstFDiv:
-				blk.NewCall(printf, basicFloat, val)
-			case *ir.InstAdd, *ir.InstSub, *ir.InstMul, *ir.InstSDiv, *ir.InstAnd, *ir.InstXor, *ir.InstOr:
-				blk.NewCall(printf, basicInt, val)
-			case *constant.Int:
-				blk.NewCall(printf, basicInt, val)
-			case *constant.Float:
-				blk.NewCall(printf, basicFloat, val)
-			case *ir.InstCall:
-				switch typ := v.Sig().RetType.(type) {
-				case *types.FloatType:
-					blk.NewCall(printf, basicFloat, v)
-				case *types.IntType:
-					blk.NewCall(printf, basicInt, v)
-				default:
-					l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(typ)))
-				}
-			default:
-				l.reportError(ctx.GetStart(), fmt.Sprintf("println statement not defined for %s", reflect.TypeOf(v)))
 			}
 		}
 	} else {
@@ -1413,7 +1276,8 @@ func (l *LlvmBackend) VisitPrintlnStatement(ctx *grammar.PrintlnStatementContext
 // VisitRawStringLiteral implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitRawStringLiteral(ctx *grammar.RawStringLiteralContext) interface{} {
 	res := strings.Trim(ctx.RAWSTRINGLITERAL().GetText(), "`")
-	return l.module.NewGlobalDef("", constant.NewCharArrayFromString(makeCstr(res)))
+	str := l.module.NewGlobalDef("", constant.NewCharArrayFromString(makeCstr(res)))
+	return constant.NewStruct(typetable.String, str)
 }
 
 // VisitInterpretedStringLiteral implements grammar.MinigoVisitor.
@@ -1423,7 +1287,8 @@ func (l *LlvmBackend) VisitInterpretedStringLiteral(ctx *grammar.InterpretedStri
 		panic(err)
 	}
 	car := constant.NewCharArrayFromString(makeCstr(unquoted))
-	return l.module.NewGlobalDef("", car)
+	str := l.module.NewGlobalDef("", car)
+	return constant.NewStruct(typetable.String, str)
 }
 
 // VisitReturnStatement implements grammar.MinigoVisitor.
@@ -1447,57 +1312,34 @@ func (l *LlvmBackend) VisitReturnStatement(ctx *grammar.ReturnStatementContext) 
 		if !ok {
 			return nil
 		}
-		switch exp := expr.(type) {
-		case *ir.Global:
-			ptr := nblk.NewGetElementPtr(exp.ContentType, exp, zero)
-			return nblk.NewRet(ptr)
-		case *ir.InstAlloca:
-			load := nblk.NewLoad(exp.ElemType, exp)
-			return nblk.NewRet(load)
-		case *ir.InstGetElementPtr:
-			return nblk.NewRet(exp)
-		case constant.Constant:
-			return nblk.NewRet(exp)
-		case *ir.InstAdd, *ir.InstMul, *ir.InstSDiv, *ir.InstFMul,
-			*ir.InstOr, *ir.InstAnd, *ir.InstXor, *ir.InstCall,
-			*ir.InstFDiv, *ir.InstFSub, *ir.InstFAdd:
-			return nblk.NewRet(expr)
-		default:
-			l.reportError(ctx.GetStart(), fmt.Sprintf("return expression not defined for instruction %s", reflect.TypeOf(expr)))
-		}
+		expr = getPointerValue(blk, expr)
+		return nblk.NewRet(expr)
 	}
 
 	return nil
 }
 
-// var typeMap = map[string]types.Type{
-// 	"string": types.I8Ptr,
-// 	"int":    types.I64,
-// 	"float":  types.Double,
-// 	"bool":   types.I1,
-// 	"rune":   types.I8,
-// }
-
 // VisitRoot implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitRoot(ctx *grammar.RootContext) interface{} {
 
-	for _, _type := range ctx.TopDeclarationList().AllTypeDecl() {
-		l.Visit(_type)
-	}
+	// for _, _type := range ctx.TopDeclarationList().AllTypeDecl() {
+	// 	l.Visit(_type)
+	// }
 
-	for _, decl := range ctx.TopDeclarationList().AllVariableDecl() {
-		l.Visit(decl)
-	}
+	// for _, decl := range ctx.TopDeclarationList().AllVariableDecl() {
+	// 	l.Visit(decl)
+	// }
 
-	for _, fn := range ctx.TopDeclarationList().AllFuncDef() {
-		l.Visit(fn)
-	}
+	// for _, fn := range ctx.TopDeclarationList().AllFuncDef() {
+	// 	l.Visit(fn)
+	// }
 
-	for _, fn := range ctx.TopDeclarationList().AllFuncDecl() {
-		l.Visit(fn)
-	}
+	// for _, fn := range ctx.TopDeclarationList().AllFuncDecl() {
+	// 	l.Visit(fn)
+	// }
 
-	return nil
+	return l.VisitChildren(ctx)
+	// return nil
 }
 
 // VisitRuneLiteral implements grammar.MinigoVisitor.
@@ -1721,46 +1563,11 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 			return nil
 		}
 
-		switch argument := expr.(type) {
-		case *ir.InstAlloca:
-			load := blk.NewLoad(argument.ElemType, expr)
-			alloca := fn.body.NewAlloca(argument.ElemType)
-			blk.NewStore(load, alloca)
-			l.symbolTable.AddSymbol(name, alloca)
-		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
-			switch arg := argument.ContentType.(type) {
-			case *types.ArrayType:
-				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
-				l.symbolTable.AddSymbol(name, ptr)
-			default:
-				alloca := fn.body.NewAlloca(argument.Type())
-				load := blk.NewLoad(argument.Type(), argument)
-				blk.NewStore(load, alloca)
-				l.symbolTable.AddSymbol(name, alloca)
-			}
-		case *ir.InstGetElementPtr:
-			if l.symbolTable.GetScope() == GLOBAL_SCOPE {
-				l.symbolTable.AddSymbol(name, argument)
-			} else {
-				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-				l.symbolTable.AddSymbol(name, ptr)
-			}
-		case constant.Constant:
-			if blk != nil {
-				alloca := fn.body.NewAlloca(expr.Type())
-				blk.NewStore(expr, alloca)
-				l.symbolTable.AddSymbol(name, alloca)
-			} else {
-				def := l.module.NewGlobalDef("", argument)
-				l.symbolTable.AddSymbol(name, def)
-			}
-		case ir.Instruction:
-			alloca := fn.body.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			l.symbolTable.AddSymbol(name, alloca)
-		default:
-			l.reportError(ctx.GetStart(), fmt.Sprintf("typed var decl not defined not defined for %s", argument))
-		}
+		expr = getPointerValue(blk, expr)
+
+		alloca := fn.body.NewAlloca(expr.Type())
+		blk.NewStore(expr, alloca)
+		l.symbolTable.AddSymbol(name, alloca)
 	}
 
 	return nil
@@ -1778,45 +1585,14 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 			return nil
 		}
 
-		switch argument := expr.(type) {
-		case *ir.InstAlloca:
-			load := blk.NewLoad(argument.ElemType, expr)
-			alloca := fn.body.NewAlloca(argument.ElemType)
-			blk.NewStore(load, alloca)
-			l.symbolTable.AddSymbol(name, alloca)
-		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
-			switch arg := argument.ContentType.(type) {
-			case *types.ArrayType:
-				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
-				l.symbolTable.AddSymbol(name, ptr)
-			default:
-				alloca := fn.body.NewAlloca(argument.Type())
-				load := blk.NewLoad(argument.Type(), argument)
-				blk.NewStore(load, alloca)
-				l.symbolTable.AddSymbol(name, alloca)
-			}
-		case *ir.InstGetElementPtr:
-			if l.symbolTable.GetScope() == GLOBAL_SCOPE {
-				l.symbolTable.AddSymbol(name, argument)
-			} else {
-				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
-				l.symbolTable.AddSymbol(name, ptr)
-			}
-		case constant.Constant:
-			if blk != nil {
-				alloca := fn.body.NewAlloca(expr.Type())
-				blk.NewStore(expr, alloca)
-				l.symbolTable.AddSymbol(name, alloca)
-			} else {
-				def := l.module.NewGlobalDef("", argument)
-				l.symbolTable.AddSymbol(name, def)
-			}
-		case ir.Instruction:
+		expr = getPointerValue(blk, expr)
+
+		if fn != nil {
 			alloca := fn.body.NewAlloca(expr.Type())
 			blk.NewStore(expr, alloca)
 			l.symbolTable.AddSymbol(name, alloca)
-		default:
-			l.reportError(ctx.GetStart(), fmt.Sprintf("untyped var decl not defined not defined for %s", argument))
+		} else {
+			l.symbolTable.AddSymbol(name, expr)
 		}
 	}
 
@@ -1834,68 +1610,23 @@ func (l *LlvmBackend) VisitVariableDeclaration(ctx *grammar.VariableDeclarationC
 	return l.Visit(ctx.SingleVarDecl())
 }
 
-// VisitWalrusDeclaration implements grammar.MinigoVisitor.
 func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationContext) interface{} {
 	blk, _ := l.blockStack.Peek()
 	fn, _ := l.funcStack.Peek()
 
 	for idx, ident := range ctx.GetLeft().AllExpression() {
 		name := ident.GetText()
-
 		expr, ok := l.Visit(ctx.GetRight().Expression(idx)).(value.Value)
 		if !ok {
 			return nil
 		}
 
-		switch argument := expr.(type) {
-		case *ir.InstAlloca:
-			load := blk.NewLoad(argument.ElemType, expr)
-			alloca := fn.body.NewAlloca(argument.ElemType)
-			blk.NewStore(load, alloca)
-			l.symbolTable.AddSymbol(name, alloca)
-		case *ir.Global: // XXX: This might cause a bug somewhere else, I still have to run the checks
-			switch arg := argument.ContentType.(type) {
-			case *types.ArrayType:
-				ptr := blk.NewGetElementPtr(arg.ElemType, argument, zero)
-				l.symbolTable.AddSymbol(name, ptr)
-			default:
-				alloca := fn.body.NewAlloca(argument.Type())
-				load := blk.NewLoad(argument.Type(), argument)
-				blk.NewStore(load, alloca)
-				l.symbolTable.AddSymbol(name, alloca)
-			}
-		case *ir.InstGetElementPtr:
-			if l.symbolTable.GetScope() == GLOBAL_SCOPE {
-				l.symbolTable.AddSymbol(name, argument)
-			} else {
-				switch e := argument.ElemType.(type) {
-				case *types.ArrayType:
-					ptr := blk.NewGetElementPtr(argument.ElemType, argument, zero)
-					alloca := fn.body.NewAlloca(e.ElemType)
-					load := blk.NewLoad(e.ElemType, ptr)
-					blk.NewStore(load, alloca)
-					l.symbolTable.AddSymbol(name, alloca)
-				case *types.IntType:
-					alloca := fn.body.NewAlloca(expr.Type())
-					blk.NewStore(expr, alloca)
-					l.symbolTable.AddSymbol(name, alloca)
-				default:
-					l.reportError(ctx.GetStart(), fmt.Sprintf("walrus declaration not defined not defined for %s", argument.ElemType))
-				}
-			}
-		case constant.Constant:
-			alloca := fn.body.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			l.symbolTable.AddSymbol(name, alloca)
-		case ir.Instruction:
-			alloca := fn.body.NewAlloca(expr.Type())
-			blk.NewStore(expr, alloca)
-			l.symbolTable.AddSymbol(name, alloca)
-		default:
-			l.reportError(ctx.GetStart(), fmt.Sprintf("walrus declaration not defined not defined for %s", argument))
-		}
-	}
+		expr = getPointerValue(blk, expr)
 
+		alloca := fn.body.NewAlloca(expr.Type())
+		blk.NewStore(expr, alloca)
+		l.symbolTable.AddSymbol(name, alloca)
+	}
 	return nil
 }
 
