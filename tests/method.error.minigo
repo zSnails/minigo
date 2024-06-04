@@ -1,10 +1,11 @@
-// This code should produce an error when ran through the parser.
+// This code should not produce an error when ran through the parser.
 package main;
 
 type Person struct {
     Name string;
 };
 
-func (p *Person) Greet() string {
-    return "Hello my name is " + p.Name;
+// In MiniGo there are no pointer types
+func Greet(p Person) string {
+    return "Hello, my name is " + p.Name;
 };

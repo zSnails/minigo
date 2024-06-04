@@ -9,7 +9,7 @@ func TestBasicArithmetic() {
     a := 5;
     b := 3;
     c := a + b;
-       printf("%lld\n", c);
+    printf("%lld\n", c);
 };
 
 func TestConditionalStatement() {
@@ -206,6 +206,13 @@ func main() {
 
     for i := 0; i < 10; i++ {
         println(FibonacciRec(i));
+    };
+
+    for i := 0;; i++ {
+        println(i);
+        if i == 10 {
+            break;
+        };
     };
 
 };

@@ -1,9 +1,7 @@
 package main;
 
-type Matrix [][]int;
-
 func main() {
-    var matrix Matrix;
+    var matrix [][]int;
     matrix[9][9] = 0x232929;
     matrix[9][9] = -30289;
 };
