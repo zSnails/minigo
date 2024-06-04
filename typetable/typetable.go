@@ -46,12 +46,14 @@ func (t *TypeTable) GetSymbol(name string) (*Type, bool) {
 	return val, found
 }
 
+var String = types.NewStruct(types.I8Ptr)
+
 func (t *TypeTable) addBuiltins() {
 	_ = t.AddSymbol("int", types.I64)
 	_ = t.AddSymbol("bool", types.I1)
 	_ = t.AddSymbol("float", types.Double)
-	_ = t.AddSymbol("string", types.I8Ptr)
 	_ = t.AddSymbol("rune", types.I8)
+	_ = t.AddSymbol("string", String)
 }
 
 func NewTypeTable() *TypeTable {

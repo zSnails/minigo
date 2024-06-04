@@ -545,7 +545,7 @@ func (t *TypeChecker) VisitFunctionCall(ctx *grammar.FunctionCallContext) interf
 				arg := args[idx]
 				mem := depointerize(member.Typ)
 				ar := depointerize(arg)
-				if !mem.Equal(ar) {
+				if !mem.Equal(ar) && !(mem.Equal(types.I8Ptr) && ar.Equal(typetable.String)) {
 					t.makeError(ctx.GetStart(), fmt.Errorf("expected type '%s' but got '%s' instead", member.Typ, arg))
 				}
 			}
@@ -789,12 +789,12 @@ func (t *TypeChecker) VisitIntLiteral(ctx *grammar.IntLiteralContext) interface{
 
 // VisitInterpretedStringLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitInterpretedStringLiteral(ctx *grammar.InterpretedStringLiteralContext) interface{} {
-	return types.I8Ptr
+	return typetable.String
 }
 
 // VisitRawStringLiteral implements grammar.MinigoVisitor.
 func (t *TypeChecker) VisitRawStringLiteral(ctx *grammar.RawStringLiteralContext) interface{} {
-	return types.I8Ptr
+	return typetable.String
 }
 
 // VisitRuneLiteral implements grammar.MinigoVisitor.
@@ -1216,7 +1216,7 @@ func (t *TypeChecker) VisitLengthExpression(ctx *grammar.LengthExpressionContext
 	}
 
 	symbol = depointerize(symbol)
-	if !types.IsArray(symbol) {
+	if !types.IsArray(symbol) && !symbol.Equal(typetable.String) {
 		t.makeError(ctx.LEFTPARENTHESIS().GetSymbol(), fmt.Errorf("cannot use symbol of type '%s' in len call", symbol))
 		return nil
 	}
