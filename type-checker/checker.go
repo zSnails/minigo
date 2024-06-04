@@ -10,16 +10,17 @@ import (
 	"github.com/llir/llvm/ir/types"
 	"github.com/zSnails/minigo/grammar"
 	"github.com/zSnails/minigo/stack"
-	symboltable "github.com/zSnails/minigo/symbol-table"
+	"github.com/zSnails/minigo/type-checker/internal"
+	"github.com/zSnails/minigo/typetable"
 )
 
 type TypeChecker struct {
 	listener    antlr.ErrorListener
-	symbolStack *stack.Stack[*symboltable.Symbol]
+	symbolStack *stack.Stack[*internal.Symbol]
 	typeStack   *stack.Stack[types.Type]
-	typeTable   *symboltable.TypeTable
+	typeTable   *typetable.TypeTable
+	symbolTable *internal.SymbolTable
 	nodeStack   *stack.Stack[antlr.TerminalNode]
-	symbolTable *symboltable.SymbolTable
 }
 
 // VisitThreePartForNoExpression implements grammar.MinigoVisitor.
@@ -314,7 +315,7 @@ func (t *TypeChecker) VisitSimpleStatementSwitchExpression(ctx *grammar.SimpleSt
 	simpleStatement := ctx.SimpleStatement()
 	t.Visit(simpleStatement)
 
-	expr, ok := t.Visit(ctx.Expression()).(*symboltable.Symbol)
+	expr, ok := t.Visit(ctx.Expression()).(*internal.Symbol)
 	if !ok {
 		return nil
 	}
@@ -507,8 +508,8 @@ func (t *TypeChecker) VisitCapCall(ctx *grammar.CapCallContext) interface{} {
 	return t.VisitChildren(ctx)
 }
 
-func (t *TypeChecker) FindGlobalSymbol(name string) (*symboltable.Symbol, bool) {
-	return t.symbolTable.Symbols.FindFirst(func(s *symboltable.Symbol) bool {
+func (t *TypeChecker) FindGlobalSymbol(name string) (*internal.Symbol, bool) {
+	return t.symbolTable.Symbols.FindFirst(func(s *internal.Symbol) bool {
 		return s.Scope == 0 && s.Name == name
 	})
 }
@@ -1414,10 +1415,10 @@ func (v *TypeChecker) VisitChildren(node antlr.RuleNode) interface{} {
 func NewTypeChecker(filename string, listener antlr.ErrorListener) *TypeChecker {
 	return &TypeChecker{
 		listener:    listener,
-		symbolStack: stack.NewStack[*symboltable.Symbol](100),
+		symbolStack: stack.NewStack[*internal.Symbol](100),
 		typeStack:   stack.NewStack[types.Type](100),
-		typeTable:   symboltable.NewTypeTable(),
+		typeTable:   typetable.NewTypeTable(),
 		nodeStack:   stack.NewStack[antlr.TerminalNode](20),
-		symbolTable: symboltable.NewSymbolTable(),
+		symbolTable: internal.NewSymbolTable(),
 	}
 }

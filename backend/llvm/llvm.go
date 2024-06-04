@@ -15,9 +15,10 @@ import (
 	"github.com/llir/llvm/ir/enum"
 	"github.com/llir/llvm/ir/types"
 	"github.com/llir/llvm/ir/value"
+	"github.com/zSnails/minigo/backend/llvm/internal"
 	"github.com/zSnails/minigo/grammar"
 	"github.com/zSnails/minigo/stack"
-	symboltable "github.com/zSnails/minigo/symbol-table"
+	"github.com/zSnails/minigo/typetable"
 )
 
 const GLOBAL_SCOPE = 0
@@ -25,8 +26,8 @@ const GLOBAL_SCOPE = 0
 type LlvmBackend struct {
 	listener    antlr.ErrorListener
 	module      *ir.Module
-	symbolTable *LlvmSymbolTable
-	typeTable   *symboltable.TypeTable
+	symbolTable *internal.LlvmSymbolTable
+	typeTable   *typetable.TypeTable
 	loopStack   *stack.Stack[*ir.Block]
 	blockStack  *stack.Stack[*ir.Block]
 	funcStack   *stack.Stack[*Func]
@@ -189,14 +190,13 @@ func NewLlvmBackend(listener antlr.ErrorListener) *LlvmBackend {
 	b := &LlvmBackend{
 		listener:    listener,
 		module:      ir.NewModule(),
-		typeTable:   symboltable.NewTypeTable(),
-		symbolTable: NewTable(),
+		typeTable:   typetable.NewTypeTable(),
+		symbolTable: internal.NewTable(),
 		loopStack:   stack.NewStack[*ir.Block](100),
 		blockStack:  stack.NewStack[*ir.Block](100),
 		funcStack:   stack.NewStack[*Func](20),
 	}
 
-	b.module.TargetTriple = "x86_64-pc-linux-gnu"
 	b.addBuiltIns()
 	return b
 }
@@ -1739,7 +1739,7 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 				l.symbolTable.AddSymbol(name, alloca)
 			}
 		case *ir.InstGetElementPtr:
-			if l.symbolTable.currentScope == GLOBAL_SCOPE {
+			if l.symbolTable.GetScope() == GLOBAL_SCOPE {
 				l.symbolTable.AddSymbol(name, argument)
 			} else {
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
@@ -1796,7 +1796,7 @@ func (l *LlvmBackend) VisitUntypedVarDecl(ctx *grammar.UntypedVarDeclContext) in
 				l.symbolTable.AddSymbol(name, alloca)
 			}
 		case *ir.InstGetElementPtr:
-			if l.symbolTable.currentScope == GLOBAL_SCOPE {
+			if l.symbolTable.GetScope() == GLOBAL_SCOPE {
 				l.symbolTable.AddSymbol(name, argument)
 			} else {
 				ptr := blk.NewGetElementPtr(types.I8, argument, zero)
@@ -1865,7 +1865,7 @@ func (l *LlvmBackend) VisitWalrusDeclaration(ctx *grammar.WalrusDeclarationConte
 				l.symbolTable.AddSymbol(name, alloca)
 			}
 		case *ir.InstGetElementPtr:
-			if l.symbolTable.currentScope == GLOBAL_SCOPE {
+			if l.symbolTable.GetScope() == GLOBAL_SCOPE {
 				l.symbolTable.AddSymbol(name, argument)
 			} else {
 				switch e := argument.ElemType.(type) {
