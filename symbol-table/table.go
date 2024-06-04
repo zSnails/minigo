@@ -8,11 +8,11 @@ import (
 	"github.com/llir/llvm/ir/constant"
 	"github.com/llir/llvm/ir/types"
 	"github.com/llir/llvm/ir/value"
-	"github.com/zSnails/minigo/linked-list/double"
+	"github.com/zSnails/minigo/linked-list/single"
 )
 
 type SymbolTable struct {
-	Symbols *double.LinkedList[*Symbol]
+	Symbols *single.LinkedList[*Symbol]
 	Scope   int8
 }
 
@@ -94,7 +94,7 @@ func (t *SymbolTable) addPrimitives() {
 
 func NewSymbolTable() *SymbolTable {
 	t := &SymbolTable{
-		Symbols: double.NewLinkedList[*Symbol](),
+		Symbols: single.NewLinkedList[*Symbol](),
 		Scope:   0,
 	}
 	t.addPrimitives()

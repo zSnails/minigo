@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/llir/llvm/ir/types"
-	"github.com/zSnails/minigo/linked-list/double"
+	"github.com/zSnails/minigo/linked-list/single"
 )
 
 type TypeTable struct {
-	Symbols *double.LinkedList[*Type]
+	Symbols *single.LinkedList[*Type]
 	Scope   int8
 }
 
@@ -56,7 +56,7 @@ func (t *TypeTable) addBuiltins() {
 
 func NewTypeTable() *TypeTable {
 	t := &TypeTable{
-		Symbols: double.NewLinkedList[*Type](),
+		Symbols: single.NewLinkedList[*Type](),
 		Scope:   0,
 	}
 
