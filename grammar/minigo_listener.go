@@ -283,6 +283,9 @@ type MinigoListener interface {
 	// EnterThreePartFor is called when entering the threePartFor production.
 	EnterThreePartFor(c *ThreePartForContext)
 
+	// EnterThreePartForNoExpression is called when entering the threePartForNoExpression production.
+	EnterThreePartForNoExpression(c *ThreePartForNoExpressionContext)
+
 	// EnterSimpleStatementSwitchExpression is called when entering the simpleStatementSwitchExpression production.
 	EnterSimpleStatementSwitchExpression(c *SimpleStatementSwitchExpressionContext)
 
@@ -582,6 +585,9 @@ type MinigoListener interface {
 
 	// ExitThreePartFor is called when exiting the threePartFor production.
 	ExitThreePartFor(c *ThreePartForContext)
+
+	// ExitThreePartForNoExpression is called when exiting the threePartForNoExpression production.
+	ExitThreePartForNoExpression(c *ThreePartForNoExpressionContext)
 
 	// ExitSimpleStatementSwitchExpression is called when exiting the simpleStatementSwitchExpression production.
 	ExitSimpleStatementSwitchExpression(c *SimpleStatementSwitchExpressionContext)

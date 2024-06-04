@@ -574,6 +574,12 @@ func (s *BaseMinigoListener) EnterThreePartFor(ctx *ThreePartForContext) {}
 // ExitThreePartFor is called when production threePartFor is exited.
 func (s *BaseMinigoListener) ExitThreePartFor(ctx *ThreePartForContext) {}
 
+// EnterThreePartForNoExpression is called when production threePartForNoExpression is entered.
+func (s *BaseMinigoListener) EnterThreePartForNoExpression(ctx *ThreePartForNoExpressionContext) {}
+
+// ExitThreePartForNoExpression is called when production threePartForNoExpression is exited.
+func (s *BaseMinigoListener) ExitThreePartForNoExpression(ctx *ThreePartForNoExpressionContext) {}
+
 // EnterSimpleStatementSwitchExpression is called when production simpleStatementSwitchExpression is entered.
 func (s *BaseMinigoListener) EnterSimpleStatementSwitchExpression(ctx *SimpleStatementSwitchExpressionContext) {
 }

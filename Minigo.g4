@@ -160,7 +160,8 @@ ifStatement: IF expression block #ifSingleExpression
 
 loop: FOR block #infiniteFor
     | FOR expression block #whileFor
-    | FOR first=simpleStatement SEMICOLON expression? SEMICOLON last=simpleStatement block #threePartFor
+    | FOR first=simpleStatement SEMICOLON expression SEMICOLON last=simpleStatement block #threePartFor
+    | FOR first=simpleStatement SEMICOLON SEMICOLON last=simpleStatement block #threePartForNoExpression
     ;
 
 switch: SWITCH simpleStatement SEMICOLON expression LEFTCURLYBRACE expressionCaseClauseList RIGHTCURLYBRACE #simpleStatementSwitchExpression

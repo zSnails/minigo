@@ -283,6 +283,9 @@ type MinigoVisitor interface {
 	// Visit a parse tree produced by MinigoParser#threePartFor.
 	VisitThreePartFor(ctx *ThreePartForContext) interface{}
 
+	// Visit a parse tree produced by MinigoParser#threePartForNoExpression.
+	VisitThreePartForNoExpression(ctx *ThreePartForNoExpressionContext) interface{}
+
 	// Visit a parse tree produced by MinigoParser#simpleStatementSwitchExpression.
 	VisitSimpleStatementSwitchExpression(ctx *SimpleStatementSwitchExpressionContext) interface{}
 

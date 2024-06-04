@@ -375,6 +375,10 @@ func (v *BaseMinigoVisitor) VisitThreePartFor(ctx *ThreePartForContext) interfac
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseMinigoVisitor) VisitThreePartForNoExpression(ctx *ThreePartForNoExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseMinigoVisitor) VisitSimpleStatementSwitchExpression(ctx *SimpleStatementSwitchExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
