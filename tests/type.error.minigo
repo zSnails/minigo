@@ -1,0 +1,15 @@
+package main;
+
+type Persona struct {
+    Nombre string;
+    Edad int;
+    Amigos []int;
+};
+
+type Nombre string;
+type Apellido Nombre;
+
+func a() {
+    var aaron Persona;
+    var samuel Persona;
+};
