@@ -153,7 +153,6 @@ var strcmp *ir.Func
 
 var basicInt *ir.Global
 var basicFloat *ir.Global
-var basicBool *ir.Global
 var basicChar *ir.Global
 
 func (l *LlvmBackend) addBuiltIns() {
@@ -163,8 +162,6 @@ func (l *LlvmBackend) addBuiltIns() {
 	strcat = l.module.NewFunc("strcat", types.I8Ptr, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
 	strlen = l.module.NewFunc("strlen", types.I64, ir.NewParam("", types.I8Ptr))
 	strcmp = l.module.NewFunc("strcmp", types.I64, ir.NewParam("", types.I8Ptr), ir.NewParam("", types.I8Ptr))
-	// l.module.NewTypeDef("string", String)
-	// l.typeTable.AddSymbol("string", String)
 
 	l.symbolTable.AddSymbol("printf", printf)
 	l.symbolTable.AddSymbol("putchar", putchar)
@@ -175,7 +172,6 @@ func (l *LlvmBackend) addBuiltIns() {
 
 	basicInt = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%lld\n\x00"))
 	basicFloat = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%lf\n\x00"))
-	basicBool = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%b\n\x00"))
 	basicChar = l.module.NewGlobalDef("", constant.NewCharArrayFromString("%c\n\x00"))
 
 }
