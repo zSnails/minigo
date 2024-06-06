@@ -20,8 +20,6 @@ import (
 	"github.com/zSnails/minigo/typetable"
 )
 
-const GLOBAL_SCOPE = 0
-
 type LlvmBackend struct {
 	listener    antlr.ErrorListener
 	module      *ir.Module
@@ -1561,9 +1559,15 @@ func (l *LlvmBackend) VisitTypedVarDecl(ctx *grammar.TypedVarDeclContext) interf
 
 		expr = getPointerValue(blk, expr)
 
-		alloca := fn.body.NewAlloca(expr.Type())
-		blk.NewStore(expr, alloca)
-		l.symbolTable.AddSymbol(name, alloca)
+		if fn != nil {
+			alloca := fn.body.NewAlloca(expr.Type())
+			blk.NewStore(expr, alloca)
+
+			l.symbolTable.AddSymbol(name, alloca)
+		} else {
+			l.symbolTable.AddSymbol(name, expr)
+		}
+
 	}
 
 	return nil
