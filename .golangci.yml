@@ -1,10 +1,11 @@
 linters:
   enable:
     - usestdlibvars
+    - cyclop
+    - dupl
     - forcetypeassert
     - unconvert
     - unparam
-    - execinquery
     - wastedassign
     - exhaustive
     - gosmopolitan
